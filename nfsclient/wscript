@@ -25,35 +25,32 @@
 #  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from __future__ import print_function
 from rtems_waf import rtems
+import os
 
-import lnetworking
-import sys
-
-rtems_version = "6"
-subdirs = ['pppd', 'nfsclient']
-
-try:
-    import rtems_waf.rtems as rtems
-except:
-    print("error: no rtems_waf git submodule; see README.waf")
-    sys.exit(1)
 
 def init(ctx):
-    rtems.init(ctx, version = rtems_version, long_commands = True)
+    pass
 
-def options(opt):
-    rtems.options(opt)
 
 def configure(conf):
-    rtems.configure(conf)
+    pass
 
-def recurse(ctx):
-    for sd in subdirs:
-        ctx.recurse(sd)
 
 def build(bld):
-    rtems.build(bld)
-    lnetworking.build(bld)
-    recurse(bld)
+    source_files = []
+    include_path = ['./', '../', os.path.relpath(bld.env.PREFIX)]
+    arch_lib_path = rtems.arch_bsp_lib_path(bld.env.RTEMS_VERSION,
+                                            bld.env.RTEMS_ARCH_BSP)
+    for root, dirs, files in os.walk('./nfsclient'):
+        for name in files:
+            if name[-2:] == '.c':
+                src_root = root.split('/')[2]
+                source_files.append(os.path.join(src_root, name))
+
+    bld.stlib(target='nfs',
+              features='c',
+              cflags=['-O2', '-g'],
+              includes=include_path,
+              source=source_files)
+    bld.install_files(os.path.join('${PREFIX}', arch_lib_path), ['libnfs.a'])
