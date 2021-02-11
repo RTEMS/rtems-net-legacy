@@ -24,11 +24,14 @@
 #  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 #  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 from rtems_waf import rtems
 import os
+
 source_files = []
 include_files = []
-exclude_dirs = ['pppd']
+test_source = []
+exclude_dirs = ['pppd', 'nfsclient', 'testsuites']
 
 for root, dirs, files in os.walk("."):
     [dirs.remove(d) for d in list(dirs) if d in exclude_dirs]
@@ -36,8 +39,13 @@ for root, dirs, files in os.walk("."):
         if name[-2:] == '.c':
             source_files.append(os.path.join(root, name))
 
+for root, dirs, files in os.walk('./testsuites'):
+    for name in files:
+        if name [-2:] == '.c':
+            test_source.append(os.path.join(root, name))
+
 def build(bld):
-    include_path = ['./', os.path.relpath(bld.env.PREFIX)]
+    include_path = ['./', os.path.relpath(bld.env.PREFIX), './testsuites/include']
     arch_lib_path = rtems.arch_bsp_lib_path(bld.env.RTEMS_VERSION,
                                             bld.env.RTEMS_ARCH_BSP)
 
@@ -46,4 +54,12 @@ def build(bld):
               cflags = ['-O2', '-g'],
               includes = include_path,
               source = source_files)
+
+    bld.program(target = 'networking01.exe',
+                features = 'c cprogram',
+                cflags = ['-O2', '-g'],
+                includes = include_path,
+                use = 'networking',
+                source = test_source)
+
     bld.install_files(os.path.join('${PREFIX}', arch_lib_path), ["libnetworking.a"])
