@@ -31,7 +31,7 @@ import os
 source_files = []
 include_files = {}
 test_source = []
-exclude_dirs = ['pppd', 'nfsclient', 'testsuites']
+exclude_dirs = ['pppd', 'nfsclient', 'testsuites', 'librpc/include']
 exclude_headers = ['rtems-bsd-user-space.h', 'rtems-bsd-kernel-space.h']
 
 for root, dirs, files in os.walk("."):
