@@ -29,15 +29,19 @@ from rtems_waf import rtems
 import os
 
 source_files = []
-include_files = []
+include_files = {}
 test_source = []
 exclude_dirs = ['pppd', 'nfsclient', 'testsuites']
+exclude_headers = ['rtems-bsd-user-space.h', 'rtems-bsd-kernel-space.h']
 
 for root, dirs, files in os.walk("."):
     [dirs.remove(d) for d in list(dirs) if d in exclude_dirs]
+    include_files[root[2:]] = []
     for name in files:
         if name[-2:] == '.c':
             source_files.append(os.path.join(root, name))
+        if name[-2:] == '.h' and name not in exclude_headers:
+            include_files[root[2:]].append(os.path.join(root,name))
 
 for root, dirs, files in os.walk('./testsuites'):
     for name in files:
@@ -63,3 +67,5 @@ def build(bld):
                 source = test_source)
 
     bld.install_files(os.path.join('${PREFIX}', arch_lib_path), ["libnetworking.a"])
+    for i in include_files:
+        bld.install_files(os.path.join('${PREFIX}', arch_lib_path, i), include_files[i])
