@@ -26,12 +26,13 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from rtems_waf import rtems
+import bsp_drivers
 import os
 
 source_files = []
 include_files = {}
 test_source = []
-exclude_dirs = ['pppd', 'nfsclient', 'testsuites', 'librpc/include']
+exclude_dirs = ['pppd', 'nfsclient', 'testsuites', 'librpc/include', 'bsps']
 exclude_headers = ['rtems-bsd-user-space.h', 'rtems-bsd-kernel-space.h']
 
 for root, dirs, files in os.walk("."):
@@ -49,20 +50,50 @@ for root, dirs, files in os.walk('./testsuites'):
             test_source.append(os.path.join(root, name))
 
 def build(bld):
-    include_path = ['./', os.path.relpath(bld.env.PREFIX), './testsuites/include']
+    include_path = []
+    ip = ''
+    BSP = bld.env.RTEMS_ARCH_BSP.split('-')[-1]
+
+    bsp_dirs, bsp_sources, bsp_archs = bsp_drivers.bsp_files(bld)
+
+    include_path.extend(['.',
+                         os.path.relpath(bld.env.PREFIX),
+                         './testsuites/include',
+                         os.path.relpath(os.path.join(bld.env.PREFIX, 'include')),
+                         './bsps/include'])
     arch_lib_path = rtems.arch_bsp_lib_path(bld.env.RTEMS_VERSION,
                                             bld.env.RTEMS_ARCH_BSP)
+    include_path.append(os.path.relpath(os.path.join(bld.env.PREFIX,
+                                                     arch_lib_path)))
+    include_path.append(os.path.relpath(os.path.join(bld.env.PREFIX,
+                                                     arch_lib_path,
+                                                     'include')))
+    if BSP in bsp_dirs:
+        include_path.extend(bsp_dirs[BSP])
 
-    bld.stlib(target = 'networking',
-              features = 'c',
-              cflags = ['-O2', '-g'],
-              includes = include_path,
-              source = source_files)
+    for i in include_path:
+        ip = ip + i + ' '
+
+    if (BSP in bsp_sources):
+        bld(target = 'bsp_objs',
+            features = 'c',
+            cflags = ['-O2', '-g'],
+            includes = ip,
+            source = bsp_sources[BSP])
+
+    bld(target = 'network_objects',
+        features = 'c',
+        includes = ip,
+        source = source_files)
+
+    bld(target = 'networking',
+        features = 'c cstlib',
+        use = ['bsp_objs', 'network_objects'])
 
     bld.program(target = 'networking01.exe',
                 features = 'c cprogram',
                 cflags = ['-O2', '-g'],
-                includes = include_path,
+                includes = ip,
                 use = 'networking',
                 source = test_source)
 

@@ -25,37 +25,30 @@
 #  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from __future__ import print_function
 from rtems_waf import rtems
+import os
+import waflib.Options
+import waflib.ConfigSet
 
-import lnetworking
-import sys
-top = '.'
+def bsp_files(bld):
+    source_files = {}
+    include_dirs = {}
+    bsp_archs = {}
+    include_files = []
 
-rtems_version = "6"
-subdirs = ['pppd', 'nfsclient']
+    bsp_list = bld.env.RTEMS_ARCH_BSP_LIST
 
-try:
-    import rtems_waf.rtems as rtems
-except:
-    print("error: no rtems_waf git submodule; see README.waf")
-    sys.exit(1)
-
-def init(ctx):
-    rtems.init(ctx, version = rtems_version, long_commands = True)
-
-def options(opt):
-    rtems.options(opt)
-
-def configure(conf):
-    rtems.configure(conf)
-
-
-def recurse(ctx):
-    for sd in subdirs:
-        ctx.recurse(sd)
-
-def build(bld):
-    lnetworking.build(bld)
-    rtems.build(bld)
-    recurse(bld)
+    for bl in bsp_list:
+        bsp = bl.split('-')[-1]
+        arch = bl.split('-')[0]
+        bsp_archs[bsp] = bl
+        for root, dirs, files in os.walk(os.path.join('./bsps', arch, bsp)):
+            include_dirs[bsp] = []
+            source_files[bsp] = []
+            for name in files:
+                if name[-2:] == '.c':
+                    source_files[bsp].append(os.path.join(root, name))
+                if name[-2:] == '.h':
+                    if root not in include_dirs[bsp]:
+                        include_dirs[bsp].append(root)
+    return (include_dirs, source_files, bsp_archs)
