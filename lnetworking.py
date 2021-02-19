@@ -37,6 +37,7 @@ exclude_headers = ['rtems-bsd-user-space.h', 'rtems-bsd-kernel-space.h']
 
 for root, dirs, files in os.walk("."):
     [dirs.remove(d) for d in list(dirs) if d in exclude_dirs]
+    dirs.append('./bsps/shared/net')
     include_files[root[2:]] = []
     for name in files:
         if name[-2:] == '.c':
@@ -52,9 +53,9 @@ for root, dirs, files in os.walk('./testsuites'):
 def build(bld):
     include_path = []
     ip = ''
-    BSP = bld.env.RTEMS_ARCH_BSP.split('-')[-1]
+    bsp = bld.env.RTEMS_ARCH_BSP.split('-')[-1]
 
-    bsp_dirs, bsp_sources, bsp_archs = bsp_drivers.bsp_files(bld)
+    bsp_dirs, bsp_sources = bsp_drivers.bsp_files(bld)
 
     include_path.extend(['.',
                          os.path.relpath(bld.env.PREFIX),
@@ -68,18 +69,20 @@ def build(bld):
     include_path.append(os.path.relpath(os.path.join(bld.env.PREFIX,
                                                      arch_lib_path,
                                                      'include')))
-    if BSP in bsp_dirs:
-        include_path.extend(bsp_dirs[BSP])
+    include_path.append('./bsps/include/libchip')
+
+    if bsp in bsp_dirs:
+        include_path.extend(bsp_dirs[bsp])
 
     for i in include_path:
         ip = ip + i + ' '
 
-    if (BSP in bsp_sources):
+    if (bsp in bsp_sources):
         bld(target = 'bsp_objs',
             features = 'c',
             cflags = ['-O2', '-g'],
             includes = ip,
-            source = bsp_sources[BSP])
+            source = bsp_sources[bsp])
 
     bld(target = 'network_objects',
         features = 'c',
@@ -97,6 +100,10 @@ def build(bld):
                 use = 'networking',
                 source = test_source)
 
-    bld.install_files(os.path.join('${PREFIX}', arch_lib_path), ["libnetworking.a"])
+    bld.install_files(os.path.join('${PREFIX}', arch_lib_path),
+                                   ["libnetworking.a"])
+    bld.install_files(os.path.join('${PREFIX}', arch_lib_path),
+                                   [os.path.join('./bsps/include/libchip/', f)
+                                    for f in os.listdir('./bsps/include/libchip/')])
     for i in include_files:
         bld.install_files(os.path.join('${PREFIX}', arch_lib_path, i), include_files[i])

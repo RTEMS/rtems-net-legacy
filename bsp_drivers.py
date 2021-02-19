@@ -33,16 +33,28 @@ import waflib.ConfigSet
 def bsp_files(bld):
     source_files = {}
     include_dirs = {}
-    bsp_archs = {}
     include_files = []
+
+    special_case_dirs = {'atsamv': './bsps/arm/atsam',
+                         'lm32_evr': './bsps/lm32',
+                         'lpc24xx_ea': './bsps/arm/shared/'}
+    special_case_sources = {'leon2': ['./bsps/shared/grlib/net/network_interface_add.c',
+                                      './bsps/shared/grlib/net/greth.c'],
+                            'leon3': ['./bsps/shared/grlib/net/network_interface_add.c',
+                                      './bsps/shared/grlib/net/greth.c'],
+                            'griscv':['./bsps/shared/grlib/net/network_interface_add.c',
+                                      './bsps/shared/grlib/net/greth.c']}
 
     bsp_list = bld.env.RTEMS_ARCH_BSP_LIST
 
     for bl in bsp_list:
         bsp = bl.split('-')[-1]
         arch = bl.split('-')[0]
-        bsp_archs[bsp] = bl
-        for root, dirs, files in os.walk(os.path.join('./bsps', arch, bsp)):
+        if bsp not in special_case_dirs:
+            source_dir = os.walk(os.path.join('./bsps', arch, bsp))
+        else:
+            source_dir = os.walk(special_case_dirs[bsp])
+        for root, dirs, files in source_dir:
             include_dirs[bsp] = []
             source_files[bsp] = []
             for name in files:
@@ -51,4 +63,6 @@ def bsp_files(bld):
                 if name[-2:] == '.h':
                     if root not in include_dirs[bsp]:
                         include_dirs[bsp].append(root)
-    return (include_dirs, source_files, bsp_archs)
+            if bsp in special_case_sources:
+                source_files[bsp].extend(special_case_sources[bsp])
+    return (include_dirs, source_files)
