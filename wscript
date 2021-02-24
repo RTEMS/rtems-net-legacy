@@ -32,6 +32,7 @@ import lnetworking
 import sys
 
 rtems_version = "6"
+subdirs = ['pppd']
 
 try:
     import rtems_waf.rtems as rtems
@@ -48,6 +49,11 @@ def options(opt):
 def configure(conf):
     rtems.configure(conf)
 
+def recurse(ctx):
+    for sd in subdirs:
+        ctx.recurse(sd)
+
 def build(bld):
     rtems.build(bld)
     lnetworking.build(bld)
+    recurse(bld)
