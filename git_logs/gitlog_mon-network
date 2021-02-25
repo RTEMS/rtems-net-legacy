@@ -1,0 +1,157 @@
+commit f97536dcd310a1a15426dcd411d55367019879fc
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Fri Oct 16 08:21:48 2015 +0200
+
+    basdefs.h: Add and use RTEMS_UNUSED
+
+commit c49985691f1cd3769ef4bfaa503f3c6eb7e4385a
+Author: Chris Johns <chrisj@rtems.org>
+Date:   Fri Mar 21 08:10:47 2014 +1100
+
+    Change all references of rtems.com to rtems.org.
+
+commit 7660e8b34778285a7d32e0265fd7697c213179a7
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Tue Jul 23 13:32:58 2013 +0200
+
+    Include missing <string.h>
+
+commit 9b4422a2513e9c7f4c705050948d82b75331aaba
+Author: Joel Sherrill <joel.sherrill@oarcorp.com>
+Date:   Thu May 3 10:09:24 2012 -0500
+
+    Remove All CVS Id Strings Possible Using a Script
+    
+    Script does what is expected and tries to do it as
+    smartly as possible.
+    
+    + remove occurrences of two blank comment lines
+      next to each other after Id string line removed.
+    + remove entire comment blocks which only exited to
+      contain CVS Ids
+    + If the processing left a blank line at the top of
+      a file, it was removed.
+
+commit 6425dc503387c2aff0a92091b866e0625033ba77
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Dec 6 07:34:48 2011 +0000
+
+    2011-12-06      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * libmisc/monitor/mon-network.c: Include <rtems/monitor.h>.
+            * libmisc/monitor/mon-object.c:
+            Make rtems_monitor_object_canonical_next_remote,
+            rtems_monitor_object_dump_1, rtems_monitor_object_dump_all static.
+            * libmisc/monitor/mon-prmisc.c:
+            Make rtems_monitor_dump_assoc_bitfield static.
+            * libmisc/monitor/mon-symbols.c:
+            Make rtems_monitor_symbol_dump_all static.
+
+commit bab5c5fac0fba6b6e0735e8bd9dfecb7bd474700
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri Mar 12 16:26:16 2010 +0000
+
+    2010-03-12      Joel Sherrill <joel.sherrill@oarcorp.com>
+    
+            * ftpd/ftpd.c, httpd/asp.c, httpd/ejparse.c, httpd/emfdb.c,
+            httpd/misc.c, httpd/um.c, httpd/webs.c, httpd/websuemf.c,
+            libfs/src/dosfs/msdos_dir.c, libfs/src/dosfs/msdos_format.c,
+            libfs/src/dosfs/msdos_misc.c, libfs/src/nfsclient/src/nfs.c,
+            libmisc/capture/capture-cli.c, libmisc/monitor/mon-network.c,
+            libmisc/shell/hexdump-odsyntax.c, libmisc/shell/main_ifconfig.c,
+            libmisc/shell/shell.c, libmisc/shell/shell_makeargs.c,
+            libmisc/uuid/parse.c, libnetworking/libc/gethostbydns.c,
+            libnetworking/libc/gethostbyht.c, libnetworking/libc/gethostnamadr.c,
+            libnetworking/libc/getnetnamadr.c, libnetworking/libc/inet_addr.c,
+            libnetworking/libc/inet_network.c, libnetworking/libc/res_debug.c,
+            libnetworking/libc/res_init.c, libnetworking/libc/res_query.c,
+            libnetworking/rtems/rtems_mii_ioctl.c,
+            score/src/objectgetnameasstring.c: Readdress use of ctype methods per
+            recommendation from D.J. Delorie on the newlib mailing list. We
+            should pass an unsigned char into these methods.
+
+commit 391b4dda25431a790ff21bdfd5c78c63b7a58f2a
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Mar 11 19:12:30 2010 +0000
+
+    2010-03-11      Joel Sherrill <joel.sherrill@oarcorp.com>
+    
+            * ftpd/ftpd.c, httpd/uemf.c, httpd/um.c, httpd/webs.c,
+            httpd/websuemf.c, libblock/src/diskdevs.c,
+            libmisc/capture/capture-cli.c, libmisc/monitor/mon-network.c,
+            libmisc/shell/hexdump-odsyntax.c, libmisc/shell/main_ifconfig.c,
+            libmisc/uuid/parse.c, libnetworking/lib/ftpfs.c,
+            libnetworking/libc/gethostbyht.c, libnetworking/libc/getnetnamadr.c,
+            libnetworking/libc/inet_network.c,
+            libnetworking/rtems/rtems_mii_ioctl.c,
+            score/src/objectgetnameasstring.c: Fix warnings for ctype methods.
+
+commit 0893220b2a4507fc2619b625ecb0d6241ef5cd6f
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sun Nov 29 12:12:39 2009 +0000
+
+    Whitespace removal.
+
+commit 031deada15098e68ae1912f1c6963c433153b9e3
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Jan 2 13:04:13 2009 +0000
+
+    Add __attribute__((unused)) to unused function args.
+
+commit 2326f0d934d3fb016e5da62fdac2b52d9d411f4a
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Sep 1 09:35:34 2008 +0000
+
+    Convert to using "bool".
+
+commit d024ff49c494948c077c4df5afab5fb429370219
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Aug 21 13:06:53 2008 +0000
+
+    Use memset instead of bzero.
+
+commit 575babcf497c56bb61c8e45d1d6715219ce4510a
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Aug 21 12:29:02 2008 +0000
+
+    Include "config.h".
+
+commit 1ff9922df0f6e5f129299847d0f5eccbc8d6806c
+Author: Chris Johns <chrisj@rtems.org>
+Date:   Sat Dec 22 08:27:18 2007 +0000
+
+    2007-12-22      Chris Johns <chrisj@rtems.org>
+    
+            * configure.ac: fixed bug that always enabled strict order
+            mutexes.
+            * score/inline/rtems/score/coremutex.inl: Fixed coding standard.
+            * score/src/coremutex.c: Add the holder's thread to the lock_mutex
+            list if the mutex is initialised locked.
+            * libnetworking/rtems/rtems_glue.c: Changed semaphore error
+            message to show the error is an rtems-net error.
+            * libmisc/monitor/mon-network.c: Removed warnings.
+            * telnetd/icmds.c: Changed shell_* to rtems_shell_*.
+            * score/Makefile.am: Fixed typo that stopped 'make tags' working.
+            * libmisc/shell/err.c, libmisc/shell/err.h, libmisc/shell/errx.c,
+            libmisc/shell/extern-cp.h, libmisc/shell/fts.c,
+            libmisc/shell/fts.h, libmisc/shell/main_cp.c,
+            libmisc/shell/utils-cp.c, libmisc/shell/verr.c,
+            libmisc/shell/verrx.c, libmisc/shell/vwarn.c,
+            libmisc/shell/vwarnx.c, libmisc/shell/warn.c,
+            libmisc/shell/warnx.c: New. Ported from BSD.
+            * libmisc/shell/shellconfig.h: Add the cp command.
+            * libmisc/Makefile.am: Add the new files to the shell.
+            * libmisc/shell/shell.c, libmisc/shell/shell.h: Add scripting
+            support.
+            * libblock/src/flashdisk.c: Fixed disk drive count size setting
+            bug.
+
+commit 15a47934fb9df85dfc1641b41752d52e58096e94
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri Sep 14 22:52:53 2007 +0000
+
+    2007-09-14      Joel Sherrill <joel.sherrill@oarcorp.com>
+    
+            * libmisc/monitor/monitor.h: Add network commands that were in the
+            network supplement but not in the code.
+            * libmisc/monitor/mon-network.c: New file.

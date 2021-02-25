@@ -1,0 +1,46 @@
+commit b4c29b54e7967a6197fd2542e5abd601fe434e1d
+Author: Jiri Gaisler <jiri@gaisler.se>
+Date:   Sat Oct 24 16:43:49 2020 +0200
+
+    Add networking support for griscv bsp
+    
+            * Only GRETH device supported for now
+            * Fix endian problem in GRETH driver
+            * Remove SPARC assembly from greth.c
+            * Builds with both autoconf and waf
+
+commit 20bd667d8a84ba6ee380d5d3851a54ef5984196c
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Mon May 27 07:35:07 2019 +0200
+
+    bsps: Fix warnings in greth
+
+commit efdb4a767aeb0f47eb288b8a7abcf51808afa7a8
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Fri Nov 9 09:37:53 2018 +0100
+
+    bsp/beatnik: Fix warnings
+
+commit cb682532cf9927619a3c8d168253187140835cc6
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Fri Sep 7 06:19:02 2018 +0200
+
+    network: Use kernel/user space header files
+    
+    Add and use <machine/rtems-bsd-kernel-space.h> and
+    <machine/rtems-bsd-user-space.h> similar to the libbsd to avoid command
+    line defines and defines scattered throught the code base.
+    
+    Simplify cpukit/libnetworking/Makefile.am.
+    
+    Update #3375.
+
+commit 27de4e1fb8bcdbdd8cb882fc0d7a2c152b4e027a
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Tue Apr 3 07:20:11 2018 +0200
+
+    bsps: Move libchip to bsps
+    
+    This patch is a part of the BSP source reorganization.
+    
+    Update #3285.

@@ -1,0 +1,23 @@
+commit cb682532cf9927619a3c8d168253187140835cc6
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Fri Sep 7 06:19:02 2018 +0200
+
+    network: Use kernel/user space header files
+    
+    Add and use <machine/rtems-bsd-kernel-space.h> and
+    <machine/rtems-bsd-user-space.h> similar to the libbsd to avoid command
+    line defines and defines scattered throught the code base.
+    
+    Simplify cpukit/libnetworking/Makefile.am.
+    
+    Update #3375.
+
+commit b15cb636e18f7810f529ecb66f99eaf1ac1c18c9
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Fri Apr 20 13:36:14 2018 +0200
+
+    bsps/sparc: Move network drivers to bsps
+    
+    This patch is a part of the BSP source reorganization.
+    
+    Update #3285.

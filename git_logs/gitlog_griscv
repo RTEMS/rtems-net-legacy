@@ -1,0 +1,10 @@
+commit b4c29b54e7967a6197fd2542e5abd601fe434e1d
+Author: Jiri Gaisler <jiri@gaisler.se>
+Date:   Sat Oct 24 16:43:49 2020 +0200
+
+    Add networking support for griscv bsp
+    
+            * Only GRETH device supported for now
+            * Fix endian problem in GRETH driver
+            * Remove SPARC assembly from greth.c
+            * Builds with both autoconf and waf

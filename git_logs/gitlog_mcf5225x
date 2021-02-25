@@ -1,0 +1,9 @@
+commit b54558ac9db27e03cc32ddb40a41706ea6bf77c9
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Mon Mar 26 13:20:43 2018 +0200
+
+    bsps/mcf5225x: Move libcpu content to bsps
+    
+    This patch is a part of the BSP source reorganization.
+    
+    Update #3285.

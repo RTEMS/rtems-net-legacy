@@ -1,0 +1,1179 @@
+commit 24312f3454ceb97ce7de0fa1c5ca2b1a220f2da2
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Fri Sep 14 19:51:38 2018 +0200
+
+    build: Merge pppd/Makefile.am
+
+commit 68e1ccc46d82b87b41199b3dcc4ed72cd3c14960
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Tue Sep 11 06:30:20 2018 +0200
+
+    build: Remove specialized CPPFLAGS
+
+commit 06060da3bc4ea255210a6b0bc5e4187227bf2f95
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Mon Sep 10 06:29:11 2018 +0200
+
+    pppd: Simplify Makefile.am
+    
+    Update #3375.
+
+commit f004b2b8dc1fb78eb18b21ba6b50f6c712fd94f8
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Tue Oct 2 10:22:15 2018 +0200
+
+    Use rtems_task_exit()
+    
+    Update #3530.
+    Update #3533.
+
+commit ac9f80874fc8e252bb8e5184c455f02e4ba7816a
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Tue Sep 25 15:19:08 2018 +0200
+
+    pppd: Remove unused get_pty() function
+    
+    Update #3526.
+
+commit 2afb22b7e1ebcbe40373ff7e0efae7d207c655a9
+Author: Chris Johns <chrisj@rtems.org>
+Date:   Sat Dec 23 18:18:56 2017 +1100
+
+    Remove make preinstall
+    
+    A speciality of the RTEMS build system was the make preinstall step.  It
+    copied header files from arbitrary locations into the build tree.  The
+    header files were included via the -Bsome/build/tree/path GCC command
+    line option.
+    
+    This has at least seven problems:
+    
+    * The make preinstall step itself needs time and disk space.
+    
+    * Errors in header files show up in the build tree copy.  This makes it
+      hard for editors to open the right file to fix the error.
+    
+    * There is no clear relationship between source and build tree header
+      files.  This makes an audit of the build process difficult.
+    
+    * The visibility of all header files in the build tree makes it
+      difficult to enforce API barriers.  For example it is discouraged to
+      use BSP-specifics in the cpukit.
+    
+    * An introduction of a new build system is difficult.
+    
+    * Include paths specified by the -B option are system headers.  This
+      may suppress warnings.
+    
+    * The parallel build had sporadic failures on some hosts.
+    
+    This patch removes the make preinstall step.   All installed header
+    files are moved to dedicated include directories in the source tree.
+    Let @RTEMS_CPU@ be the target architecture, e.g. arm, powerpc, sparc,
+    etc.  Let @RTEMS_BSP_FAMILIY@ be a BSP family base directory, e.g.
+    erc32, imx, qoriq, etc.
+    
+    The new cpukit include directories are:
+    
+    * cpukit/include
+    
+    * cpukit/score/cpu/@RTEMS_CPU@/include
+    
+    * cpukit/libnetworking
+    
+    The new BSP include directories are:
+    
+    * bsps/include
+    
+    * bsps/@RTEMS_CPU@/include
+    
+    * bsps/@RTEMS_CPU@/@RTEMS_BSP_FAMILIY@/include
+    
+    There are build tree include directories for generated files.
+    
+    The include directory order favours the most general header file, e.g.
+    it is not possible to override general header files via the include path
+    order.
+    
+    The "bootstrap -p" option was removed.  The new "bootstrap -H" option
+    should be used to regenerate the "headers.am" files.
+    
+    Update #3254.
+
+commit 5346fa875cda3109ec48bcc04522c9cf21169b0d
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Wed Dec 13 08:33:25 2017 +0100
+
+    pppd: Include <rtems/rtems*.h>
+    
+    Prepare for header file move to common include directory.
+    
+    Update #3254.
+
+commit 163d1e8c247260eb1d40dcb463f3acff47d7c8d0
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Mon Apr 25 07:59:34 2016 +0200
+
+    pppd: Fix warnings
+
+commit 33a1a4dbdf96b012384f5e8c018f3d958e5ddfc4
+Author: Peng Fan <van.freenix@gmail.com>
+Date:   Tue Apr 5 20:45:55 2016 +0800
+
+    cpukit: pppd: fix compile warning
+    
+    rcsid is defined, but not used. So discard it.
+    
+    Signed-off-by: Peng Fan <van.freenix@gmail.com>
+
+commit 11925eef789566a226d8eaacbceb4d89df787ebc
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Fri Nov 21 08:49:57 2014 +0100
+
+    Delete or rename MIN/MAX macros and defines
+    
+    Include <sys/param.h> if necessary to get the MIN()/MAX() macros.
+
+commit 456eab7dc8cbb69e238e6095e298787b1c1d2058
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Tue Sep 30 11:26:50 2014 +0200
+
+    pppd: Import change from NetBSD
+    
+    This avoids the use of gethostbyname() in case the "noipdefault" option
+    is given.  The gethostbyname() uses DNS by default.
+
+commit 805360b8e50e69573ec446674f640c9b7704cb34
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Tue Sep 23 14:20:35 2014 +0200
+
+    pppd: Fix warnings
+
+commit 59990cc9752c892dffed6ac0e074d3876c2f663f
+Author: Chris Johns <chrisj@rtems.org>
+Date:   Fri Aug 29 12:48:01 2014 +1000
+
+    Regenerate all preinstall.am files.
+    
+    With this patch the preinstall.am files are in a set order and not
+    dependent on now perl implements a hash.
+
+commit 7a597e977c1aed02645fca315dc65a0f2679d531
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Thu Apr 10 11:26:33 2014 +0200
+
+    pppd: Delete example
+    
+    This example is available via testsuites/samples/pppd.
+
+commit c49985691f1cd3769ef4bfaa503f3c6eb7e4385a
+Author: Chris Johns <chrisj@rtems.org>
+Date:   Fri Mar 21 08:10:47 2014 +1100
+
+    Change all references of rtems.com to rtems.org.
+
+commit 65c6425de9c84553b4bdade81988c9292d66db58
+Author: Joel Sherrill <joel.sherrill@oarcorp.com>
+Date:   Thu May 3 12:24:46 2012 -0500
+
+    Remove CVS Id Strings (manual edits after script)
+    
+    These modifications were required by hand after running the script.
+    In some cases, the file names did not match patterns. In others,
+    the format of the file did not match any common patterns.
+
+commit 33a105fb69b1398294e304790c2eb7017f188d1e
+Author: Joel Sherrill <joel.sherrill@oarcorp.com>
+Date:   Mon May 7 11:08:48 2012 -0500
+
+    Revert: Remove CVS Ids
+    
+    See http://www.rtems.org/pipermail/rtems-devel/2012-May/001006.html
+    for details.
+
+commit ee32f67a6f518ebd49cebfeda7c14b9a5e0bb73e
+Author: Ralf Corsépius <ralf.corsepius@rtems.org>
+Date:   Fri May 4 08:55:28 2012 +0200
+
+    Remove CVS-Ids.
+
+commit 61250b4ce998e4247deca77cadcab27f34b2cd3a
+Author: Joel Sherrill <joel.sherrill@oarcorp.com>
+Date:   Wed Feb 1 10:59:44 2012 -0600
+
+    Remove all .cvsignore files.
+
+commit 5ae9228ab96ea4d8e48eba96b34052b6650e1403
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Oct 18 09:04:36 2011 +0000
+
+    2011-10-18      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * pppd/options.c: Remove unused var "ok".
+
+commit 05c18861dd58a08076d0fa97f72cb88c4a5698e5
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Nov 30 16:01:51 2009 +0000
+
+    Whitespace removal.
+
+commit 9cd4dee1698e3fd878c152cafe6d3dbbefdc2024
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Jan 5 17:20:54 2009 +0000
+
+    Remove stray ';' introducing unreachable code.
+
+commit 1cb54d1f38de31800259d2e52cbe948aa712c6b4
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Dec 11 00:47:56 2008 +0000
+
+    #include <stdint.h> instead of <rtems/stdint.h>.
+
+commit db09424d436bd5ee86fb47685ff83c2d8f70c0cd
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Sep 8 06:45:43 2008 +0000
+
+    Add missing initializers.
+
+commit 62c37537bd593d5c1353cffea945ab3575c3f55e
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Aug 26 10:24:22 2008 +0000
+
+    Stop using old-style function-definitions.
+
+commit a807b75e38c1a0dbc0c3c8f0f38accc65c3c84d5
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed Aug 20 14:59:51 2008 +0000
+
+    Use stdbool.h. Remove local bool.
+
+commit b5cc0592f7cb5a0575836aa8f5630ce0b7b4fbe2
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sun Aug 3 04:27:50 2008 +0000
+
+    Add prototypes.
+
+commit b9499779ee21f89fdc01dda4312a006648e990e4
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Tue May 13 16:09:48 2008 +0000
+
+    2008-05-13      Joel Sherrill <joel.sherrill@oarcorp.com>
+    
+            * pppd/example/system.h: Fix path in example -- NOT COMPILED WITH
+            CPUKIT.
+
+commit 8a4f22e64ec09db4075cccb24dc290386ce16a95
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sun Sep 16 04:13:48 2007 +0000
+
+    Convert to using C99 fixed-size types instead of BSD fixed-size types.
+
+commit b72dc8bafcf07c4f306ed4efcc253d72c8502a6b
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Jun 12 16:03:17 2007 +0000
+
+    2007-06-12      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * pppd/Makefile.am: Reflect moving out md*.
+
+commit e7205419ab73a1d57a4ab5324cc443057dfe9b20
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Jun 12 16:02:10 2007 +0000
+
+    Remove (moved to libmd)
+
+commit 55c310f246e58fc402f63801817f2a828f575f48
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Jun 12 05:13:22 2007 +0000
+
+    Remove md5 and md4 from libpppd.a.
+    Add pppd/libmd.a.
+
+commit 8aaeb6d8a84cb9301b612976d99c847b54badde6
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Jun 12 05:12:57 2007 +0000
+
+    Don't include pppd.h.
+
+commit 203ed7ff8ccdfa233ac5bd22ca05add3d217ea03
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 9 15:56:13 2007 +0000
+
+    Include <rtems/stdint.h> instead of <stdint.h>.
+
+commit 890d2c6326dbccadc04955b764256116f7b9826b
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 9 11:23:14 2007 +0000
+
+    2007-05-09      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            PR 1243
+            * pppd/auth.c (set_allowed_addrs): Remove bogus dereference.
+
+commit 8da9f609af553e4874f2d7720268c60538c8be47
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Apr 16 13:27:18 2007 +0000
+
+    2007-04-16      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * pppd/utils.c: Use uintptr_t instead of unsigned long.
+
+commit ed92e2811415b0b227063ddae693bef9e28fdba9
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Mar 27 17:02:30 2007 +0000
+
+    Include <net/ppp_comp.h> instead of <net/ppp-comp.h>.
+
+commit d08e825b9b10c4d07b04f4ca178a40830fe09ab6
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Mar 27 15:47:35 2007 +0000
+
+    Eliminate __P().
+
+commit 5078ee3233a0aa1bda0d0ccd3dd209ec007f02a8
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Mar 27 10:22:16 2007 +0000
+
+    Eliminate __P().
+
+commit 63a88eb0bc870ca8619b4ca975329bfb781c44ea
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Jan 8 08:43:28 2007 +0000
+
+    Regenerate.
+
+commit c1427d2758079f0e9dd6a8de1662d78e0d6bc4ca
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sat Nov 18 02:31:32 2006 +0000
+
+    Regenerate.
+
+commit 3fe615bae8402e731846930125b3feff2ef333fc
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sat Nov 18 02:28:35 2006 +0000
+
+    Replace AM_CONDITIONAL(HAS_NETWORKING) with AM_CONDITIONAL(LIBNETWORKING).
+
+commit b59eff1c137f9edc6dbe5def48b948899abda322
+Author: Chris Johns <chrisj@rtems.org>
+Date:   Wed Sep 6 05:13:42 2006 +0000
+
+    Fix the bug in name change. The UNTIMEOUT macro did not use the ppp version.
+
+commit d8f86d925a880cbfbe52b0777c891f3c78e1b2f4
+Author: Till Straumann <strauman@slac.stanford.edu>
+Date:   Fri Sep 1 21:16:19 2006 +0000
+
+            * pppd/rtems.main.c, pppd/pppd.h: renamed 'untimeout'
+            to 'pppuntimeout' to avoid name clash with [future]
+            bsdnet kernel routine.
+
+commit 300c914c64953e3f27120fc454e75926943badf5
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri Sep 1 18:15:01 2006 +0000
+
+    *** empty log message ***
+
+commit a009d94459a8c8e126dadc8ee335b5833556dac7
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Aug 31 01:10:02 2006 +0000
+
+    2006-08-30      Joel Sherrill <joel@OARcorp.com>
+    
+            * ftpd/ftpd.c, libcsupport/include/sys/ioccom.h,
+            libcsupport/src/ioctl.c, libnetworking/kern/uipc_mbuf.c,
+            libnetworking/libc/inet_addr.c, libnetworking/net/ethernet.h,
+            libnetworking/net/if.c, libnetworking/net/if_ethersubr.c,
+            libnetworking/net/if_ppp.c, libnetworking/net/if_pppvar.h,
+            libnetworking/net/if_var.h, libnetworking/net/ppp_tty.c,
+            libnetworking/netinet/in_cksum.c, libnetworking/nfs/bootp_subr.c,
+            libnetworking/rtems/rtems_bsdnet_internal.h,
+            libnetworking/sys/mbuf.h, pppd/md4.c, pppd/pppd.h: Remove warnings
+            due to improper use of int which shows up on 16 bit targets. Added
+            ioctl_command_t since IOCTL command argument does not reliably fit
+            into 16 bits.
+
+commit 60426fed465fb89bc9598b4b1c0071af13fb5235
+Author: Till Straumann <strauman@slac.stanford.edu>
+Date:   Thu Jul 13 00:32:41 2006 +0000
+
+            * pppd/sys-rtems.c: fixed error message so that the correct
+            ioctl is reported.
+
+commit 2eb7d07e17ddcd96126f89de76be58e447b51d40
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sat Jan 14 06:20:35 2006 +0000
+
+    Regenerate.
+
+commit 19a0136c823d91e914cf0836c1eca08ae597fe56
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Jan 12 10:02:32 2006 +0000
+
+    Regenerate.
+
+commit 4e971660a1695fbc3be4d7fb8401d29f168566be
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Jan 12 09:57:43 2006 +0000
+
+    Remove all-local.
+
+commit 956dfedfd62bc273657d0a46ba493d3992545796
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Jan 12 04:56:37 2006 +0000
+
+    Regenerate.
+
+commit 6ce2a66b9421518c837dc6d46d112135c5da849f
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Jan 12 04:24:13 2006 +0000
+
+    Regenerate.
+
+commit dbe8e5194cf71cb20e7a05ff382ad70e833fd3e6
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Jan 12 04:19:28 2006 +0000
+
+    Cleanups
+
+commit b46f6fb219fde9e705fd6bce9369e29ca2fcdba2
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Jan 10 17:57:23 2006 +0000
+
+    Regenerate.
+
+commit 689b7b7a50af938aee4c4489956e2c9598ea512a
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Mon Nov 7 16:17:14 2005 +0000
+
+    2005-11-07      Michael Siers <mikes@poliac.com>
+    
+            * pppd/rtemspppd.c, pppd/rtemspppd.h: Per confirmation from Michael add
+            missing copyright notice.
+
+commit 0850b08764fbf998d003513f748c68e0d50bfe4b
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Nov 1 16:48:29 2005 +0000
+
+    2005-11-01      Ralf Corsepius <ralf.corsepius@rtems.org>
+    
+            * pppd/Makefile.am: Fix typo.
+
+commit 8d5d40640b91bc55c1c1ed0aaafb1a195eebf112
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Oct 27 03:23:18 2005 +0000
+
+    New.
+
+commit bdf2c0e475ed635be43b03292b61a32adedc61bb
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed Oct 26 17:40:12 2005 +0000
+
+    Misc. minor fixes.
+
+commit 95dacd745cebaf5e0f8aec73d2e096d2b7ad6844
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed Oct 26 16:25:50 2005 +0000
+
+    Regenerate
+
+commit 8f19e3007c82e196a9ff5f44aee8966f6f12eb3f
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed Oct 26 16:22:49 2005 +0000
+
+    Install rtemsdialer.h, rtemspppd.h to $(includedir)/rtems.
+
+commit d2970aae3c51e4425dd1f23935cd80252a4bdf15
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed Oct 26 16:21:39 2005 +0000
+
+    Remove (unused).
+
+commit 994eb05d49230b1e782defd89497c591171a5d11
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Sep 19 03:31:55 2005 +0000
+
+    2005-09-19      Ralf Corsepius <ralf.corsepius@rtems.org>
+    
+            * libnetworking/pppd/Makefile.am: Use preinstall.am.
+
+commit c315c990030ad6e1fc3c09823de3448bb1fc0866
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Sep 19 03:29:23 2005 +0000
+
+    New.
+
+commit 9f114a806ae20d3be9fafb3bcd29e850c4cabebc
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri May 20 19:33:23 2005 +0000
+
+    2005-05-20      Sergei Organov  <osv@topconrd.ru>
+    
+            PR 750/networking
+            * libnetworking/pppd/sys-rtems.c: Avoid NULL dereference in
+            wait_input().
+
+commit bd2fa0a582001e6fd31c404083f1a45f81d5c079
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sun May 8 09:20:38 2005 +0000
+
+    2005-05-08      Ralf Corsepius <ralf.corsepius@rtems.org>
+    
+            * libnetworking/pppd/Makefile.am: CPPFLAGS += -D__BSD_VISIBLE.
+
+commit abb63593da24eb37e63ae288b0370f0cd54247b0
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Feb 3 06:46:57 2005 +0000
+
+    2005-02-03      Ralf Corsepius <ralf.corsepius@rtems.org>
+    
+            PR 755/rtems
+            * libnetworking/pppd/ipcp.c: Include <rtems/bsdnet/servers.h>.
+            Remove local declarations of rtems_bsdnet_nameservers,
+            rtems_bsdnet_nameservers_count.
+
+commit 9c858e562fd3db6da7082527708d296e8178951f
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Mon Jan 31 22:21:19 2005 +0000
+
+    2005-01-31      Sergei Organov <osv@topconrd.ru>
+    
+            PR 771/pppd
+            * libnetworking/pppd/chat.c, libnetworking/pppd/rtemsmain.c: The fix
+            committed to fix PR736 breaks pppd. chat.c should have its own static
+            ttyfd for pppd to work correctly. The symptom is that second
+            invokation of chat (for connect script) fails due to pppd_ttyfd set
+            to -1 by previous chat invokation (for init script). In addition,
+            this patch fixes leaving of dangling pointer in the abort_stbring[]
+            by chat_send().
+
+commit 4ca43d72e1e6af22688f868463e4ccf429e3f5c9
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Jan 20 17:00:38 2005 +0000
+
+    2005-01-20      Joel Sherrill <joel@OARcorp.com>
+    
+            PR 736/pppd
+            * libnetworking/pppd/chat.c, libnetworking/pppd/demand.c,
+            libnetworking/pppd/pppd.h, libnetworking/pppd/rtemsmain.c,
+            libnetworking/pppd/sys-rtems.c, libnetworking/pppd/utils.c: ttyfd
+            should not be static and should have a name more specific to pppd.
+
+commit 4f647b954a4fef64c000c5cf37885563f5c88a20
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Jan 7 07:02:33 2005 +0000
+
+    2005-01-07      Ralf Corsepius <ralf.corsepius@rtems.org>
+    
+            * libchip/Makefile.am, libnetworking/pppd/Makefile.am,
+            libnetworking/rtems_servers/Makefile.am,
+            libnetworking/rtems_telnetd/Makefile.am,
+            librdbg/Makefile.am, optman/Makefile.am, support/Makefile.am:
+            Eliminate CFLAGS_OPTIMIZE_V.
+
+commit 44213adda5068a7de678254c1df7500c46ae1f9c
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sun Jan 2 00:54:34 2005 +0000
+
+    2005-01-01      Ralf Corsepius <ralf.corsepius@rtems.org>
+    
+            * libnetworking/pppd/Makefile.am,
+            libnetworking/rtems_servers/Makefile.am,
+            libnetworking/rtems_telnetd/Makefile.am:
+            Remove build-variant support.
+
+commit 41d0d94ec3a385c764074311c715a8927e26df15
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Oct 19 13:46:47 2004 +0000
+
+    2004-10-19      Ralf Corsepius <ralf_corsepius@rtems.org>
+    
+            * libnetworking/pppd/rtemspppd.c: rtems_task_priority priority.
+            * libnetworking/rtems_telnetd/telnetd.c: Eliminate rtems_unsigned32.
+
+commit 7452b8557dd2ae4ce11da3b15a2a8a5eaee71301
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Wed Sep 29 20:36:20 2004 +0000
+
+    2004-09-29      Joel Sherrill <joel@OARcorp.com>
+    
+            * aclocal/rtems-cpu-subdirs.m4, libchip/shmdr/shm_driver.h,
+            libnetworking/pppd/utils.c: i960 obsoleted and all references
+            removed.
+
+commit 73b5bd5d0e7481ac2459b682a88ac43383265448
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Apr 15 13:33:58 2004 +0000
+
+    Remove stray white spaces.
+
+commit 7220366a50d45ead617abe04fdb8ae3046d8365e
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Sat Apr 3 16:40:09 2004 +0000
+
+    2004-04-03      Wilfried Busalski <w.busalski@lancier-monitoring.de>
+    
+            PR 599/pppd
+            * libnetworking/pppd/chat.c: Fre memory that is allocated to fix leak.
+
+commit 6436254a70c7d847405cc7d83f6e6aa5fdbf69ce
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Feb 9 14:57:18 2004 +0000
+
+    2004-02-09      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * libnetworking/pppd/Makefile.am,
+            libnetworking/rtems_servers/Makefile.am,
+            libnetworking/rtems_telnetd/Makefile.am,
+            libnetworking/rtems_webserver/Makefile.am, optman/Makefile.am,
+            support/Makefile.am: Don't include lib.am.
+
+commit b5d91addb9c6ba0513292e2f49694ea8b28d5cd5
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Feb 3 06:21:42 2004 +0000
+
+    2004-02-03      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * libnetworking/rtems_webserver/Makefile.am: Add PREINSTALL_DIRS.
+            * libnetworking/rtems_telnetd/Makefile.am: Add PREINSTALL_DIRS.
+            * libnetworking/rtems_servers/Makefile.am: Add PREINSTALL_DIRS.
+            * libnetworking/pppd/Makefile.am: Add PREINSTALL_DIRS.
+
+commit 633456e9200c909c9aad6ab7fae50b70b829999d
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Jan 15 03:47:28 2004 +0000
+
+    2004-01-15      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Remove wrapup.
+            * pppd/Makefile.am: Build libpppd.
+            Use automake-compilation rules.
+            * rtems_servers/Makefile.am: Build libftpd.
+            Use automake-compilation rules.
+            * rtems_telnetd/Makefile.am: Build libtelnetd.
+            Use automake-compilation rules.
+            * rtems_webserver/Makefile.am: Build libhttpd.
+            Use automake-compilation rules.
+            * wrapup/Makefile.am: Remove (Unused).
+
+commit 0725ce327fff8898b26cae83628ba117de65b4ce
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed Jan 14 07:26:51 2004 +0000
+
+    2004-01-14      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * pppd/Makefile.am: Re-add dirstamps to PRE/TMPINSTALL_FILES.
+            Add PRE/TMPINSTALL_FILES to CLEANFILES.
+            * rtems_servers/Makefile.am: Ditto.
+            * rtems_telnetd/Makefile.am: Ditto.
+            * rtems_webserver/Makefile.am: Ditto.
+
+commit 19fb5d33ac3614640235c5f1df3e243dcb54ff5c
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Dec 12 15:58:16 2003 +0000
+
+    2003-12-12      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * pppd/Makefile.am: Use mkdir_p. Remove dirs from PRE/TMPINSTALL_FILES.
+            * rtems_servers/Makefile.am: Use mkdir_p. Remove dirs from PRE/TMPINSTALL_FILES.
+            * rtems_telnetd/Makefile.am: Use mkdir_p. Remove dirs from PRE/TMPINSTALL_FILES.
+            * rtems_webserver/Makefile.am: Use mkdir_p. Remove dirs from PRE/TMPINSTALL_FILES.
+
+commit 58ce601f62ab83b2498188d0fd591307d770e762
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Dec 9 12:19:06 2003 +0000
+
+    2003-12-09      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Cosmetics.
+            * pppd/Makefile.am: Cosmetics.
+            * wrapup/Makefile.am: Cosmetics.
+
+commit 45d7f4c961956408aff1a702ae06cb894fb9806b
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Dec 2 04:41:19 2003 +0000
+
+    2003-12-02      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * pppd/Makefile.am: Remove all-local: $(ARCH).
+            * rtems_servers/Makefile.am: Remove all-local: $(ARCH).
+            * rtems_telnetd/Makefile.am: Remove all-local: $(ARCH).
+            * rtems_webserver/Makefile.am: Remove all-local: $(ARCH).
+            * wrapup/Makefile.am: Remove all-local: $(ARCH).
+
+commit 7406623261c51b1b013f6f2562ab763f114584a9
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Dec 1 08:43:12 2003 +0000
+
+    2003-12-01      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Reformat. Apply dirstamps to preinstallation.
+            * pppd/Makefile.am: Ditto.
+            * rtems_servers/Makefile.am: Ditto.
+            * rtems_telnetd/Makefile.am: Ditto.
+            * rtems_webserver/Makefile.am: Ditto.
+            * wrapup/Makefile.am: Ditto.
+
+commit 6a8e52d3aad0eb2f3c0058f31c24ae30f2aabf58
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sat Aug 16 12:12:10 2003 +0000
+
+    2003-08-16      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            Makefile.am: Reflect having moved automake.
+            pppd/Makefile.am: Reflect having moved automake.
+            rtems_servers/Makefile.am: Reflect having moved automake.
+            rtems_telnetd/Makefile.am: Reflect having moved automake.
+            rtems_webserver/Makefile.am: Reflect having moved automake.
+            wrapup/Makefile.am: Reflect having moved automake.
+
+commit 4078e82ae544f8eec4fcfa05aeb1bf38e3c40099
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Jul 25 06:15:38 2003 +0000
+
+    2003-07-25      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac: Remove (Merged into ../configure.ac).
+            * .cvsignore, Makefile.am, pppd/Makefile.am,
+            rtems_servers/Makefile.am, rtems_telnetd/Makefile.am,
+            rtems_webserver/Makefile.am, wrapup/Makefile.am:
+            Reflect having merged configure.ac into ../configure.ac
+
+commit 1a5787d2896cb3d5ba59bcf31a613530542911d1
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri Jun 13 13:20:47 2003 +0000
+
+    2003-06-13      Joel Sherrill <joel@OARcorp.com>
+    
+            * pppd/chat.c: Removed warnings.
+
+commit e78994b3d0a59b5be8fab7d82fa6fb506abc377c
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 28 00:26:48 2003 +0000
+
+    2003-05-16      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * pppd/fsm.c: Make peer_mru global again.
+
+commit 03bd4aeb4f6c9f6f3f6e8f50869221e165628a10
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri May 16 08:57:09 2003 +0000
+
+    2003-05-16      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * pppd/magic.c: Remove *rand48.
+            * pppd/chap.c: Remove prototypes of *rand48.
+
+commit 48cdb95aa2444a386a911be1a8251483d79a9935
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Apr 10 16:20:38 2003 +0000
+
+    2003-04-10      Joel Sherrill <joel@OARcorp.com>
+    
+            PR 371/pppd
+            * pppd/auth.c, pppd/chat.c, pppd/demand.c, pppd/fsm.c, pppd/lcp.c,
+            pppd/options.c, pppd/pppd.h, pppd/rtemsmain.c, pppd/rtemspppd.c:
+            Change many symbols to static. There are still global symbols in
+            rtemspppd.h which might need to be changed or converted into member
+            of a structure which is dereferenced with a pointer that is managed
+            as a per task variable. But this patch should avoid many conflicts.
+
+commit dc135ad13676943ab8a08acbf92a838caa298702
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Mar 24 10:11:20 2003 +0000
+
+    Merger from rtems-4-6-branch.
+
+commit f81fb8098142dfe33f7669b918836173b027381b
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Feb 6 22:19:11 2003 +0000
+
+    2003-02-06      Joel Sherrill <joel@OARcorp.com>
+    
+            * pppd/chat.c: Convert routines with common names to static. This
+            included get_char(), put_char(), and character() among others.
+
+commit 48558241757117a61c98df483cd040149a19e382
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Jan 16 02:58:35 2003 +0000
+
+    2003-01-15      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * wrapup/Makefile.am: Don't include @RTEMS_BSP@.cfg.
+            * pppd/Makefile.am: Don't include @RTEMS_BSP@.cfg.
+              Eliminate *_O_FILES.
+            * rtems_servers/Makefile.am: Ditto.
+            * rtems_webserver/Makefile.am: Ditto.
+            * rtems_telnetd/Makefile.am: Ditto.
+
+commit 6d9ade62b333feaa696fb228066b621c597eb9ce
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Mon Nov 4 14:29:21 2002 +0000
+
+    2002-11-04      Joel Sherrill <joel@OARcorp.com>
+    
+            * pppd/auth.c, rtems_webserver/uemf.h: Removed warnings.
+
+commit 19ed3cf43b96006d7b536b1a18e1bb7592d12cd6
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Sat Sep 7 23:07:58 2002 +0000
+
+    2002-09-07      Joel Sherrill <joel@OARcorp.com>
+    
+            * pppd/ipcp.c, rtems_servers/ftpd.c: Add include files to resolve
+            warnings.
+
+commit 2129ac821df23af1a91ebcf1c2d2c8cc3546e912
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed Aug 14 10:44:49 2002 +0000
+
+    2002-08-14      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * rtems_servers/ftpd.c: Remove unused variable buf.
+            * pppd/md5.c: #include <string.h> to make gcc31 happy.
+            * rtems_telnetd/telnetd.c: #include <string.h> to make gcc31 happy.
+            * rtems_webserver/webmain.c: Remove unused variable dir, cp.
+
+commit 299a523f63201e829ecdcd633b6b7f9008968d3e
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Mon Aug 12 11:23:44 2002 +0000
+
+    2002-08-12      Joel Sherrill <joel@OARcorp.com>
+    
+            * pppd/utils.c: Include i960 in varargs conditional to avoid error.
+
+commit 2b44af21ddbdfe045a64b4dd68a42602f454526d
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sun Aug 11 06:03:16 2002 +0000
+
+    2002-08-11      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * pppd/Makefile.am: Use .$(OBJEXT) instead of .o.
+            * rtems_servers/Makefile.am: Use .$(OBJEXT) instead of .o.
+            * rtems_telnetd/Makefile.am: Use .$(OBJEXT) instead of .o.
+            * rtems_webserver/Makefile.am: Use .$(OBJEXT) instead of .o.
+            * wrapup/Makefile.am: Use .$(OBJEXT) instead of .o.
+
+commit a5d6544071b9112c6027be0415f35e51118c68e4
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Jul 25 13:54:40 2002 +0000
+
+    2002-07-25      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * pppd/chap.c, pppd/fsm.c, pppd/fsm.h, pppd/upap.c: Per PR255
+            fix prototype mismatches.
+
+commit a81a8f8dc129a3c3431f7f75b3572a4cfe010886
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Apr 18 22:24:04 2002 +0000
+
+    2002-04-18      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * pppd/utils.c: Adapt to gcc-3.x.
+
+commit 01d48bf8ea824d8dc05f52155eec6ee474d91319
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Mar 28 00:49:43 2002 +0000
+
+    2002-03-27      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac:
+            AC_INIT(package,_RTEMS_VERSION,_RTEMS_BUGS).
+            AM_INIT_AUTOMAKE([no-define foreign 1.6]).
+            * arpa/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * kern/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * lib/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * libc/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * machine/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * net/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * netinet/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * nfs/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * pppd/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * rtems/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * rtems_servers/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * rtems_telnetd/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * rtems_webserver/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * sys/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * vm/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * wrapup/Makefile.am: Remove AUTOMAKE_OPTIONS.
+
+commit cb1e8a46445a90f2c379b4b71a542f3633358071
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Wed Feb 27 22:43:31 2002 +0000
+
+    2002-02-27      Ilya Alexeev <ilya@continuum.ru>
+    
+            * net/if_ppp.c, pppd/auth.c, pppd/chat.c, pppd/pppd.h,
+            pppd/sys-rtems.c: Add server with pap-authorization
+            capabilities as well as eliminate some warnings.
+
+commit 8e3caa52cd3f63b0d5c872e1cd05c1c0e6669aaf
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri Feb 1 16:51:07 2002 +0000
+
+    2001-02-01      Mike Siers <mikes@poliac.com>
+    
+            * pppd/rtemspppd.c (rtems_pppd_disconnect): Modified to avoid bringing
+            the link down too fast.
+            NOTE: Mike reports successfully running at 56K baud on a direct link.
+
+commit 485ed5cccd5e8bdaa1f6ab4e1eb411b74949acb6
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri Feb 1 14:04:45 2002 +0000
+
+    2001-01-31      Mike Siers <mikes@poliac.com>
+    
+            * pppd/rtemsdialer.h: New file missed in previous commit.
+
+commit 0286b9f6145f9664f6b0e196e24daee8be46b538
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Jan 31 21:42:11 2002 +0000
+
+    2001-01-31      Mike Siers <mikes@poliac.com>
+    
+            * Nice Update of PPPD support which eliminates the
+            requiremetn that drivers be in the termios TASK_DRIVEN mode.
+            Mike did significant testing and reports that it seems to be
+            more stable and handle larger packets better.  This patch
+            replaces the termios tasks with more general pppd network
+            driver tasks.  The functions pppinput() and pppstart() get
+            called from the interrupt service routine.
+            * Makefile.am, configure.ac, net/Makefile.am, net/bpf.h,
+            net/ethernet.h, net/if.c, net/if.h, net/if_arp.h, net/if_dl.h,
+            net/if_ethersubr.c, net/if_llc.h, net/if_loop.c, net/if_ppp.h,
+            net/if_pppvar.h, net/if_types.h, net/netisr.h, net/ppp-comp.h,
+            net/ppp_defs.h, net/pppcompress.h, net/radix.c, net/radix.h,
+            net/raw_cb.c, net/raw_cb.h, net/raw_usrreq.c, net/route.c,
+            net/route.h, net/rtsock.c, pppd/Makefile.am, pppd/README,
+            pppd/STATUS, pppd/auth.c, pppd/cbcp.c, pppd/ccp.c, pppd/ccp.h,
+            pppd/chap.c, pppd/chap.h, pppd/chap_ms.c, pppd/chap_ms.h,
+            pppd/chat.c, pppd/demand.c, pppd/fsm.c, pppd/fsm.h, pppd/ipcp.c,
+            pppd/ipcp.h, pppd/ipxcp.c, pppd/ipxcp.h, pppd/lcp.c, pppd/lcp.h,
+            pppd/magic.c, pppd/magic.h, pppd/options.c, pppd/patchlevel.h,
+            pppd/pathnames.h, pppd/pppd.8, pppd/pppd.h, pppd/rtemsmain.c,
+            pppd/rtemspppd.c, pppd/rtemspppd.h, pppd/sys-rtems.c, pppd/upap.c,
+            pppd/upap.h, pppd/utils.c, pppd/example/README,
+            pppd/example/netconfig.h, wrapup/Makefile.am: Modified.
+            * net/bsd-comp.c, net/if_ppp.c, net/ppp-deflate.c, net/ppp.h,
+            net/ppp_tty.c, net/pppcompress.c, net/zlib.c, net/zlib.h: New file.
+            * modem/, modem/.cvsignore, modem/Makefile.am, modem/ppp.c,
+            modem/ppp.h, modem/ppp_tty.c, modem/pppcompress.c: Subdirectory removed.
+
+commit ab1ed86eb65b3bb47126124609689e854f908181
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Sun Jan 6 20:09:55 2002 +0000
+
+    2002-02-05      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * pppd/sys-rtems.c: Remove unused variable status from
+            dodefaultroute.
+
+commit aee474b0cf18922c8b21ca56aae4067835c6a860
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri Oct 12 13:43:05 2001 +0000
+
+    2001-10-12      Mike Siers <mikes@poliac.com>
+    
+            * Update to stable working state.  Congratulations Mike! :)
+            * modem_example: Directory removed.
+            * modem_example/16550.h, modem_example/README, modem_example/modem.c,
+            modem_example/modem.h, modem_example/ppp.c, modem_example/ppp.h,
+            modem_example/pppcompress.c: Files removed.
+            * pppd/example/pppd.options: New file.
+            * pppd/README, pppd/STATUS, pppd/cbcp.c, pppd/cbcp.h, pppd/chat.c,
+            pppd/pppd.h, pppd/rtemsmain.c: Updated.
+
+commit b68e01c5d9122271c2c54922572ecc559dc13337
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Sep 27 13:28:22 2001 +0000
+
+    2001-09-23      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * machine/Makefile.am: Use 'PREINSTALL_FILES ='.
+            * net/Makefile.am: Use 'PREINSTALL_FILES ='.
+            * netinet/Makefile.am: Use 'PREINSTALL_FILES ='.
+            * vm/Makefile.am: Use 'PREINSTALL_FILES ='.
+            * pppd/Makefile.am: Use 'PREINSTALL_FILES ='.
+            * sys/Makefile.am: Use 'PREINSTALL_FILES ='.
+            * rtems_servers/Makefile.am: Use 'PREINSTALL_FILES ='.
+            * arpa/Makefile.am: Use 'PREINSTALL_FILES ='.
+            * nfs/Makefile.am: Use 'PREINSTALL_FILES ='.
+            * rtems_webserver/Makefile.am: Use 'PREINSTALL_FILES ='.
+            * rtems/Makefile.am: Use 'PREINSTALL_FILES ='.
+            * rtems_telnetd/Makefile.am: Use 'PREINSTALL_FILES ='.
+
+commit 19465445f29be6011d18974bc7c382873e44fefe
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri Aug 17 20:17:18 2001 +0000
+
+    2001-08-16      Mike Siers <mikes@poliac.com>
+    
+            * pppd/STATUS: Updated by Joel based upon email from Mike.
+            * pppd/cbcp.c, pppd/cbcp.h: Readded files.  These support callback
+            functionality that has not even been compiled under RTEMS yet.
+
+commit b8575ab611bba11c86f0b199166e06653ab8a072
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Aug 16 21:01:31 2001 +0000
+
+    2001-08-16      Joel Sherrill <joel@OARcorp.com>
+    
+            * pppd/example/Makefile: Removed.
+            * pppd/example/Makefile-user: Added was Makefile.  Renamed to
+            avoid bootstrap -c clobbering it.
+
+commit 2f1b9304ac4ba89a2dcb6047cb584a5603a33987
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Aug 16 20:42:09 2001 +0000
+
+    2001-08-16      Mike Siers <mikes@poliac.com>
+    
+            * Update of PPPD to 2.3.11 from 2.3.5 and addition of an example
+            application.  Mike's notes on the modifications:
+               - renamed error() function because of namespace problems
+               - removed calls to the exit() funciton
+               - removed extra files from the pppd source directory
+               - defined pppd task constant values in rtemspppd.h
+               - modifyied example code to get actual tick per second value
+               - placed the pppd 2.3.11 man page file (pppd.8) into the pppd
+               directory
+            * pppd/cbcp.c, pppd/cbcp.h, pppd/main.c, pppd/ppp_tty.c,
+            pppd/pppmain.c, pppd/rtems-ppp.c, pppd/rtems-ppp.c: Deleted.
+            * pppd/pppd.8, pppd/rtemsmain.c, pppd/rtemspppd.c, pppd/rtemspppd.h,
+            pppd/sys-rtems.c, pppd/utils.c, pppd/example/Makefile,
+            pppd/example/README, pppd/example/init.c, pppd/example/netconfig.h,
+            pppd/example/ppp.conf, pppd/example/pppdapp.c, pppd/example/system.h:
+            New files.
+            * modem/ppp_tty.c, net/if_ppp.h, pppd/Makefile.am, pppd/README,
+            pppd/STATUS, pppd/auth.c, pppd/ccp.c, pppd/ccp.h, pppd/chap.c,
+            pppd/chap.h, pppd/chap_ms.c, pppd/chap_ms.h, pppd/chat.c,
+            pppd/demand.c, pppd/fsm.c, pppd/fsm.h, pppd/ipcp.c, pppd/ipcp.h,
+            pppd/ipxcp.c, pppd/ipxcp.h, pppd/lcp.c, pppd/lcp.h, pppd/magic.c,
+            pppd/magic.h, pppd/options.c, pppd/patchlevel.h,
+            pppd/pathnames.h, pppd/pppd.h, pppd/upap.c, pppd/upap.h: Modified.
+
+commit 6fa636725c3d9f3b9fa03f0dccadc8f448466ad6
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri Apr 20 20:32:08 2001 +0000
+
+    2001-04-20  Radzislaw Galler  <rgaller@et.put.poznan.pl>
+    
+            * modem/ppp.c, pppd/main.c, pppd/pppmain.c, pppd/rtems-ppp.c,
+            pppd/modem_example/modem.c, pppd/modem_example/ppp.c: Translated
+            Polish comments and other strings into English
+            * pppd/STATUS: Updated to reflect the changes
+
+commit a6abd67af50cf087725951f082c39feea62ba02c
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Sat Nov 25 19:42:21 2000 +0000
+
+    2000-11-25  Antti P Miettinen  <antti.p.miettinen@nokia.com>
+    
+            * wrapup/Makefile.am: Added modem subdir.
+            * configure.in, Makefile.am: Added modem subdir.
+            * net/Makefile.am: Added if_pppvar.h, pppcompress.h.
+            * pppd/Makefile.am: Added pppmain.c (which needs work).
+            * pppd/chat.c, pppd/fsm.c, pppd/fsm.h, pppd/ipxcp.c, pppd/main.c,
+            pppd/ppp_tty.c, pppd/upap.c: Changes from Thomas Doerfler
+            <Thomas.Doerfler@imd-systems.de> and cosmetic changes by me.
+            Actually main.c and ppp_tty.c should be scratched. The modem
+            subdir has the real ppp_tty.c and the real pppd main is in pppmain.c.
+
+commit 552051f0ef2d83c4b235f1c620702aaa033988e2
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Wed Oct 18 16:25:48 2000 +0000
+
+    2000-10-18       Chris Johns <ccj@acm.org>
+    
+            * pppd/ipxcp.c: Fixed a typo.
+
+commit 4b60bd34085a56980227f1ba080f397528949faf
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri Sep 22 20:38:57 2000 +0000
+
+    2000-09-22      Joel Sherrill <joel@OARcorp.com>
+    
+            * machine/types.h, pppd/pppd.h, rtems/rtems_bsdnet_internal.h,
+            rtems_webserver/webmain.c: machine/types.h  should not have
+            included rtems.h.  It is now including precisely the
+            least amount of low level, yet portable .h files to get
+            the basic RTEMS types defined.  This rippled into other
+            files since rtems_bsdnet_internal.h used machine/types.h to include
+            rtems.h.
+
+commit 9b28bea577dc0d6781d2895b61c07a5d311d24b5
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Tue Sep 5 16:07:35 2000 +0000
+
+    2000-09-04      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * kern/Makefile.am, lib/Makefile.am, libc/Makefile.am,
+            net/Makefile.am, netinet/Makefile.am, nfs/Makefile.am,
+            pppd/Makefile.am, rtems/Makefile.am, rtems_servers/Makefile.am,
+            rtems_webserver/Makefile.am, wrapup/Makefile.am: Include compile.am
+
+commit ca7858bb8856f1afcc537f39763b7c951e5068d3
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Wed Jul 26 19:28:11 2000 +0000
+
+    Port of RTEMS to the Texas Instruments C3x/C4x DSP families including
+    a BSP (c4xsim) supporting the simulator included with gdb.  This port
+    was done by Joel Sherrill and Jennifer Averett of OAR Corporation.
+    Also included with this port is a space/time optimization to eliminate
+    FP context switch management on CPUs without hardware or software FP.
+    
+    An issue with this port was that sizeof(unsigned32) = sizeof(unsigned8)
+    on this CPU.  This required addressing alignment checks and assumptions
+    as well as fixing code that assumed sizeof(unsigned32) == 4.
+
+commit df49c60c9671e4a28e636964d744c1f59fb6cb68
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Mon Jun 12 15:00:15 2000 +0000
+
+    Merged from 4.5.0-beta3a
+
+commit 4bf1801d0d6fa7bcf7488f7f3cc5c39fafeac7d2
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Feb 3 13:21:38 2000 +0000
+
+    Patches rtems-rc-20000118-7.diff from Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    that contains the automake files for libnetworking plus a couple of
+    minor fixes.  [Now only one unused/unsupported Makefile.in remains
+    (./c/src/lib/libbsp/hppa1.1/pxfl/Makefile.in).]
+    
+        To apply:
+            patch -p1 < rtems-rc-20000118-7.diff
+            /bin/sh rtems-rc-20000118-7.rm
+            /bin/sh rtems-rc-20000118-7.add
+            ./bootstrap
+    
+        Notes:
+        * I have tested this one by building all BSPs for m68k, powerpc, sh and
+          unix with toolchains built since last weekend.
+        * I did not touch libnetworking's directory layout.
+
+commit 0173ab87ab54ce46b7c6a229f7937c8e098e5d6c
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Mon Jan 3 18:28:36 2000 +0000
+
+    Comments added and some messages translated from Polish.
+
+commit 5bce35ba29656467807d3733ea6c1b324aaa55e5
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Tue Dec 21 14:37:31 1999 +0000
+
+    Made prototype of ChapReceiveSuccess and ChapReceiveFailure match.
+
+commit d0950adfd65d0510424b43c31f19d2f1d8d277a4
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Tue Nov 30 22:12:50 1999 +0000
+
+    Added port of ppp-2.3.5 from Tomasz Domin <dot@comarch.pl> of ComArch SA.
+    Tomasz only tested this on the mpc823.
+    
+    The official site for the original source for this PPP implementation is:
+    
+    ftp://cs.anu.edu.au/pub/software/ppp
+    
+    NOTE:  As of 11/30/1999, the current version of this source is 2.3.10.

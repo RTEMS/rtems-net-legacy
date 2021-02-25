@@ -1,0 +1,61 @@
+commit c49985691f1cd3769ef4bfaa503f3c6eb7e4385a
+Author: Chris Johns <chrisj@rtems.org>
+Date:   Fri Mar 21 08:10:47 2014 +1100
+
+    Change all references of rtems.com to rtems.org.
+
+commit 9b4422a2513e9c7f4c705050948d82b75331aaba
+Author: Joel Sherrill <joel.sherrill@oarcorp.com>
+Date:   Thu May 3 10:09:24 2012 -0500
+
+    Remove All CVS Id Strings Possible Using a Script
+    
+    Script does what is expected and tries to do it as
+    smartly as possible.
+    
+    + remove occurrences of two blank comment lines
+      next to each other after Id string line removed.
+    + remove entire comment blocks which only exited to
+      contain CVS Ids
+    + If the processing left a blank line at the top of
+      a file, it was removed.
+
+commit 6c6b2f13f405600a66a841897e438c52656749c9
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Wed Dec 8 10:30:27 2010 +0000
+
+    2010-12-08      Sebastian Huber <sebastian.huber@embedded-brains.de>
+    
+            * libnetworking/loop.h, libnetworking/net/if_loop.c,
+            libnetworking/rtems/rtems_glue.c, libmisc/dummy/dummy-networking.c:
+            Initialize loop back interface during normal initialization via
+            rtems_bsdnet_initialize_network().
+
+commit 0d15414ed6c144f7f7e4ce63476b3eb9b94acceb
+Author: Chris Johns <chrisj@rtems.org>
+Date:   Wed Aug 5 00:00:54 2009 +0000
+
+    009-08-05      Chris Johns <chrisj@rtems.org>
+    
+            * libmisc/dummy/dummy-networking.c: New.
+            * libmisc/dummy/dummy.c, libmisc/Makefile.am: Move
+            trhe networking configuration into a separate file so
+            configuration varations do not cause conflicts.
+            * score/inline/rtems/score/object.inl,
+            score/include/rtems/score/object.h: Remove warnings.
+            * score/inline/rtems/score/object.inl: Add _Chain_First,
+            _Chain_Last, _Chain_Mext, and _Chain_Previous.
+            * sapi/inline/rtems/chain.inl: Add rtems_chain_first,
+            rtems_chain_last, rtems_chain_mext, and rtems_chain_previous.
+            * libblock/include/rtems/diskdevs.h: Remove the bdbuf pool id and
+            block_size_log2. Add media_block_size.
+            * libblock/src/diskdevs.c: Remove size restrictions on block
+            size. Add media block size initialisation. Remove comment to clean
+            up the bdbuf cache.
+            * libblock/src/blkdev.c: Remove references to
+            block_size_log2. Allow any block size.
+            * libblock/include/rtems/bdbuf.h, libblock/src/bdbuf.c: Remove all
+            references to pools and make the cache handle demand driver
+            variable buffer size allocation. Added worker threads support the
+            swapout task.
+            * sapi/include/confdefs.h: Updated the bdbuf configutation.

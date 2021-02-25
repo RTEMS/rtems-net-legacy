@@ -1,0 +1,9 @@
+commit 031df3914990db0336a0d386fb53558b05de467e
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Mon Apr 23 09:53:31 2018 +0200
+
+    bsps: Move legacy network drivers to bsps
+    
+    This patch is a part of the BSP source reorganization.
+    
+    Update #3285.

@@ -1,0 +1,2232 @@
+commit 5079524c6fca116309b91a74e6ebc9af7d6b9267
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Fri Sep 14 15:56:26 2018 +0200
+
+    build: Merge librpc/Makefile.am
+
+commit 68e1ccc46d82b87b41199b3dcc4ed72cd3c14960
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Tue Sep 11 06:30:20 2018 +0200
+
+    build: Remove specialized CPPFLAGS
+
+commit e069f7fe566f93e50d2559c04ff31cc334748e51
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Mon Sep 10 06:27:10 2018 +0200
+
+    rpc: Use configuration header file
+    
+    Update #3375.
+
+commit f004b2b8dc1fb78eb18b21ba6b50f6c712fd94f8
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Tue Oct 2 10:22:15 2018 +0200
+
+    Use rtems_task_exit()
+    
+    Update #3530.
+    Update #3533.
+
+commit 76c03152e110dcb770253b54277811228e8f78df
+Author: Amaan Cheval <amaan.cheval@gmail.com>
+Date:   Mon Jul 9 16:42:56 2018 +0530
+
+    bsp/x86_64: Minimal bootable BSP
+    
+    Current state:
+    
+      - Basic context initialization and switching code.
+      - Stubbed console (empty functions).
+      - Mostly functional linker script (may need tweaks if we ever want to move
+        away from the large code model (see: CPU_CFLAGS).
+      - Fully functional boot, by using FreeBSD's bootloader to load RTEMS's ELF for
+        UEFI-awareness.
+    
+    In short, the current state with this commit lets us boot, go through the system
+    initialization functions, and then call user application's Init task too.
+    
+    Updates #2898.
+
+commit 2d0bc839ede9848b5ac20c7cdf29f8c33cbef926
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Fri Mar 30 20:42:21 2018 +0200
+
+    build: Remove EXTRA_DIST
+    
+    A "make dist" is not supported. So, it makes no sense to have pure "make
+    dist" related stuff in the Makefile.am.
+
+commit 16f4661fd1fd13b7b5ce63756e0cbfd20843aa75
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Fri Mar 9 08:38:18 2018 +0100
+
+    network: Optionally install network headers
+    
+    Install the network headers only if --enable-networking is specified.
+    
+    Update #3254.
+
+commit 2afb22b7e1ebcbe40373ff7e0efae7d207c655a9
+Author: Chris Johns <chrisj@rtems.org>
+Date:   Sat Dec 23 18:18:56 2017 +1100
+
+    Remove make preinstall
+    
+    A speciality of the RTEMS build system was the make preinstall step.  It
+    copied header files from arbitrary locations into the build tree.  The
+    header files were included via the -Bsome/build/tree/path GCC command
+    line option.
+    
+    This has at least seven problems:
+    
+    * The make preinstall step itself needs time and disk space.
+    
+    * Errors in header files show up in the build tree copy.  This makes it
+      hard for editors to open the right file to fix the error.
+    
+    * There is no clear relationship between source and build tree header
+      files.  This makes an audit of the build process difficult.
+    
+    * The visibility of all header files in the build tree makes it
+      difficult to enforce API barriers.  For example it is discouraged to
+      use BSP-specifics in the cpukit.
+    
+    * An introduction of a new build system is difficult.
+    
+    * Include paths specified by the -B option are system headers.  This
+      may suppress warnings.
+    
+    * The parallel build had sporadic failures on some hosts.
+    
+    This patch removes the make preinstall step.   All installed header
+    files are moved to dedicated include directories in the source tree.
+    Let @RTEMS_CPU@ be the target architecture, e.g. arm, powerpc, sparc,
+    etc.  Let @RTEMS_BSP_FAMILIY@ be a BSP family base directory, e.g.
+    erc32, imx, qoriq, etc.
+    
+    The new cpukit include directories are:
+    
+    * cpukit/include
+    
+    * cpukit/score/cpu/@RTEMS_CPU@/include
+    
+    * cpukit/libnetworking
+    
+    The new BSP include directories are:
+    
+    * bsps/include
+    
+    * bsps/@RTEMS_CPU@/include
+    
+    * bsps/@RTEMS_CPU@/@RTEMS_BSP_FAMILIY@/include
+    
+    There are build tree include directories for generated files.
+    
+    The include directory order favours the most general header file, e.g.
+    it is not possible to override general header files via the include path
+    order.
+    
+    The "bootstrap -p" option was removed.  The new "bootstrap -H" option
+    should be used to regenerate the "headers.am" files.
+    
+    Update #3254.
+
+commit f47dc8d58b2723456cbb58030b6104192461e50f
+Author: Hesham Almatary <hesham@alumni.york.ac.uk>
+Date:   Fri Oct 20 17:05:17 2017 +1100
+
+    cpukit: librpc - add riscv* to xdr_float.c v3
+
+commit b2ed712d26ecdf9930e9725ebc6020eb995f2a20
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Fri Aug 25 10:58:58 2017 +0200
+
+    Include missing <string.h>
+    
+    Update #2133.
+
+commit 1e0cc86d1bd1700acdb6f24ac7aaf8cecfe0e3b3
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Tue Jun 6 11:09:19 2017 +0200
+
+    rpc: Remove superfluous includes
+    
+    Update #2833.
+
+commit 15068f4c9afd2d5ca6a77d510059d6306c9a3be6
+Author: Joel Sherrill <joel@rtems.org>
+Date:   Tue Jan 19 19:38:35 2016 -0600
+
+    Remove AVR port
+    
+    closes #2443.
+
+commit 4202a31f91ca3d19ca18f08730a4be52fb71cc04
+Author: Nick Withers <nick.withers@anu.edu.au>
+Date:   Thu Dec 10 20:01:52 2015 +1100
+
+    Chase Newlib sys/types.h / sys/select.h changes
+
+commit f6a8663ec590a07d0a65c7305bacec0f9534775e
+Author: Joel Sherrill <joel.sherrill@oarcorp.com>
+Date:   Sat Dec 26 10:58:25 2015 -0600
+
+    Remove H8300 port
+    
+    updates #2452.
+
+commit f5201df0dc70e4510c7a6862a96d66175fbbf514
+Author: Joel Sherrill <joel.sherrill@oarcorp.com>
+Date:   Tue Dec 15 11:25:01 2015 -0600
+
+    Remove M32R architecture
+    
+    updates #2446.
+
+commit 66a5000d78bd5926c42d89fa1a5b2f15b074bfb6
+Author: Hesham ALMatary <heshamelmatary@gmail.com>
+Date:   Thu May 21 17:52:56 2015 +0100
+
+    cpukit: Add Epiphany architecture port v4
+
+commit 396ce4960450a3afb86b6f05dc6ea9d13c24c1d7
+Author: Joel Sherrill <joel.sherrill@oarcorp.com>
+Date:   Tue Mar 3 14:51:24 2015 -0600
+
+    xdr_float.c: Fix typo
+
+commit 396557412a6bab02116f1ce9c1020df68c8ce36d
+Author: Hesham ALMatary <heshamelmatary@gmail.com>
+Date:   Tue Mar 3 18:48:14 2015 +0000
+
+    librpc: Include or1knd part of the recongnized CPUs at xdr_float.c
+    
+    Close #2256
+
+commit ced84fc0ea30d33674f56bbb174b85fc662b3f75
+Author: Jeffrey Hill <johill@lanl.gov>
+Date:   Mon Feb 23 12:27:05 2015 -0500
+
+    rpc: misaligned pointer dereference in clnt_udp.c line 363
+    
+    closes #2248
+
+commit 49ff36b8d76ad73ee7007ecdf86f355b610ce2b0
+Author: Jeffrey Hill <johill@lanl.gov>
+Date:   Mon Feb 23 12:06:21 2015 -0500
+
+    rpc: misaligned address exception in get_myaddress.c
+    
+    closes #2249 see #1401
+
+commit 11925eef789566a226d8eaacbceb4d89df787ebc
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Fri Nov 21 08:49:57 2014 +0100
+
+    Delete or rename MIN/MAX macros and defines
+    
+    Include <sys/param.h> if necessary to get the MIN()/MAX() macros.
+
+commit e5f6ca87e122b85c1b757dfedd1432f60ea96c85
+Author: Hesham ALMatary <heshamelmatary@gmail.com>
+Date:   Fri Aug 22 15:22:04 2014 -0500
+
+    Add or1k to the list of targets that use IEEE 754 in xdr_float.c
+
+commit 8e133b25005947879113a46cc33414dfbcce6123
+Author: Christian Mauderer <Christian.Mauderer@embedded-brains.de>
+Date:   Fri Mar 21 14:17:19 2014 +0100
+
+    librpc: Use POSIX key instead of task variables
+
+commit 48fc25fb448149f08103cbac463c873a7711d29c
+Author: Anthony Green <green@moxielogic.com>
+Date:   Wed Feb 27 13:13:21 2013 -0500
+
+    Common file changes in support of Moxie port
+    
+    Signed-off-by: Anthony Green <green@moxielogic.com>
+
+commit 2d7ae960bbdbc82f795814ee6c600e93200ddf4d
+Author: Joel Sherrill <joel.sherrill@oarcorp.com>
+Date:   Mon Jun 11 13:37:29 2012 -0500
+
+    v850 port: Initial addition with BSP for simulator in GDB
+    
+    Port
+      + v850 does not have appear to have any optimized bit scan instructions
+      + v850 does have single instructions for wap u16 and u32
+      + Code path optimization preferences set
+      + Add BSP variants for each GCC CPU model flag and a README
+        - v850e1 variant does not work (fails during BSP initialization)
+    BSP for GDB v850 Simulator
+      + linkcmds matches defaults in GDB simulator with RTEMS mods
+      + crt1.c added from v850 newlib port for __main()
+      + BSP exits cleanly
+      + printk and console I/O work
+      + uses clock tick from IDLE task
+      + Tests not requiring real clock ISR work
+    Documentation
+      + CPU Supplment chapter for v850 added
+
+commit 8250503f218be1a3fa434e905631b1636cf6d033
+Author: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Date:   Mon Apr 23 14:42:58 2012 +0200
+
+    librpc: PR2066: Fix for short enums
+    
+    The XDR library has a problem on architectures with short enums like the
+    default ARM EABI.  Short enums means that the size of the enum type is
+    variable and the smallest integer type to hold all enum values will be
+    selected.  For many enums this is char.  The XDR library uses int32_t
+    for enum_t.  There are several evil casts from an enum type to enum_t
+    which leads to invalid memory accesses on short enum architectures.  A
+    workaround is to add appropriate dummy enum values.
+
+commit 65c6425de9c84553b4bdade81988c9292d66db58
+Author: Joel Sherrill <joel.sherrill@oarcorp.com>
+Date:   Thu May 3 12:24:46 2012 -0500
+
+    Remove CVS Id Strings (manual edits after script)
+    
+    These modifications were required by hand after running the script.
+    In some cases, the file names did not match patterns. In others,
+    the format of the file did not match any common patterns.
+
+commit 9b4422a2513e9c7f4c705050948d82b75331aaba
+Author: Joel Sherrill <joel.sherrill@oarcorp.com>
+Date:   Thu May 3 10:09:24 2012 -0500
+
+    Remove All CVS Id Strings Possible Using a Script
+    
+    Script does what is expected and tries to do it as
+    smartly as possible.
+    
+    + remove occurrences of two blank comment lines
+      next to each other after Id string line removed.
+    + remove entire comment blocks which only exited to
+      contain CVS Ids
+    + If the processing left a blank line at the top of
+      a file, it was removed.
+
+commit 33a105fb69b1398294e304790c2eb7017f188d1e
+Author: Joel Sherrill <joel.sherrill@oarcorp.com>
+Date:   Mon May 7 11:08:48 2012 -0500
+
+    Revert: Remove CVS Ids
+    
+    See http://www.rtems.org/pipermail/rtems-devel/2012-May/001006.html
+    for details.
+
+commit ee32f67a6f518ebd49cebfeda7c14b9a5e0bb73e
+Author: Ralf Corsépius <ralf.corsepius@rtems.org>
+Date:   Fri May 4 08:55:28 2012 +0200
+
+    Remove CVS-Ids.
+
+commit 61250b4ce998e4247deca77cadcab27f34b2cd3a
+Author: Joel Sherrill <joel.sherrill@oarcorp.com>
+Date:   Wed Feb 1 10:59:44 2012 -0600
+
+    Remove all .cvsignore files.
+
+commit f80b3a3d825110b5d8826f72db3fa47a6d71b66a
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed Nov 30 06:58:36 2011 +0000
+
+    2011-11-30      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * librpc/src/rpc/clnt_udp.c (struct cu_data):
+            Introduce unions _cu_inbuf, _cu_outbuf to avoid aliasing.
+
+commit 77dc5a21a3a8a47ff411721291401f8bbb91030c
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue May 17 14:30:34 2011 +0000
+
+    2011-05-16      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * libnetworking/Makefile.am: Reformat.
+            * librpc/Makefile.am: Reformat.
+
+commit bc38915f90ad91319df5b6eeb23a3efd79ca9c44
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu May 5 12:30:09 2011 +0000
+
+    Make self-contained.
+
+commit ee613aa252e5ee3c899f5b51e8a75d664423ba97
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Mar 24 09:36:14 2011 +0000
+
+    Include <sys/cdefs.h> (Eliminate rtems/bsd/sys/cdefs.h).
+
+commit ce3386cd7857ba76666b6ee85abd43fb0d52af2d
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sat May 29 04:27:20 2010 +0000
+
+    2010-05-29      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * librpc/src/xdr/xdr_mem.c (xdr_memcreate):
+            Cast addr to uintptr_t instead of size_t.
+
+commit d422a4d85a6ffe2ba124aa71410eb1d8b0f41cd9
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu May 27 12:39:33 2010 +0000
+
+    2010-05-27      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * librpc/src/rpc/clnt_tcp.c, librpc/src/rpc/clnt_udp.c:
+            Revert to using u_long instead of rpcprog_t, rpcvers_t
+            to stay bug-ward compatible to freebsd.
+
+commit 9cfe137c768553dc82366fd3ce0da77ff49c9b1e
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu May 27 12:37:41 2010 +0000
+
+    2010-05-27      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * librpc/src/xdr/xdr_mem.c: Cosmetics from freebsd.
+
+commit 9363800c344177d81a5273a8a5636cc51bfdfe0e
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu May 27 07:37:32 2010 +0000
+
+    2010-05-27      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * librpc/src/rpc/rtems_portmapper.c: Reflect changes to librpc.
+
+commit 1f5986bf651597e82ddc6941484606855b45be92
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu May 27 07:36:24 2010 +0000
+
+    2010-05-27      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * librpc/include/rpc/clnt.h, librpc/include/rpc/rpc_msg.h,
+            librpc/src/rpc/clnt_generic.c, librpc/src/rpc/clnt_raw.c,
+            librpc/src/rpc/clnt_tcp.c, librpc/src/rpc/clnt_udp.c,
+            librpc/src/rpc/pmap_clnt.c, librpc/src/rpc/pmap_getmaps.c
+            librpc/src/rpc/pmap_getport.c:
+            Partial merger from freebsd (portability fixes).
+
+commit e018fe01ec73751ec5dbb5fba9f27cff34b5ce06
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu May 27 04:09:05 2010 +0000
+
+    2010-05-27      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * librpc/include/rpc/xdr.h: Cosmetics from freebsd.
+
+commit fa1019f1f1289eb9715cfeb33b913cf51d575c25
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 26 06:23:58 2010 +0000
+
+    2010-05-26      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * librpc/src/rpc/clnt_udp.c: Cosmetics from freebsd.
+
+commit f6b5ed2207d6e4f1f45f26a60f904ad48289b0b9
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 26 04:15:02 2010 +0000
+
+    2010-05-26      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * librpc/src/rpc/clnt_tcp.c: Partial merger from freebsd
+            (Fix strict-aliasing).
+
+commit 862b24a9e9195c8c31b4c6af09f023a859589fe4
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 26 03:41:49 2010 +0000
+
+    2010-05-26      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * librpc/src/rpc/clnt_raw.c: Partial merger from freebsd
+            (Improved 16 bit compatibility; Fix strict-aliasing).
+
+commit d02ddd5512670ed325ad5d059d217a702b3d971e
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue May 25 14:12:53 2010 +0000
+
+    2010-05-25      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * librpc/src/rpc/rpc_prot.c: Partial merger from freebsd
+            (Improved 64 bit compatibility; bug fix).
+
+commit 3ac29f0af0f507558a14e59d4e66efea51359d17
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Apr 29 09:42:52 2010 +0000
+
+    2010-04-29      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * librpc/src/rpc/clnt_udp.c, librpc/src/xdr/xdr_mem.c:
+            Use [u]intptr_t instead of [u_]long for better 16bit compliance.
+
+commit 9ff6462513e7ce043bdbb38d2e1809fb697efd0d
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Apr 29 07:43:32 2010 +0000
+
+    2010-04-29      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * librpc/src/rpc/pmap_rmt.c: Use uintptr_t for better 16bit
+            compliance.
+
+commit e005f6e8d9c3b85c3b0adda9131163b56261aab8
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sun Mar 28 05:53:22 2010 +0000
+
+    Add HAVE_STRINGS_H for better POSIX compliance.
+
+commit 37da47ac8e43a8fc78e504308f8c51da39fabf1e
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sun Mar 28 02:40:16 2010 +0000
+
+    Add HAVE_CONFIG_H support to let files receive configure defines.
+
+commit be0eebc1bedad4110605a0924f3a0f95e209cbed
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Wed May 20 22:58:32 2009 +0000
+
+    2009-05-20      Joel Sherrill <joel.sherrill@oarcorp.com>
+    
+            * librpc/src/xdr/xdr_float.c: Change detection logic for h8300.
+
+commit 0c5b59de85a73578abb53c4f062efa8b4e547d5c
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Jan 8 15:02:25 2009 +0000
+
+    2009-01-08      Joel Sherrill <joel.sherrill@OARcorp.com>
+    
+            * librpc/src/xdr/xdr_float.c: M32C has no native float but GCC soft
+            float should be IEEE format.
+
+commit b7cfd627b311dd126369c4afa997c42e6f6d51fb
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Dec 23 05:00:57 2008 +0000
+
+    Add missing initializers.
+
+commit 1cb54d1f38de31800259d2e52cbe948aa712c6b4
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Dec 11 00:47:56 2008 +0000
+
+    #include <stdint.h> instead of <rtems/stdint.h>.
+
+commit de2e5f684c38236cdb34644977cbb718b4e6e821
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Dec 8 04:41:26 2008 +0000
+
+    #include <rpc/types.h>.
+
+commit 8a9c242dde4ae1b0a60686b6691511e166a9c871
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Dec 8 04:41:09 2008 +0000
+
+    #include <rtems/bsd/sys/cdefs.h>.
+
+commit 15e44fd15b6accc7d446f9dc42ba8caf346d1aad
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Dec 4 22:53:33 2008 +0000
+
+    2008-12-04      Jukka Pietarinen <jukka.pietarinen@mrf.fi>
+    
+            * configure.ac, librpc/src/xdr/xdr_float.c, score/cpu/Makefile.am: Add
+            Lattice Mico32 support.
+
+commit a2ddf1ca8bc1545383b43f1744b5d7303e2bf5dd
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Wed Nov 5 21:51:45 2008 +0000
+
+    2008-11-05      Joel Sherrill <joel.sherrill@oarcorp.com>
+    
+            * librpc/src/xdr/xdr_float.c: Add M32C, M32R, and Blackfin.
+
+commit a66bc0f761fcc23e27977921cfe583d1c9ba3e82
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Sep 1 11:32:18 2008 +0000
+
+    Stop using old-style function definitions.
+
+commit 142025c80cb9b2d10f87d369bb1db583f4e2e903
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Aug 18 07:22:23 2008 +0000
+
+    Add missing prototypes.
+
+commit 0eeca97769b6cebb04815c1ff0aacd81abcd2102
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 16:57:19 2008 +0000
+
+    Cleanup.
+
+commit 38f9509eee6e4252173c3a35d95347887f6d474a
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 16:53:46 2008 +0000
+
+    Misc. ansifications. Add prototypes.
+
+commit cd7916266e1a4fb4084f9054388b8c6f0f153622
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 16:44:07 2008 +0000
+
+    Misc. ansifications. Add prototypes.
+
+commit 123116dd99a607f6a5bf0ce6330aff8b56a66e4b
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 16:05:37 2008 +0000
+
+    Misc. ansifications.
+
+commit 9c873b1da9d153f054686dd1dece7b567bd11ca8
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 16:04:25 2008 +0000
+
+    Remove stray local decls. Misc. ansifications.
+
+commit b58315677d5cebc3898a558bd0bbf79f7a379cea
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 15:58:16 2008 +0000
+
+    Misc. ansifications.
+
+commit 08ef2dd09c47d31bd79f16ed73316cf55b124295
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 15:51:19 2008 +0000
+
+    Remove stray clnt_perror().
+
+commit 8f926f134190ddf2206f6376e4c0334c5bd56ae7
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 15:47:13 2008 +0000
+
+    Add missing prototypes.
+
+commit b03af1c2026b9c643cec105084120e2b2d265d78
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 15:16:38 2008 +0000
+
+    Add missing prototypes.
+
+commit 12c21c809110d3bff23e37cf09cbaf652564eafa
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 14:29:11 2008 +0000
+
+    Add missing prototypes.
+
+commit 885e1e0dba71ae2b5f4d9d8a019334231602bd62
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 14:14:22 2008 +0000
+
+    Add missing prototypes.
+
+commit 624a038ee4ddfa076c1c41a4db30bd84ee47dad6
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 07:32:47 2008 +0000
+
+    Add missing prototypes.
+
+commit 7d7d5e8ebba522dd117d4e4226cb692863c9c704
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 07:28:48 2008 +0000
+
+    Remove register vars.
+
+commit 95b5e810b03fa399f28780fd22f1030e91795582
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 07:25:35 2008 +0000
+
+    Misc. ansifications.
+
+commit aec776a26f7ad8fe2d3ea05e303ce4270601805e
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 07:04:10 2008 +0000
+
+    Misc. ansifications.
+
+commit d943f3ab51f514e3dd574f20c30c590c265e9186
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 06:59:13 2008 +0000
+
+    Cosmetics.
+
+commit 2d3d0272bc551e8c38cdd8709708c418bdf16e4a
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 06:56:33 2008 +0000
+
+    Misc. ansifications.
+
+commit 0c9f5db3e970555fbb72507359ea1c0fc763bbe9
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 06:50:12 2008 +0000
+
+    Misc. ansifications.
+
+commit a9b1804828384e80bdf437a1385bb5bbd6163f96
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 06:46:46 2008 +0000
+
+    Cosmetics.
+
+commit b8e5e755935c222f952f6513b5c69f41dc693748
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 06:45:22 2008 +0000
+
+    Cosmetics.
+
+commit 5a81955702417fdd1eb3939bd8b0a74d8a26eb12
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 06:44:23 2008 +0000
+
+    Cosmetics.
+
+commit 9d1596d6aeb75f9e3f482f76dddb8c6a457e502e
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 06:39:51 2008 +0000
+
+    Misc. ansifications.
+
+commit 3c412d9e77095820eb7dbd5094ebe7a78b898bd1
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 06:25:15 2008 +0000
+
+    Add missing prototypes.
+
+commit b6e23ea73e13e0b6871ee9e29c03503b8b70da90
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 06:19:45 2008 +0000
+
+    Misc. ansifications.
+
+commit 3a81d6d8d2f62cd4f52aabe85d91682be80eeb7c
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 06:15:43 2008 +0000
+
+    More ansifications.
+
+commit 83516125cbeecca9fa76085ac835f39fa97092a7
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 06:12:05 2008 +0000
+
+    Misc. ansifications.
+
+commit 18f1673427d6cd5cc5aa46b94fa371f002bc7d7a
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 06:06:27 2008 +0000
+
+    Misc. ansifications.
+    Add missing prototypes.
+
+commit 456ebf8185c367128cecdd7822bfe121f4b9bfd2
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 05:59:32 2008 +0000
+
+    Misc. ansifications.
+
+commit 22dd335a4d22371e0b6d53ccac93f1a2b050fb0d
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 05:40:53 2008 +0000
+
+    Fix oversight in previous patch.
+
+commit 9f4040a13b1849539679f71183c4118f015b6412
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Aug 1 05:40:52 2008 +0000
+
+    Eliminate __P().
+
+commit 5fd92cccfde78485c87108cf7f23f3f9a097e209
+Author: Chris Johns <chrisj@rtems.org>
+Date:   Sat Mar 29 05:08:24 2008 +0000
+
+    2008-03-29      Chris Johns <chrisj@rtems.org>
+    
+            * librpc/include/rpc/clnt.h: Added the missing __BEGIN_DECLS as
+            reported to the mailing list by Pierre Kestener
+            (pierre.kestener@cea.fr).
+
+commit 30be282675f23e758b5ba92c0f81dd30d680f8bb
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu May 10 07:38:27 2007 +0000
+
+    Include <rtems/bsd/sys/cdefs.h> instead of <sys/cdefs.h>.
+
+commit cd9564e1cd88d45a551d61e862b630e1c9a940d4
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu May 10 07:29:14 2007 +0000
+
+    Include <rtems/bsd/sys/cdefs.h> instead of <sys/cdefs.h>.
+
+commit f75082d2f3b2fdbdbec22c7e566206836e6ca399
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu May 10 05:14:55 2007 +0000
+
+    Include <rtems/endian.h> instead of <machine/endian.h>.
+
+commit 32556fc1560445b7f18d7a818a56884b6f98ed73
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue May 8 12:40:33 2007 +0000
+
+    2007-05-08      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * librpc/src/rpc/rtime.c: Use uint32_t instead of unsigned long for
+            return value of ntohl (POSIX requirement).
+            Use UINT32_C macros to avoid overflows on 16bit targets.
+            Eliminate __P.
+
+commit e2a23690518cc6916a873391203f4fd9d9acfb18
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed Mar 28 16:03:44 2007 +0000
+
+    2007-03-28      Ralf Corsépius <ralf.corsepius@rtems.org>
+    
+            * librpc/src/rpc/clnt_tcp.c (clnttcp_create):
+            Use uintptr_t for "disrupt". Remove bogus (long) cast.
+
+commit 63a88eb0bc870ca8619b4ca975329bfb781c44ea
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Jan 8 08:43:28 2007 +0000
+
+    Regenerate.
+
+commit e4fec9007e539f5d39a2acd78e6341531363299c
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Nov 9 10:28:59 2006 +0000
+
+    Add bfin.
+
+commit 90d2585a07eac08511ea92bf333930971c8e6374
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Sep 14 19:09:06 2006 +0000
+
+    2006-09-14      Joel Sherrill <joel@OARcorp.com>
+    
+            * libnetworking/net/route.c, librpc/src/rpc/auth_none.c,
+            librpc/src/rpc/auth_unix.c, librpc/src/rpc/authunix_prot.c,
+            librpc/src/rpc/rpc_callmsg.c, librpc/src/rpc/rpc_prot.c,
+            librpc/src/rpc/rtems_portmapper.c: Removed warnings.
+
+commit cf04e8aca91e40a0d8096d01462439d650a63d6e
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri Sep 1 19:10:01 2006 +0000
+
+    *** empty log message ***
+
+commit 48b1e29a7dc74c6cb1d3e33103b8c09e63c10015
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Wed Aug 30 13:18:40 2006 +0000
+
+    2006-08-30      Joel Sherrill <joel@OARcorp.com>
+    
+            * libcsupport/src/utsname.c, libnetworking/libc/res_debug.c,
+            libnetworking/net/if_media.h, libnetworking/rtems/rtems_mii_ioctl.c,
+            librpc/src/rpc/svc_simple.c: Remove printf format warnings.
+
+commit 60eae27deaf0802f3eeb8cd666eafc0458833866
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Wed Aug 9 21:03:27 2006 +0000
+
+    2006-08-09      Kolja Waschk <waschk@telos.de>
+    
+            * configure.ac, librpc/src/xdr/xdr_float.c, score/cpu/Makefile.am: New
+            port to Altera NIOS II.
+
+commit 2eb7d07e17ddcd96126f89de76be58e447b51d40
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sat Jan 14 06:20:35 2006 +0000
+
+    Regenerate.
+
+commit 19a0136c823d91e914cf0836c1eca08ae597fe56
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Jan 12 10:02:32 2006 +0000
+
+    Regenerate.
+
+commit 4e971660a1695fbc3be4d7fb8401d29f168566be
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Jan 12 09:57:43 2006 +0000
+
+    Remove all-local.
+
+commit 6ce2a66b9421518c837dc6d46d112135c5da849f
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Jan 12 04:24:13 2006 +0000
+
+    Regenerate.
+
+commit dbe8e5194cf71cb20e7a05ff382ad70e833fd3e6
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Jan 12 04:19:28 2006 +0000
+
+    Cleanups
+
+commit 3994191599a0d434309f702379c9415b324c7d69
+Author: Till Straumann <strauman@slac.stanford.edu>
+Date:   Fri Dec 9 22:43:14 2005 +0000
+
+    2005-11-02      Till Straumann <strauman@slac.stanford.edu>
+    
+            PR 849/networking
+            * librpc/src/rpc/rtems_portmapper.c: Increased stack size
+        by ARGSIZE to prevent overrun.
+
+commit 9d16b9c3f0cb5e2b74f82c9f7fca24835410a31b
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri May 27 00:37:13 2005 +0000
+
+    2005-05-26      Joel Sherrill <joel@OARcorp.com>
+    
+            * libnetworking/lib/ftpfs.c, librpc/include/rpc/svc.h,
+            librpc/src/rpc/get_myaddress.c, librpc/src/rpc/pmap_getmaps.c,
+            librpc/src/rpc/pmap_getport.c: Remove warnings.
+
+commit 9dcab59b1a13a33aec19f656c7783f2536b24128
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 17:17:14 2005 +0000
+
+    Use void* instead of caddr_t. Cosmetics from FreeBSD.
+
+commit b322727c94d2f455c48845bae3b777b326fd7254
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 15:24:59 2005 +0000
+
+    Regenerate.
+
+commit 18b1aa4a9597b94863049961533690986947d94d
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 15:23:22 2005 +0000
+
+    Reflect removing auth_des.h.
+
+commit 342fa58ae43f0a66cb1050f2690ee265aa25aa24
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 15:22:45 2005 +0000
+
+    Remove (Unused, unsupported).
+
+commit 12db3bda883a0cdef6ee86c916667b8925c3fed3
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 15:07:19 2005 +0000
+
+    Misc. fixes.
+
+commit c11cb9a5a967cb61dcf57136a7576abc07c98589
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 13:56:50 2005 +0000
+
+    More updates from FreeBSD.
+
+commit fd6a994ee7607ce5321d7890d72abc217c9a5b16
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 13:02:40 2005 +0000
+
+    More updates from FreeBSD.
+
+commit b3da5b17a1230139e5e3220e42e882236c44f216
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 12:25:50 2005 +0000
+
+    2005-05-25  Ralf Corsepius  <ralf.corsepius@rtems.org>
+    
+            * librpc/include/rpc/svc.h: Partial update from FreeBSD.
+
+commit 50e3b3f065070c36bace8a1f6a4561b1b1508ec8
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 11:33:47 2005 +0000
+
+    2005-05-25  Ralf Corsepius  <ralf.corsepius@rtems.org>
+    
+            * librpc/include/rpc/clnt.h: Partial update from FreeBSD.
+
+commit d7309869ff7ca8825dee397e73aaa3ae6be72d29
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 10:15:52 2005 +0000
+
+    Regenerate.
+
+commit e9e2469ca570e090713509571337837acbfbde2e
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 10:15:22 2005 +0000
+
+    2005-05-25  Ralf Corsepius  <ralf.corsepius@rtems.org>
+    
+            * librpc/include/rpc/clnt_soc.h, librpc/include/rpc/svc_soc.h:
+            New (Partial update from FreeBSD).
+            * librpc/Makefile.am: Reflect changes above.
+
+commit a8ad6a001f142db6d09b9592a6125a53935103f0
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 10:05:42 2005 +0000
+
+    New.
+
+commit 9029782f365e4feab0c51d3d25c380874e5e605a
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 09:49:57 2005 +0000
+
+    Regenerate.
+
+commit b3a39822c7974f3f71c16c8e86fd4820e134113b
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 09:49:22 2005 +0000
+
+    2005-05-25  Ralf Corsepius  <ralf.corsepius@rtems.org>
+    
+            * librpc/include/rpc/des.h: Remove (Unused, unsupported).
+            * librpc/Makefile.am: Reflect changes above.
+
+commit 9d770ab58cb47dff23b6c5076cac55430e9a7967
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 09:48:27 2005 +0000
+
+    Remove (Unused, unsupported)
+
+commit 351b0a18c3e089af7f0696f21ca809a8ebfbe98e
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 09:41:55 2005 +0000
+
+    2005-05-25  Ralf Corsepius  <ralf.corsepius@rtems.org>
+    
+            * librpc/include/rpc/des.h: Remove (Unused, unsupported).
+            * librpc/Makefile.am: Reflect changes above.
+
+commit f6a55f208f854dd922004769f6f019b1376cb607
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 09:41:29 2005 +0000
+
+    Regenerate.
+
+commit 8ba22b546d890712d17c2f600a21e8e97fbbd7fd
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 09:40:15 2005 +0000
+
+    Remove (Unused, unsupported).
+
+commit fc2d29de0adb367044967061028b7f8e5826396d
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 08:58:09 2005 +0000
+
+    2005-05-25  Ralf Corsepius  <ralf.corsepius@rtems.org>
+    
+            * librpc/src/rpc/auth_des.c,
+            librpc/src/rpc/auth_time.c,
+            librpc/src/rpc/authdes_prot.c,
+            librpc/src/rpc/clnt_unix.c,
+            librpc/src/rpc/crypt_client.c,
+            librpc/src/rpc/des_crypt.c,
+            librpc/src/rpc/des_soft.c,
+            librpc/src/rpc/getpublickey.c,
+            librpc/src/rpc/key_call.c,
+            librpc/src/rpc/key_prot_xdr.c,
+            librpc/src/rpc/svc_auth_des.c,
+            librpc/src/rpc/svc_unix.c: Remove (Unused, obsolete).
+            * librpc/Makefile.am: Reflect changes above.
+
+commit ce1c8ea42ec36fcd457a717ffd3f6bed07a6d561
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 08:54:37 2005 +0000
+
+    Remove (Unused, obsolete).
+
+commit f724f4f4dc34fd6250bd4e5f078726c521ba0d5d
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 08:24:10 2005 +0000
+
+    2005-05-25  Ralf Corsepius  <ralf.corsepius@rtems.org>
+    
+            * librpc/src/rpc/PSD.doc/rpc.prog.ms,
+            librpc/src/rpc/PSD.doc/rpcgen.ms,
+            librpc/src/rpc/PSD.doc/nfs.rfc.ms,
+            librpc/src/rpc/PSD.doc/xdr.rfc.ms,
+            librpc/src/rpc/PSD.doc/rpc.rfc.ms,
+            librpc/src/rpc/PSD.doc/xdr.nts.ms:
+            Remove (Unused, obsolete).
+            * librpc/Makefile.am: Reflect changes above.
+
+commit 41b326f7cdea6caf76808e5d0060ac7a16df541a
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed May 25 08:23:11 2005 +0000
+
+    Remove (unused, obsolete).
+
+commit ea78ecadc96ac4da60e70a7d7c34e5a48e2bcb83
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue May 10 08:56:46 2005 +0000
+
+    socklen_t.
+
+commit 94c76bc7306db7ebb78d80e18c102de8c48d24e8
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue May 10 08:56:01 2005 +0000
+
+    Cosmetical update from FreeBSD.
+
+commit a7b4c365cf687aebeb8583adb9c9cdd1196ac03d
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon May 9 13:12:13 2005 +0000
+
+    socklen_t.
+
+commit 3eb7118310f7b50ecff11e43d670187e0e9b0249
+Author: Jennifer Averett <Jennifer.Averett@OARcorp.com>
+Date:   Mon May 2 16:32:12 2005 +0000
+
+    2005-05-02      Jennifer Averett <jennifer.averett@oarcorp.com>
+    
+            * libfs/src/dosfs/msdos_format.c, librpc/src/xdr/xdr.c: Added
+            initialization to remove warnings.
+
+commit 476114f5e9408d46706b31e2f07ec5fbd39dd402
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sat Feb 19 17:08:36 2005 +0000
+
+    Auto-generated update.
+
+commit b265fdc7c76e3077b47eb7272ca00fb4126f543d
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Feb 8 17:33:42 2005 +0000
+
+    2005-02-08      Ralf Corsepius <ralf.corsepius@rtems.org>
+    
+            * librpc/Makefile.am: Split preinstallation rules in to separate
+            preinstall.am-files.
+            * librpc/preinstall.am: New (Generated from corresponding Makefile.am).
+
+commit 2538e7ae0dedbd29090a8e20c0925ed01e9905d6
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Feb 3 16:26:35 2005 +0000
+
+    2005-02-03      Ralf Corsepius <ralf.corsepius@rtems.org>
+    
+            * librpc/include/rpc/clnt_stat.h, librpc/include/rpc/rpcent.h:
+            New (From FreeBSD).
+            * librpc/include/rpc/rpc.h: Partial update from FreeBSD.
+            * librpc/Makefile.am: Reflect changes above.
+
+commit 0c20a46dc0a574d752f255dded721ed2f3173206
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Feb 3 15:58:18 2005 +0000
+
+    2005-02-03      Ralf Corsepius <ralf.corsepius@rtems.org>
+    
+            * librpc/include/rpc/types.h: Partial update from FreeBSD.
+            Use stdint.h types instead of sys/types.h.
+            * librpc/src/rpc/bindresvport.c: Partial update from FreeBSD.
+
+commit 0c3a6d69897bfd9a5c9bb22a4d4486552f2004d8
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Jan 28 02:15:33 2005 +0000
+
+    Fix indentation.
+
+commit 77b6a109132b9f68cb030fbb4ba79253f3530d03
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Sun Jan 9 17:12:03 2005 +0000
+
+    2005-01-09      Joel Sherrill <joel@oarcorp.com>
+    
+            * librpc/include/rpc/clnt.h, librpc/src/rpc/authunix_prot.c,
+            librpc/src/rpc/clnt_tcp.c, librpc/src/rpc/pmap_prot2.c,
+            librpc/src/rpc/pmap_rmt.c, librpc/src/rpc/rtems_portmapper.c,
+            librpc/src/rpc/svc_simple.c: Fix warnings.
+
+commit dab2d6ebae0b1f7d7b72ccafe42b729081409ff2
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sat Jan 8 06:01:35 2005 +0000
+
+    2005-01-07      Ralf Corsepius <ralf.corsepius@rtems.org>
+    
+            * librpc/include/rpc/auth_des.h, librpc/include/rpc/xdr.h,
+            librpc/src/rpc/auth_des.c, librpc/src/rpc/auth_unix.c,
+            librpc/src/rpc/rpc_prot.c, librpc/src/xdr/xdr.c:
+            Misc. ansi-fications, misc. updates from FreeBSD.
+
+commit c9165ef0854d059f69d20a22c74384f827c472cb
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Jan 7 11:22:50 2005 +0000
+
+    2005-01-07      Ralf Corsepius <ralf.corsepius@rtems.org>
+    
+            * librpc/include/rpc/xdr.h: Remove questionable comments.
+            * librpc/include/rpc/auth.h: Remove __P, ansi-fy.
+            * librpc/src/rpc/auth_none.c: Reflect changes above.
+            Partial update from FreeBSD.
+
+commit 8faf4bd5314b2c74d525c33af81a4749ac5f1ed6
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Jan 7 07:46:15 2005 +0000
+
+    2005-01-07      Ralf Corsepius <ralf.corsepius@rtems.org>
+    
+            * librpc/include/rpc/svc.h, librpc/include/rpc/xdr.h:
+            Remove __P(xx).
+
+commit a369ade90dea91af2face83fe0bdb233d0caa1cb
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Jan 7 06:05:49 2005 +0000
+
+    2005-01-07      Ralf Corsepius <ralf.corsepius@rtems.org>
+    
+            * httpd/Makefile.am, itron/Makefile.am, libblock/Makefile.am,
+            libcsupport/Makefile.am, libfs/Makefile.am, libmisc/Makefile.am,
+            libnetworking/Makefile.am, librpc/Makefile.am, posix/Makefile.am,
+            rtems/Makefile.am, sapi/Makefile.am, score/Makefile.am:
+            Eliminate CFLAGS_OPTIMIZE_V.
+
+commit 846a4af8932138bf4c35f8f24ca1fc3e4ad1c86a
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sat Jan 1 10:41:29 2005 +0000
+
+    2005-01-01      Ralf Corsepius <ralf.corsepius@rtems.org>
+    
+            * automake/compile.am, httpd/Makefile.am, itron/Makefile.am,
+            libblock/Makefile.am, libcsupport/Makefile.am, libfs/Makefile.am,
+            libmisc/Makefile.am, libnetworking/Makefile.am, librpc/Makefile.am,
+            posix/Makefile.am, rtems/Makefile.am, sapi/Makefile.am,
+            score/Makefile.am, wrapup/Makefile.am:
+            Remove build-variant support.
+
+commit 5220ae2f71bd24ceb4863375f037bfb27bf8d80d
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sun Nov 21 05:33:00 2004 +0000
+
+    2004-11-21      Ralf Corsepius <ralf.corsepius@rtems.org>
+    
+            * librpc/include/rpc/types.h: Include <rtems/stdint.h>.
+            * librpc/src/rpc/clnt_raw.c, librpc/src/rpc/rpcdname.c,
+            librpc/src/rpc/rtems_portmapper.c, librpc/src/rpc/svc.c,
+            librpc/src/rpc/svc_simple.c: Misc. cast-related fixes.
+            Convert to ANSI.
+
+commit ddb56f497d21aa84cf3311ac665744243cd627a0
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sun Nov 21 04:45:39 2004 +0000
+
+    2004-11-21      Ralf Corsepius <ralf.corsepius@rtems.org>
+    
+            * librpc/include/rpc/rpc.h (struct _rtems_rpc_task_variables):
+            Use pointers to types instead of void* to avoid casts.
+            * librpc/src/rpc/clnt_perror.c, librpc/src/rpc/clnt_raw.c,
+            librpc/src/rpc/clnt_simple.c, librpc/src/rpc/rpcdname.c,
+            librpc/src/rpc/svc.c, librpc/src/rpc/svc_auth.c,
+            librpc/src/rpc/svc_simple.c:
+            Eliminate lvalue casts gcc-3.4 warns about.
+
+commit 9929e2d2316d03196d4aad2b5fb0ffe6abb884e1
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Oct 29 10:38:40 2004 +0000
+
+    2004-10-29      Ralf Corsepius <ralf_corsepius@rtems.org>
+    
+            * score/src/coremsg.c: Eliminate unsigned32.
+            * score/include/rtems/system.h: Set __RTEMS_REVISION__ to 99.
+            * librpc/include/rpc/xdr.h: Use elipsis in xdrproc_t prototype.
+
+commit 4db99d8aa10d96067deac14887745be8b9706c87
+Author: Eric Norum <WENorum@lbl.gov>
+Date:   Mon Oct 25 19:22:07 2004 +0000
+
+    No kernel/user distinction.
+
+commit ac200c1ba1ed071354d578bdc2e7feec81b10baf
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Wed Sep 29 20:34:01 2004 +0000
+
+    2004-09-29      Joel Sherrill <joel@OARcorp.com>
+    
+            * configure.ac, libmisc/cpuuse/README, libmisc/stackchk/README,
+            librpc/src/xdr/xdr_float.c, score/cpu/Makefile.am,
+            score/include/rtems/score/mppkt.h: i960 obsoleted and all references
+            removed.
+
+commit e5c8049c3df31cdc7ff19f4c3a5f4cc3219425e9
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Sep 23 08:19:27 2004 +0000
+
+    2004-09-23      Ralf Corsepius <ralf_corsepius@rtems.org>
+    
+            * librpc/src/xdr/xdr_float.c: Add __AVR__.
+
+commit 9532e55573a5abee1a68b428ac2e9e177e1c063a
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Apr 15 13:41:26 2004 +0000
+
+    Remove stray white spaces.
+
+commit 3239698d1fe72364c85f7a76799421bfd90cc4d7
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Apr 15 13:26:21 2004 +0000
+
+    Remove stray white spaces.
+
+commit 2609e83f77a256d9f2f0a3e31be12a68e7e49fc6
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Mar 8 16:26:41 2004 +0000
+
+    Unused.
+
+commit cb2f32039d7cf5cceb7a1e50930bdcd95fa5fef7
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri Mar 5 18:02:41 2004 +0000
+
+    2004-03-05      Joel Sherrill <joel@OARcorp.com>
+    
+            * libblock/src/bdbuf.c, libblock/src/ramdisk.c,
+            libcsupport/src/newlibc.c, libcsupport/src/sync.c,
+            libmisc/cpuuse/cpuuse.c, libmisc/monitor/mon-symbols.c,
+            libmisc/shell/cmds.c, libmisc/shell/shell.c,
+            libnetworking/kern/kern_sysctl.c, libnetworking/lib/ftpfs.c,
+            libnetworking/lib/tftpDriver.c, libnetworking/libc/gethostbydns.c,
+            libnetworking/libc/gethostbyht.c, libnetworking/libc/gethostnamadr.c,
+            libnetworking/libc/getnetbyht.c, libnetworking/libc/getnetnamadr.c,
+            libnetworking/libc/inet_addr.c, libnetworking/libc/linkaddr.c,
+            libnetworking/libc/map_v4v6.c, libnetworking/libc/ns_print.c,
+            libnetworking/libc/ns_ttl.c, libnetworking/libc/nsap_addr.c,
+            libnetworking/libc/rcmd.c, libnetworking/libc/res_debug.c,
+            libnetworking/libc/res_mkupdate.c, libnetworking/libc/res_query.c,
+            libnetworking/libc/res_send.c, libnetworking/libc/res_update.c,
+            libnetworking/net/radix.c, libnetworking/rtems/mkrootfs.c,
+            librpc/src/rpc/clnt_perror.c, librpc/src/rpc/svc.c,
+            score/macros/rtems/score/chain.inl, score/src/objectidtoname.c: Too
+            much was accidentally committed -- revert.
+
+commit b2b143f402b30c7bbe4ee98c58221b0cc78a1e9e
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri Mar 5 17:58:51 2004 +0000
+
+    2004-03-05      Joel Sherrill <joel@OARcorp.com>
+    
+            * libblock/src/bdbuf.c, libblock/src/ramdisk.c,
+            libcsupport/src/newlibc.c, libcsupport/src/sync.c,
+            libmisc/cpuuse/cpuuse.c, libmisc/monitor/mon-symbols.c,
+            libmisc/shell/cmds.c, libmisc/shell/shell.c,
+            libnetworking/kern/kern_sysctl.c, libnetworking/lib/ftpfs.c,
+            libnetworking/lib/tftpDriver.c, libnetworking/libc/gethostbydns.c,
+            libnetworking/libc/gethostbyht.c, libnetworking/libc/gethostnamadr.c,
+            libnetworking/libc/getnetbyht.c, libnetworking/libc/getnetnamadr.c,
+            libnetworking/libc/inet_addr.c, libnetworking/libc/linkaddr.c,
+            libnetworking/libc/map_v4v6.c, libnetworking/libc/ns_print.c,
+            libnetworking/libc/ns_ttl.c, libnetworking/libc/nsap_addr.c,
+            libnetworking/libc/rcmd.c, libnetworking/libc/res_debug.c,
+            libnetworking/libc/res_mkupdate.c, libnetworking/libc/res_query.c,
+            libnetworking/libc/res_send.c, libnetworking/libc/res_update.c,
+            libnetworking/net/radix.c, libnetworking/rtems/mkrootfs.c,
+            librpc/src/rpc/clnt_perror.c, librpc/src/rpc/rtems_rpc.c,
+            librpc/src/rpc/svc.c, sapi/include/confdefs.h,
+            score/macros/rtems/score/chain.inl, score/src/objectidtoname.c:
+
+commit b2126246bf874056d92c0a361710363d4275e304
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Jan 23 17:17:13 2004 +0000
+
+    2004-01-23      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * ChangeLog: Merge-in libmisc/ChangeLog, librpc/ChangeLog.
+            * libmisc/ChangeLog, librpc/ChangeLog: Remove.
+
+commit c8a130c17bf4681df9c71270d81ea934dd32fea4
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Jan 23 13:56:42 2004 +0000
+
+    Cleanup ChangeLog.
+
+commit 3d1de205f620197d40ad019eb2d9e2dd5f0525c2
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Jan 19 07:29:05 2004 +0000
+
+    2004-01-19      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Add PREINSTALL_DIRS.
+
+commit 8956e27932b47527b947c8632f11824ce893f99d
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed Jan 14 05:31:43 2004 +0000
+
+    2004-01-14      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Re-add dirstamps to PREINSTALL_FILES.
+            Add PREINSTALL_FILES to CLEANFILES.
+
+commit f035132f366007ad8489d55922abacc941c8442e
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sun Jan 11 06:24:30 2004 +0000
+
+    2004-01-11  Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Include compile.am, again.
+            Put man-pages into EXTRA_DIST to work around automake not
+            distributing conditionally installed *_MANS.
+            Distribute include/rpcsvc.
+
+commit b71e8d050a743b620feee38315af7f605cb8f463
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Jan 9 18:22:16 2004 +0000
+
+    2004-01-08  Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Add libs to CLEANFILES
+            Set lib*_g_a_SOURCES = lib*_a_SOURCES.
+
+commit f670eb767bc2dc8da9844fe6971363aa7f9dc58b
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Jan 9 15:48:45 2004 +0000
+
+    2004-01-08  Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Build lib*$(LIB_VARIANT).a instead of
+            $(ARCH)/lib*.a.
+
+commit 07347cb5e79d1d651655e7975b69cb8a45243017
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed Jan 7 17:48:16 2004 +0000
+
+    2004-01-07  Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Build library using EXTRA_LIBRARIES and automake rules.
+
+commit 53a895846c4e76c6f5677e33bba0d16c5f4c5d68
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Dec 12 13:39:43 2003 +0000
+
+    2003-12-12      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Use mkdir_p. Remove dirs from PRE/TMPINSTALL_FILES.
+
+commit de48a0ea91a7b1cd334d0e2d8a1a815f38993abc
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sun Nov 30 17:35:46 2003 +0000
+
+    2003-11-30      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Add $(dirstamp) to compilation rules.
+
+commit 9e7e53bf1ebc9b4ad771cc28ad6ff386459d2b18
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sun Nov 30 08:01:23 2003 +0000
+
+    2003-11-30      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Add $(dirstamp) to preinstallation rules.
+
+commit 69a6204cdb258b5a54ce8ad856f11e0f2cc03e57
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Nov 27 14:29:34 2003 +0000
+
+    2003-11-27      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * src/rpc/Makefile.am, src/xdr/Makefile.am, src/Makefile.am:
+            Removed.
+            * Makefile.am: Merge-in src/rpc/Makefile.am, src/xdr/Makefile.am,
+            src/Makefile.am.
+            Various fixes. Reformat.
+
+commit d16b2d3548c6308cc4fdcc034c42216f5a936bce
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Nov 27 09:35:40 2003 +0000
+
+    2003-11-27      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * include/rpc/rpc.hinclude/rpc/rpc.h: Rename struct
+            rtems_rpc_task_variables into struct _rtems_rpc_task_variables
+            (Avoid symbol conflict between struct and variable).
+            struct _rtems_rpc_task_variables *rtems_rpc_task_variables;
+            Reflect changes above.
+            * src/rpc/clnt_perror.c, src/rpc/clnt_raw.c, src/rpc/clnt_simple.c,
+            src/rpc/rpcdname.c, src/rpc/rtems_rpc.c, src/rpc/svc.c,
+            src/rpc/svc_auth.c, src/rpc/svc_raw.c, src/rpc/svc_simple.c:
+            Reflect changes above.
+
+commit 77469f8615731372ec25de9eed1f87c9af59a482
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Oct 21 04:01:46 2003 +0000
+
+    2003-10-21      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * src/rpc/Makefile.am: Remove __P from AM_CPPFLAGS.
+            Rely on sys/cdefs.h providing it.
+            * src/xdr/Makefile.am: Remove __P from AM_CPPFLAGS.
+            Rely on sys/cdefs.h providing it.
+
+commit 27a78054d66d194dc15e50c3f03f4290bc089951
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Wed Sep 24 07:49:21 2003 +0000
+
+    2003-09-24      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Merge-in include/Makefile.am.
+            * include/Makefile.am: Remove.
+
+commit fff840e4932fe0c5d78796c67001b82c5c325c5d
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Jul 8 17:33:43 2003 +0000
+
+    Cleanup
+
+commit 7094267f6cfdc3a400f8773c6acd91e066e59dea
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Jul 8 17:32:18 2003 +0000
+
+    2003-07-08      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac: Remove (Merged-in into ../configure.ac)
+            * Makefile.am, include/Makefile.am, src/Makefile.am,
+            src/rpc/Makefile.am, src/xdr/Makefile.am:
+             Reflect having merged configure.ac into ../configure.ac.
+
+commit 3ad34cadc23bf85f1153a123e597fb1976231d4a
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Jul 8 17:02:24 2003 +0000
+
+    2003-07-08      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac: Remove (Merged-in into ../configure.ac)
+            * Makefile.am, include/Makefile.am, src/Makefile.am,
+            src/rpc/Makefile.am, src/xdr/Makefile.am:
+             Reflect having merged configure.ac into ../configure.ac.
+
+commit ccd81b60c23531f2f7551fee2f969f593fba772a
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Feb 11 11:47:49 2003 +0000
+
+    2003-02-11      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac: AM_INIT_AUTOMAKE([1.7.2]).
+
+commit 9b5c258556c4f1559ad12450cc88b6bd8d8bf75d
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Feb 11 11:11:33 2003 +0000
+
+    2003-02-11      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac: AC_PREREQ(2.57).
+
+commit 47c02203977b7590b9bdd01c6efaccf742b97a1a
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Nov 19 22:23:50 2002 +0000
+
+    2002-11-19      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac: Fix package name.
+
+commit ce3375008b0e1f03f9057d8dbbfdfc917eebbcd3
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Mon Nov 4 14:29:42 2002 +0000
+
+    2002-11-04      Joel Sherrill <joel@OARcorp.com>
+    
+            * src/rpc/pmap_rmt.c: Removed warnings.
+
+commit e312d85f55d5982e83cf2b5c1417a3040f9b9450
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Oct 31 20:17:37 2002 +0000
+
+    2002-10-31      Joel Sherrill <joel@OARcorp.com>
+    
+            * src/rpc/svc_run.c: Remove warning.
+
+commit 6f07dbccf65455fc930c897aeeec5a2ea62093bc
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Mon Oct 28 13:50:14 2002 +0000
+
+    2002-10-28      Joel Sherrill <joel@OARcorp.com>
+    
+            * src/rpc/clnt_tcp.c, src/rpc/clnt_udp.c, src/rpc/pmap_rmt.c,
+            src/rpc/rtime.c, src/rpc/svc_tcp.c: Add include of <sys/select.h>
+            to eliminate warning.
+            * src/rpc/rpcdname.c: Add prototype of getdomainname() to eliminate
+            warning.
+
+commit 56a1ae369db7a16d44a66517b61fc50aafbc9867
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Oct 25 06:18:56 2002 +0000
+
+    2002-10-25      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac: Add nostdinc to AM_INIT_AUTOMAKE.
+
+commit f8cb04a54adb42540c2c5292f55e4a5aa103921f
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Oct 21 12:04:36 2002 +0000
+
+    2002-10-21      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * .cvsignore: Reformat.
+            Add autom4te*cache.
+            Remove autom4te.cache.
+
+commit e5fc1dfd2813eaa27db9c44d54fb19209c5426dc
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Tue Aug 20 15:56:25 2002 +0000
+
+    2002-08-20      Joel Sherrill <joel@OARcorp.com>
+    
+            * src/xdr/xdr_stdio.c: Per PR268, add include of <netinet/in.h>
+            to avoid warning on ntohl().
+
+commit a78c319e785714256699f2996a54e726254f5b7f
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Sun Aug 11 04:16:22 2002 +0000
+
+    2002-08-11      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * src/rpc/rtems_portmapper.c: include <stdlib.h> (Get rid of gcc31
+            warnings about abort/exit).
+
+commit 92b671dd5505803dc73712c41c81cd5f01732b42
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Tue Aug 6 20:18:32 2002 +0000
+
+    2002-08-06      Joel Sherrill <joel@OARcorp.com>
+    
+            * configure.ac: or32 does not currently support librpc.
+
+commit 4123895e75f915882972111203814bd54c93e07d
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Jul 30 09:13:00 2002 +0000
+
+    2002-07-29      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * src/rpc/Makefile.am: Merge src/rpc/PSD.doc/Makefile.am.
+            * include/Makefile.am: Merge include/rpc/Makefile.am.
+            Merge include/rpcsvc/Makefile.am.
+            * include/rpc/Makefile.am: Remove.
+            * include/rpcsvc/Makefile.am: Remove.
+            * src/rpc/PSD.doc/Makefile.am: Remove.
+            * configure.ac: Remove duplicate AC_PROG_RANLIB.
+            Remove include/rpc/Makefile.
+            Remove include/rpcsvc/Makefile.
+            Remove src/rpc/PSD.doc/Makefile.
+    
+    2002-07-23      Joel Sherrill <joel@OARcorp.com>
+    
+            * src/rpc/pmap_clnt.c (pmap_set): Changed prototype to match .h.
+    
+    2002-07-22      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * src/xdr/Makefile.am: Use .$(OBJEXT) instead of .o.
+            * src/rpc/Makefile.am: Use .$(OBJEXT) instead of .o.
+    
+    2002-07-22      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * src/xdr/Makefile.am: Eliminate LIBNAME.
+            * src/rpc/Makefile.am: Eliminate LIBNAME.
+    
+    2002-07-05      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac: RTEMS_TOP(../..).
+    
+    2002-07-01      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac: Remove RTEMS_PROJECT_ROOT.
+    
+    2002-06-27      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac: Use AC_CONFIG_AUX_DIR(../..).
+            Add AC_PROG_RANLIB.
+    
+    2002-06-25      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac: RTEMS_TOP(../../../..).
+            AC_CONFIG_AUX_DIR(../../../..).
+            Remove RTEMS_CANONICAL_HOST.
+            Use RTEMS_ENV_RTEMSCPU.
+            Add AC_PROG_RANLIB.
+            * include/rpc/Makefile.am: Include $(top_srcdir)/../automake/*.am.
+            * include/Makefile.am: Include $(top_srcdir)/../automake/*.am.
+            * include/rpcsvc/Makefile.am: Include $(top_srcdir)/../automake/*.am.
+            * Makefile.am: Include $(top_srcdir)/../automake/*.am.
+            ACLOCAL_AMFLAGS = -I ../aclocal.
+            * src/rpc/PSD.doc/Makefile.am: Include $(top_srcdir)/../automake/*.am.
+            * src/rpc/Makefile.am: Include $(top_srcdir)/../automake/*.am.
+            * src/xdr/Makefile.am: Include $(top_srcdir)/../automake/*.am.
+            * src/Makefile.am: Include $(top_srcdir)/../automake/*.am.
+    
+    2002-03-27      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac:
+            AC_INIT(package,_RTEMS_VERSION,_RTEMS_BUGS).
+            AM_INIT_AUTOMAKE([no-define foreign 1.6]).
+            * include/rpc/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * include/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * include/rpcsvc/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * src/rpc/PSD.doc/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * src/rpc/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * src/xdr/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * src/Makefile.am: Remove AUTOMAKE_OPTIONS.
+    
+    2001-10-11      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * .cvsignore: Add autom4te.cache for autoconf > 2.52.
+            * configure.in: Remove.
+            * configure.ac: New file, generated from configure.in by autoupdate.
+    
+    2001-09-28      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * include/rpc/Makefile.am: Use 'PREINSTALL_FILES ='.
+    
+    2001-02-03      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * include/rpc/Makefile.am: Apply include_*HEADERS instead of
+            H_FILES.
+    
+    2000-11-09      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Use ... instead of RTEMS_TOPdir in ACLOCAL_AMFLAGS.
+    
+    2000-11-02      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Switch to ACLOCAL_AMFLAGS = -I $(RTEMS_TOPdir)/aclocal.
+    
+    2000-10-30      Joel Sherrill <joel@OARcorp.com>
+    
+            * POSIX include files merged into newlib.  This resulted in
+            some definitions moving to other files and thus some secondary
+            effects in RTEMS source code.
+            * src/rpc/Makefile.am, src/rpc/auth_time.c, src/rpc/clnt_simple.c,
+            src/rpc/clnt_tcp.c, src/rpc/clnt_udp.c, src/rpc/clnt_unix.c,
+            src/rpc/get_myaddress.c, src/rpc/pmap_clnt.c, src/rpc/pmap_getmaps.c,
+            src/rpc/pmap_getport.c, src/rpc/pmap_rmt.c, src/rpc/rtime.c,
+            src/rpc/svc_tcp.c, src/rpc/svc_udp.c, src/rpc/svc_unix.c:
+            Use of _read, _write, and _close as macros conflicted with
+            newlib's use of these as routine names.  They were renamed to
+            include "_RPC_" prefix.
+    
+    2000-10-25      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: ACLOCAL_AMFLAGS= -I $(RTEMS_TOPdir)/macros.
+            Switch to GNU canonicalization.
+    
+    2000-09-22      Joel Sherrill <joel@OARcorp.com>
+    
+            * src/xdr/xdr_float.c: Added A29K support.
+    
+    2000-09-04      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * src/rpc/Makefile.am, src/xdr/Makefile.am: Include compile.am
+    
+    2000-08-10      Joel Sherrill <joel@OARcorp.com>
+    
+            * ChangeLog: New file.
+
+commit 6deb2f18ab50591e22a1bea6a4064cb040f319d3
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Jul 30 09:12:33 2002 +0000
+
+    2002-07-29      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * src/rpc/Makefile.am: Merge src/rpc/PSD.doc/Makefile.am.
+            * include/Makefile.am: Merge include/rpc/Makefile.am.
+            Merge include/rpcsvc/Makefile.am.
+            * include/rpc/Makefile.am: Remove.
+            * include/rpcsvc/Makefile.am: Remove.
+            * src/rpc/PSD.doc/Makefile.am: Remove.
+            * configure.ac: Remove duplicate AC_PROG_RANLIB.
+            Remove include/rpc/Makefile.
+            Remove include/rpcsvc/Makefile.
+            Remove src/rpc/PSD.doc/Makefile.
+
+commit f6e7123d9430f405f6e13a461f7176210fa6e160
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Tue Jul 23 21:06:24 2002 +0000
+
+    2002-07-23      Joel Sherrill <joel@OARcorp.com>
+    
+            * src/rpc/pmap_clnt.c (pmap_set): Changed prototype to match .h.
+
+commit 83864ea2a61cc7df0cc252f7590c2e306a01006b
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Jul 22 13:55:34 2002 +0000
+
+    2002-07-22      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * src/xdr/Makefile.am: Use .$(OBJEXT) instead of .o.
+            * src/rpc/Makefile.am: Use .$(OBJEXT) instead of .o.
+
+commit 17e97568caa1b530a9ec8fc1d09c7ca6b6404f79
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Jul 22 09:53:18 2002 +0000
+
+    2002-07-22      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * src/xdr/Makefile.am: Eliminate LIBNAME.
+            * src/rpc/Makefile.am: Eliminate LIBNAME.
+
+commit ae56a2751f70667342d947dd0a57395d6e795a08
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Jul 22 09:36:06 2002 +0000
+
+    2002-07-22      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * src/xdr/Makefile.am: Eliminate LIBNAME.
+            * src/rpc/Makefile.am: Eliminate LIBNAME.
+
+commit 705a070160b3edc4f4e1b4c731d769e85143e07a
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Fri Jul 5 15:55:09 2002 +0000
+
+    2002-07-05      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac: RTEMS_TOP(../..).
+
+commit 8c746fe197845d342e7be25ccd39d091690f8432
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Mon Jul 1 09:59:55 2002 +0000
+
+    2002-07-01      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac: Remove RTEMS_PROJECT_ROOT.
+
+commit da8f88a23e3b6e48ab3a91d7014903f1137d7e05
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Thu Jun 27 04:00:20 2002 +0000
+
+    2002-06-27      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac: Use AC_CONFIG_AUX_DIR(../..).
+            Add AC_PROG_RANLIB.
+
+commit abc116768acbd70f0bb3b7f23a841bf92c5e364f
+Author: Ralf Corsepius <ralf.corsepius@rtems.org>
+Date:   Tue Jun 25 17:41:49 2002 +0000
+
+    2002-06-25      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac: RTEMS_TOP(../../../..).
+            AC_CONFIG_AUX_DIR(../../../..).
+            Remove RTEMS_CANONICAL_HOST.
+            Use RTEMS_ENV_RTEMSCPU.
+            Add AC_PROG_RANLIB.
+            * include/rpc/Makefile.am: Include $(top_srcdir)/../automake/*.am.
+            * include/Makefile.am: Include $(top_srcdir)/../automake/*.am.
+            * include/rpcsvc/Makefile.am: Include $(top_srcdir)/../automake/*.am.
+            * Makefile.am: Include $(top_srcdir)/../automake/*.am.
+            ACLOCAL_AMFLAGS = -I ../aclocal.
+            * src/rpc/PSD.doc/Makefile.am: Include $(top_srcdir)/../automake/*.am.
+            * src/rpc/Makefile.am: Include $(top_srcdir)/../automake/*.am.
+            * src/xdr/Makefile.am: Include $(top_srcdir)/../automake/*.am.
+            * src/Makefile.am: Include $(top_srcdir)/../automake/*.am.
+
+commit 00a9ac1d59f9aa8bc4eac0e944c721c1aa362021
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Mar 28 00:49:50 2002 +0000
+
+    2002-03-27      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * configure.ac:
+            AC_INIT(package,_RTEMS_VERSION,_RTEMS_BUGS).
+            AM_INIT_AUTOMAKE([no-define foreign 1.6]).
+            * include/rpc/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * include/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * include/rpcsvc/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * src/rpc/PSD.doc/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * src/rpc/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * src/xdr/Makefile.am: Remove AUTOMAKE_OPTIONS.
+            * src/Makefile.am: Remove AUTOMAKE_OPTIONS.
+
+commit d7aecdc8f866b978a4349b0e157f46877f60e414
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri Oct 12 18:47:00 2001 +0000
+
+    2001-10-11      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * .cvsignore: Add autom4te.cache for autoconf > 2.52.
+            * configure.in: Remove.
+
+commit df25c9989bca2166cbbf31533fe93375fd383504
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Oct 11 19:36:23 2001 +0000
+
+    2001-10-11      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * .cvsignore: Add autom4te.cache for autoconf > 2.52.
+            * configure.in: Remove.
+            * configure.ac: New file, generated from configure.in by autoupdate.
+
+commit e747aaf843229d4ae6a5227b81efb0a0f1ffcc53
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri Sep 28 13:34:27 2001 +0000
+
+    2001-09-28      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * include/rpc/Makefile.am: Use 'PREINSTALL_FILES ='.
+
+commit 8887f8cd6dc3c3fe73d6b683cbc8c0406091d02a
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Mon Feb 5 18:38:44 2001 +0000
+
+    2001-02-03      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * include/rpc/Makefile.am: Apply include_*HEADERS instead of
+            H_FILES.
+
+commit feead2261885d85a23f0cc4d10b40a5878c0c705
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Nov 9 16:43:05 2000 +0000
+
+    2000-11-09      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Use ... instead of RTEMS_TOPdir in ACLOCAL_AMFLAGS.
+
+commit a314d3b497b2296e4780f1c783d1a8449de8feab
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Nov 2 15:49:06 2000 +0000
+
+    2000-11-02      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: Switch to ACLOCAL_AMFLAGS = -I $(RTEMS_TOPdir)/aclocal.
+
+commit 57cfaad2f5cb97a66c3353cf11f62c39dd0b5ea9
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Tue Oct 31 16:39:06 2000 +0000
+
+    2000-10-30      Joel Sherrill <joel@OARcorp.com>
+    
+            * POSIX include files merged into newlib.  This resulted in
+            some definitions moving to other files and thus some secondary
+            effects in RTEMS source code.
+            * src/rpc/Makefile.am, src/rpc/auth_time.c, src/rpc/clnt_simple.c,
+            src/rpc/clnt_tcp.c, src/rpc/clnt_udp.c, src/rpc/clnt_unix.c,
+            src/rpc/get_myaddress.c, src/rpc/pmap_clnt.c, src/rpc/pmap_getmaps.c,
+            src/rpc/pmap_getport.c, src/rpc/pmap_rmt.c, src/rpc/rtime.c,
+            src/rpc/svc_tcp.c, src/rpc/svc_udp.c, src/rpc/svc_unix.c:
+            Use of _read, _write, and _close as macros conflicted with
+            newlib's use of these as routine names.  They were renamed to
+            include "_RPC_" prefix.
+
+commit f36718c73ae7747988c815b0c4b124fd61f6b9f5
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Wed Oct 25 17:10:18 2000 +0000
+
+    2000-10-25      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * Makefile.am: ACLOCAL_AMFLAGS= -I $(RTEMS_TOPdir)/macros.
+            Switch to GNU canonicalization.
+
+commit a74e94a25ec28ec047022a8ee6fd437a86517776
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Fri Sep 22 20:36:49 2000 +0000
+
+    2000-09-22      Joel Sherrill <joel@OARcorp.com>
+    
+            * src/xdr/xdr_float.c: Added A29K support.
+
+commit 7f2c3e381ad1f92297139b9abf35c9fc5576f1f5
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Tue Sep 5 16:08:02 2000 +0000
+
+    2000-09-04      Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    
+            * src/rpc/Makefile.am, src/xdr/Makefile.am: Include compile.am
+
+commit e94ad1feb9fd593f4b2443f486421d233bffc537
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Aug 10 13:24:00 2000 +0000
+
+    Adding ChangeLogs.
+
+commit 2d354ea6a562761a1417bed71dfe8e722ef16409
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Jul 27 06:17:44 2000 +0000
+
+    Minor problems addressed with the merger and with the arm_bare_bsp.
+    That BSP now has a stub clock driver so the tests can link even
+    if they won't execute.  A handful of Makefiles had to be updated
+    and we had to account for printk.c being a shared file now.
+
+commit ca7858bb8856f1afcc537f39763b7c951e5068d3
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Wed Jul 26 19:28:11 2000 +0000
+
+    Port of RTEMS to the Texas Instruments C3x/C4x DSP families including
+    a BSP (c4xsim) supporting the simulator included with gdb.  This port
+    was done by Joel Sherrill and Jennifer Averett of OAR Corporation.
+    Also included with this port is a space/time optimization to eliminate
+    FP context switch management on CPUs without hardware or software FP.
+    
+    An issue with this port was that sizeof(unsigned32) = sizeof(unsigned8)
+    on this CPU.  This required addressing alignment checks and assumptions
+    as well as fixing code that assumed sizeof(unsigned32) == 4.
+
+commit bbc38ba58a44422fb80bea680f6a7d73ee1a9518
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Jun 29 22:35:17 2000 +0000
+
+    Added H8 as IEEE whether this is true or not.
+
+commit 63db53342f31e88707910e342d18e7b334f28c5b
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Jun 29 22:34:55 2000 +0000
+
+    Disabled #ident since the h8300-rtems binutils do not like the
+    generated assembly from it.
+
+commit 09a6eba19d72a6e1b6fa414a03f7d3832ca74f46
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Jun 29 22:34:30 2000 +0000
+
+    Corrected prototype for xdrrec_endofrecord to match C body.
+
+commit df49c60c9671e4a28e636964d744c1f59fb6cb68
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Mon Jun 12 15:00:15 2000 +0000
+
+    Merged from 4.5.0-beta3a
+
+commit 31aa66a8655b7a7966fb0114a83d53c5ccbae582
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Wed May 3 13:55:42 2000 +0000
+
+    Added on 4.5 branch.
+
+commit f3c096a3129306ac774b380bdc89f13fa3024b6a
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Mon May 1 14:57:46 2000 +0000
+
+    Added on 4.5-branch
+
+commit 84a90acfd22386de1263b899ef342e2a2be679d9
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Sat Apr 29 19:41:47 2000 +0000
+
+    New files.
+
+commit 87ec19a3988be2beb29b95debbb7e6ebfefda77a
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Sat Apr 29 19:13:19 2000 +0000
+
+    New files added as part of librpc upgrade.
+
+commit 5ad350a43db0a4a4fb38b8e9e1341fcdc37f696c
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Sat Apr 29 19:04:37 2000 +0000
+
+    New files added as part of librpc upgrade.
+
+commit 775e78644e29f8bde59a828606cbab7335897bb2
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Sat Apr 29 18:50:41 2000 +0000
+
+    New directory added as part of librpc upgrade.
+
+commit bf85b19188f6c4a20cc6cc42a3f32f9ddb92d9ce
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Apr 13 14:37:14 2000 +0000
+
+    Patch rtems-rc-4.5.0-13-cvs.diff from Ralf Corsepius <corsepiu@faw.uni-ulm.de>.
+    adds .cvsignore.
+
+commit 4e36a2f133c68aaf637e166385eff1a05b59f38e
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Mon Jan 31 15:27:02 2000 +0000
+
+    Patches rtems-rc-20000118-3.diff and rtems-rc-20000118-4.diff from
+    Ralf Corsepius <corsepiu@faw.uni-ulm.de> that contain:
+    
+        * Modifications, (minor) corrections, cleanups to most existing
+          Makefile.ams
+        * Adds automake support to all remaining BSPs which have not yet been
+          converted to automake.
+        * Makefile.am for all remaining wrapup/Makefile.ams
+
+commit 23e3f642e4f0753029b4bd4d444cd94b8f4bb4c6
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Tue Nov 23 14:10:05 1999 +0000
+
+    Missed in previous automake conversion patches from Ralf Corsepius
+    <corsepiu@faw.uni-ulm.de>.
+
+commit 9f4868cea9c37ff42c0c01dd217c6710a6dda2aa
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Tue Nov 23 13:57:02 1999 +0000
+
+    Miscellaneous patches from Ralf Corsepius <corsepiu@faw.uni-ulm.de>
+    that are part of the Makefile.am conversion effort but were missed
+    in the previous commits.
+
+commit 9608320702e8dba9947987cd34001824638c434e
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Mon Nov 22 13:41:11 1999 +0000
+
+    Patch rtems-rc-19991117-4.diff from Ralf Corsepius <corsepiu@faw.uni-ulm.de>:
+    
+        .. a major configuration cleanup
+        ... major enhancement of automake support.
+    
+        ... and it contains a *major*  breakthough:
+    
+        Automake support for libchip and libmisc *LEAF* directories.
+    
+        To implement this I have used several nasty tricks
+            * The basical trick is to wrap an old Makefile.in's contents into a
+              Makefile.am and still continue to use (i.e include) the old
+              *.cfg files.
+    
+            * Replaced each INSTALL_IF_CHANGE and INSTALL_VARIANT with make
+              dependencies
+            * Add a gnu-make ifdef AUTOMAKE to main.cfg to avoid conflicts between
+              automake and RTEMS make rules
+            * Replaced each install:: and preinstall:: rule with make dependencies
+            * Replaced SUB_DIRS with SUBDIRS in all Makefile.ins (Automake
+              convention)
+            * Removed each manually added autoconf substitution which automake
+              performs automatically.
+    
+        This is not yet full automake support, because using the temporary
+        installation directory, preinstallation in general and building variants
+        are in contradiction to automake's basic working principles ...
+    
+        ... the new Makefile.ams work still somewhat clumsy
+        ... nevertheless they work (quite well).
+    
+        WARNING:
+    
+        At first glance this patch is small, but
+            * it affects the whole configuration system.
+            * it opens the road to introducing automake to all Makefile.ins
+              currently not being under automake control.
+    
+        JOEL> Does this remove or add any files?
+    
+        Both, all Makefile.ins below libchip and libmisc get replaced with
+        Makefile.ams.
+
+commit 811804fec86c4c6333c9ae56bedf72cbd7639c9d
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Mon Oct 4 19:15:14 1999 +0000
+
+    Patch from Ralf Corsepius <corsepiu@faw.uni-ulm.de> to make fix bug
+    where wrapup left pieces out of the librtemsall.a.
+
+commit 5a83ba24bd72d43385382eb979783f96ebcde8e9
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Mon Oct 4 18:33:17 1999 +0000
+
+    Patch from Ralf Corsepius <corsepiu@faw.uni-ulm.de>:
+    
+    The patch below actuallly consists of two patches:
+    1) moving librpc to c/src/librpc similar to what has been done to librtems++
+    2) reworked configure scripts, many safety and dependency checks added to
+    aclocal/*.m4 macros + configuration fixes.
+    
+    To apply:
+    
+    mkdir c/src/librpc
+    mkdir c/src/librpc/src
+    cp c/src/lib/librpc/*.c c/src/librpc/src
+    cp c/src/lib/librpc/Makefile.in c/src/librpc/src
+    mkdir c/src/librpc/include
+    mkdir c/src/librpc/include/rpc
+    cp c/src/lib/include/rpc/* c/src/librpc/include/rpc
+    patch -p1 < ../rtems-rc-19990820-7.diff
+    rm -rf c/src/lib/librpc
+    rm -rf c/src/lib/include/rpc
+    ./autogen
+    
+    The additional checks in aclocal/*m4 macros add rather restrictive, sometimes
+    unnecessarily restrictive constraints on the sequence of how macros can be
+    used in a configure.in script. Adding them has let my problems with some more
+    complicated configuration options vanish. Apparently some macros had not been
+    in the required order .
+    
+    ----
+    
+    Now I still get some linking errors for some cpus and bsps, esp when linking
+    cdtest, but also at other locations:
+    
+    e.g. this happens for mips64orion/p4600:
+    
+    # make[5]: Entering directory
+    `/lfs/poseidon/users/rtems/src/multi/build/mips64orion-rtems/c/p4600/tests/samples/hello'
+    
+    /opt/rtems/bin/mips64orion-rtems-gcc --pipe -B../../../../../../p4600/lib/
+    -specs bsp_specs -qrtems -DP4000 -DCPU_R4000 -DP3_DIAG -D_R4000 -D__mips=3
+    -mcpu=4600 -G0   -I../../../../../../p4600/lib/include/networking  -g -Wall
+    -ansi -fasm  -O4 -fomit-frame-pointer     -o o-p4600/hello.exe
+    o-p4600/init.o ../../../../../../p4600/lib/no-dpmem.rel
+    ../../../../../../p4600/lib/no-event.rel
+    ../../../../../../p4600/lib/no-msg.rel ../../../../../../p4600/lib/no-mp.rel
+    ../../../../../../p4600/lib/no-part.rel
+    ../../../../../../p4600/lib/no-signal.rel
+    ../../../../../../p4600/lib/no-timer.rel
+    ../../../../../../p4600/lib/no-rtmon.rel
+    /opt/rtems/mips64orion-rtems/lib/libc.a(dtoa.o): In function `_dtoa_r':
+    /opt/hermes/embedded/build/build-mips64orion-tools/mips64orion-rtems/newlib/libc/stdlib/../../../../../src/newlib/libc/stdlib/dtoa.c:348: relocation truncated to fit: R_MIPS_LITERAL no symbol
+    /opt/hermes/embedded/build/build-mips64orion-tools/mips64orion-rtems/newlib/libc/stdlib/../../../../../src/newlib/libc/stdlib/dtoa.c:348: relocation truncated to fit: R_MIPS_LITERAL no symbol
+    /opt/hermes/embedded/build/build-mips64orion-tools/mips64orion-rtems/newlib/libc/stdlib/../../../../../src/newlib/libc/stdlib/dtoa.c:348: relocation truncated to fit: R_MIPS_LITERAL no symbol
+    collect2: ld returned 1 exit status
+    
+    # mips64orion-rtems-gcc -v
+    Reading specs from /opt/rtems/lib/gcc-lib/mips64orion-rtems/2.95.1/specs
+    gcc version 2.95.1 19990816 (release)
+    
+    # mips64orion-rtems-ld -v
+    GNU ld version 2.9.5 (with BFD 2.9.5)
+
+commit e1d8abbe2800defb344dcce54c401733edd1d37a
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Tue Sep 7 13:45:03 1999 +0000
+
+    Applied patch rtems-rc-19990820-6.diff.gz from
+    Ralf Corsepius <corsepiu@faw.uni-ulm.de> which converted many
+    Makefile.in's to Makefile.am's.  This added a lot of files.
+
+commit 4721cf1ecb949b37c98b6fce79163541711de2e5
+Author: Joel Sherrill <joel.sherrill@OARcorp.com>
+Date:   Thu Dec 3 23:54:14 1998 +0000
+
+    Patch from Emmanuel Raguet <raguet@crf.canon.fr> to add remote debug server
+    and RPC support to RTEMS.  Thanks. :)  Email follows:
+    
+        Hello,
+    
+        For Xmas, here is the Remote Debugger on RTEMS !
+    
+        Here are 2 patches for the Remote Debugger on RTEMS for pc386 from Linux
+        host :
+    
+         - one for RTEMS it self,
+         - one for GDB-4.17.
+    
+    
+        1/ RTEMS patch
+        --------------
+    
+        This patch adds 2 libraries :
+         - a simplified SUN RPC library
+         - the Remote Debugger library
+    
+        The configuration command is the following :
+        ../rtems4/configure --target=i386-rtemself --enable-rtemsbsp=pc386
+        --enable-rdbg
+    
+        The SUN RPC library is built only if networking is set.
+        The RDBG library is built if networking and enable-rdbg are set.
+    
+        The function used to initialize the debugger is :
+                rtems_rdbg_initialize ();
+    
+        A special function has been created to force a task to be
+        in a "debug" state : enterRdbg().
+        The use of this function is not mandatory.
+    
+    
+    
+        2/ GDB-4.17 patch
+        -----------------
+    
+        This patch create a new RTEMS target for GDB-4.17.
+    
+        The configuration command is the following :
+        ./configure --enable-shared --target=i386RTEMS
+    
+        To connect to a target, use :
+          target rtems [your_site_address]
+    
+        Then, attach the target using : attach 1
+    
+        And... Debug ;)
+    
+        You can obtain the original GDB-4.17 on
+        ftp://ftp.debian.org/debian/dists/stable/main/source/devel/gdb_4.17.orig.tar.gz
+    
+        This has been tested from a Debian 2.0.1 linux host.
