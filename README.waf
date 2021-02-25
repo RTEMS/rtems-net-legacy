@@ -1,0 +1,89 @@
+RTEMS Legacy Networking stack
+-----------------------------
+
+rtems-net-legacy repository contains the legacy networking stack that was a part
+of the RTEMS 5 and resided under cpukit/libnetworking.
+
+
+rtems_waf submodule:
+--------------------
+
+Tis repository uses rtems_waf as a git submodule. To update the submodule we
+need to run the following git commands:
+
+```
+git submodule init
+git submodule update
+```
+
+Building
+--------
+
+To build and install:
+
+ $ ./waf configure --prefix=$HOME/development/rtems/6
+ $ ./waf build install
+
+waf options:
+------------
+The following options are available in the rtems waf build system:
+
+```
+Main commands (example: ./waf build -j4)
+  build    : executes the build
+  clean    : cleans the project
+  configure: configures the project
+  dist     : makes a tarball for redistributing the sources
+  distcheck: checks if the project compiles (tarball from 'dist')
+  distclean: removes build folders and data
+  install  : installs the targets on the system
+  list     : lists the targets to execute
+  step     : executes tasks in a step-by-step fashion, for debugging
+  uninstall: removes the targets installed
+
+Options:
+  --version             show program's version number and exit
+  -c COLORS, --color=COLORS
+                        whether to use colors (yes/no/auto) [default: auto]
+  -j JOBS, --jobs=JOBS  amount of parallel jobs (24)
+  -k, --keep            continue despite errors (-kk to try harder)
+  -v, --verbose         verbosity level -v -vv or -vvv [default: 0]
+  --zones=ZONES         debugging zones (task_gen, deps, tasks, etc)
+  -h, --help            show this help message and exit
+  --rtems=RTEMS_PATH    Path to an installed RTEMS (defaults to prefix).
+  --rtems-tools=RTEMS_TOOLS
+                        Path to RTEMS tools (defaults to path to installed RTEMS).
+  --rtems-version=RTEMS_VERSION
+                        RTEMS version (default is derived from prefix).
+  --rtems-archs=RTEMS_ARCHS
+                        List of RTEMS architectures to build.
+  --rtems-bsps=RTEMS_BSPS
+                        List of BSPs to build.
+  --show-commands       Print the commands as strings.
+
+  Configuration options:
+    -o OUT, --out=OUT   build dir for the project
+    -t TOP, --top=TOP   src dir for the project
+    --prefix=PREFIX     installation prefix [default: '/usr/local/']
+    --bindir=BINDIR     bindir
+    --libdir=LIBDIR     libdir
+
+  Build and installation options:
+    -p, --progress      -p: progress bar; -pp: ide output
+    --targets=TARGETS   task generators, e.g. "target1,target2"
+
+  Step options:
+    --files=FILES       files to process, by regexp, e.g. "*/main.c,*/test/main.o"
+
+  Installation and uninstallation options:
+    --destdir=DESTDIR   installation root [default: '']
+    -f, --force         force file installation
+    --distcheck-args=ARGS
+                        arguments to pass to distcheck
+```
+Waf
+---
+
+The Waf project can be found here:
+
+ http://code.google.com/p/waf/

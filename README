@@ -1,3 +1,18 @@
+RTEMS Legacy Networking Stack
+-----------------------------
+
+This is a standalone repository containing the rtems legacy networking stack and
+will be only maintained for bug fixes. Please find the build instructions in the
+README.waf and refer to docs.rtems.org for documentation.
+
+LICENSE
+-------
+The code is licensed under a mix of the rtems.org/LICENSE and various BSD
+licenses
+
+
+About Legacy libnetworking
+--------------------------
 This is a snapshot of my attempt to fit the FreeBSD networking code into
 RTEMS.  Things seem to be working!
 
