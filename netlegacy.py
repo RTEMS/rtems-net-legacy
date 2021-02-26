@@ -1,7 +1,7 @@
 #
 # RTEMS Project (https://www.rtems.org/)
 #
-# Copyright (c) 2021 Vijay Kumar Banerjee <vijaykumar9597@gmail.com>.
+# Copyright (c) 2021 Vijay Kumar Banerjee <vijay@rtems.org>.
 # All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -43,12 +43,13 @@ for root, dirs, files in os.walk("."):
         if name[-2:] == '.c':
             source_files.append(os.path.join(root, name))
         if name[-2:] == '.h' and name not in exclude_headers:
-            include_files[root[2:]].append(os.path.join(root,name))
+            include_files[root[2:]].append(os.path.join(root, name))
 
 for root, dirs, files in os.walk('./testsuites'):
     for name in files:
-        if name [-2:] == '.c':
+        if name[-2:] == '.c':
             test_source.append(os.path.join(root, name))
+
 
 def build(bld):
     include_path = []
@@ -60,7 +61,8 @@ def build(bld):
     include_path.extend(['.',
                          os.path.relpath(bld.env.PREFIX),
                          './testsuites/include',
-                         os.path.relpath(os.path.join(bld.env.PREFIX, 'include')),
+                         os.path.relpath(os.path.join(bld.env.PREFIX,
+                                                      'include')),
                          './bsps/include'])
     arch_lib_path = rtems.arch_bsp_lib_path(bld.env.RTEMS_VERSION,
                                             bld.env.RTEMS_ARCH_BSP)
@@ -78,32 +80,34 @@ def build(bld):
         ip = ip + i + ' '
 
     if (bsp in bsp_sources):
-        bld(target = 'bsp_objs',
-            features = 'c',
-            cflags = ['-O2', '-g'],
-            includes = ip,
-            source = bsp_sources[bsp])
+        bld(target='bsp_objs',
+            features='c',
+            cflags=['-O2', '-g'],
+            includes=ip,
+            source=bsp_sources[bsp])
 
-    bld(target = 'network_objects',
-        features = 'c',
-        includes = ip,
-        source = source_files)
+    bld(target='network_objects',
+        features='c',
+        includes=ip,
+        source=source_files)
 
-    bld(target = 'networking',
-        features = 'c cstlib',
-        use = ['bsp_objs', 'network_objects'])
+    bld(target='networking',
+        features='c cstlib',
+        use=['bsp_objs', 'network_objects'])
 
-    bld.program(target = 'networking01.exe',
-                features = 'c cprogram',
-                cflags = ['-O2', '-g'],
-                includes = ip,
-                use = 'networking',
-                source = test_source)
+    bld.program(target='networking01.exe',
+                features='c cprogram',
+                cflags=['-O2', '-g'],
+                includes=ip,
+                use='networking',
+                source=test_source)
 
     bld.install_files(os.path.join('${PREFIX}', arch_lib_path),
-                                   ["libnetworking.a"])
+                      ["libnetworking.a"])
     bld.install_files(os.path.join('${PREFIX}', arch_lib_path),
-                                   [os.path.join('./bsps/include/libchip/', f)
-                                    for f in os.listdir('./bsps/include/libchip/')])
+                      [os.path.join('./bsps/include/libchip/', f)
+                      for f in os.listdir('./bsps/include/libchip/')])
     for i in include_files:
-        bld.install_files(os.path.join('${PREFIX}', arch_lib_path, i), include_files[i])
+        bld.install_files(os.path.join('${PREFIX}',
+                          arch_lib_path, i),
+                          include_files[i])

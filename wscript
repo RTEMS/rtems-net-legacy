@@ -28,7 +28,7 @@
 from __future__ import print_function
 from rtems_waf import rtems
 
-import lnetworking
+import netlegacy
 import sys
 top = '.'
 
@@ -56,6 +56,6 @@ def recurse(ctx):
         ctx.recurse(sd)
 
 def build(bld):
-    lnetworking.build(bld)
+    netlegacy.build(bld)
     rtems.build(bld)
     recurse(bld)
