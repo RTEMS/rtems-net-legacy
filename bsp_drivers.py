@@ -30,6 +30,7 @@ import os
 import waflib.Options
 import waflib.ConfigSet
 
+
 def bsp_files(bld):
     source_files = {}
     include_dirs = {}
@@ -38,12 +39,15 @@ def bsp_files(bld):
     special_case_dirs = {'atsamv': './bsps/arm/atsam',
                          'lm32_evr': './bsps/lm32',
                          'lpc24xx_ea': './bsps/arm/shared/'}
-    special_case_sources = {'leon2': ['./bsps/shared/grlib/net/network_interface_add.c',
-                                      './bsps/shared/grlib/net/greth.c'],
-                            'leon3': ['./bsps/shared/grlib/net/network_interface_add.c',
-                                      './bsps/shared/grlib/net/greth.c'],
-                            'griscv':['./bsps/shared/grlib/net/network_interface_add.c',
-                                      './bsps/shared/grlib/net/greth.c']}
+    special_case_sources = {'leon2':
+                            ['./bsps/shared/grlib/net/network_interface_add.c',
+                             './bsps/shared/grlib/net/greth.c'],
+                            'leon3':
+                            ['./bsps/shared/grlib/net/network_interface_add.c',
+                             './bsps/shared/grlib/net/greth.c'],
+                            'griscv':
+                            ['./bsps/shared/grlib/net/network_interface_add.c',
+                             './bsps/shared/grlib/net/greth.c']}
 
     bsp_list = bld.env.RTEMS_ARCH_BSP_LIST
 

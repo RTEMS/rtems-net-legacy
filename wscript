@@ -37,15 +37,18 @@ subdirs = ['pppd', 'nfsclient']
 
 try:
     import rtems_waf.rtems as rtems
-except:
+except rtems_waf.DoesNotExist:
     print("error: no rtems_waf git submodule; see README.waf")
     sys.exit(1)
 
+
 def init(ctx):
-    rtems.init(ctx, version = rtems_version, long_commands = True)
+    rtems.init(ctx, version=rtems_version, long_commands=True)
+
 
 def options(opt):
     rtems.options(opt)
+
 
 def configure(conf):
     rtems.configure(conf)
@@ -54,6 +57,7 @@ def configure(conf):
 def recurse(ctx):
     for sd in subdirs:
         ctx.recurse(sd)
+
 
 def build(bld):
     netlegacy.build(bld)
