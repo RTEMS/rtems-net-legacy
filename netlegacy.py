@@ -55,10 +55,13 @@ def build(bld):
     include_path = []
     ip = ''
     bsp = bld.env.RTEMS_ARCH_BSP.split('-')[-1]
+    pppd_source = [os.path.join('./pppd', s)
+                   for s in os.listdir('./pppd') if s[-2:] == '.c']
 
     bsp_dirs, bsp_sources = bsp_drivers.bsp_files(bld)
 
     include_path.extend(['.',
+                         './include',
                          os.path.relpath(bld.env.PREFIX),
                          './testsuites/include',
                          os.path.relpath(os.path.join(bld.env.PREFIX,
@@ -101,6 +104,11 @@ def build(bld):
                 includes=ip,
                 use='networking',
                 source=test_source)
+    bld.stlib(target='pppd',
+              features='c',
+              includes=ip,
+              use='networking',
+              source=pppd_source)
 
     bld.install_files(os.path.join('${PREFIX}', arch_lib_path),
                       ["libnetworking.a"])
