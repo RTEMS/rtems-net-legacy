@@ -25,33 +25,11 @@
 #  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from __future__ import print_function
 from rtems_waf import rtems
 
-import netlegacy
-import sys
-top = '.'
-
-rtems_version = "6"
-subdirs = ['nfsclient', 'testsuites']
-
-try:
-    import rtems_waf.rtems as rtems
-except rtems_waf.DoesNotExist:
-    print("error: no rtems_waf git submodule; see README.waf")
-    sys.exit(1)
-
-
-def init(ctx):
-    rtems.init(ctx, version=rtems_version, long_commands=True)
-
-
-def options(opt):
-    rtems.options(opt)
-
-
-def configure(conf):
-    rtems.configure(conf)
+subdirs = ['ftp01', 'loopback',
+           'networking01', 'pppd',
+           'syscall01', 'telnetd01']
 
 
 def recurse(ctx):
@@ -59,7 +37,13 @@ def recurse(ctx):
         ctx.recurse(sd)
 
 
+def init(ctx):
+    pass
+
+
+def configure(conf):
+    recurse(conf)
+
+
 def build(bld):
-    netlegacy.build(bld)
-    rtems.build(bld)
     recurse(bld)

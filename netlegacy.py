@@ -31,7 +31,6 @@ import os
 
 source_files = []
 include_files = {}
-test_source = []
 exclude_dirs = ['pppd', 'nfsclient', 'testsuites', 'librpc/include', 'bsps']
 exclude_headers = ['rtems-bsd-user-space.h', 'rtems-bsd-kernel-space.h']
 
@@ -44,11 +43,6 @@ for root, dirs, files in os.walk("."):
             source_files.append(os.path.join(root, name))
         if name[-2:] == '.h' and name not in exclude_headers:
             include_files[root[2:]].append(os.path.join(root, name))
-
-for root, dirs, files in os.walk('./testsuites'):
-    for name in files:
-        if name[-2:] == '.c':
-            test_source.append(os.path.join(root, name))
 
 
 def build(bld):
@@ -98,12 +92,6 @@ def build(bld):
         features='c cstlib',
         use=['bsp_objs', 'network_objects'])
 
-    bld.program(target='networking01.exe',
-                features='c cprogram',
-                cflags=['-O2', '-g'],
-                includes=ip,
-                use='networking',
-                source=test_source)
     bld.stlib(target='pppd',
               features='c',
               includes=ip,
