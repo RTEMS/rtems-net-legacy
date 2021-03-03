@@ -37,7 +37,7 @@
 
 #include <sys/cdefs.h>
 #ifdef __rtems__
-#include "rtemscompat_defs.h"
+#include <if_em/rtemscompat_defs.h>
 #include "../porting/rtemscompat.h"
 #include "if_em_hw.h"
 #else

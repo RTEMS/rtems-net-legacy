@@ -48,7 +48,7 @@
  */
 
 #ifdef __rtems__
-#include "rtemscompat_defs.h"
+#include <if_gfe/rtemscompat_defs.h>
 #include "../porting/rtemscompat.h"
 #include <string.h>
 #include <stdio.h>

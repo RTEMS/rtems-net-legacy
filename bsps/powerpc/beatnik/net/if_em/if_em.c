@@ -36,7 +36,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <dev/em/if_em.h>
 #else
 #include <rtems.h>
-#include "rtemscompat_defs.h"
+#include <if_em/rtemscompat_defs.h>
 #include "../porting/rtemscompat.h"
 #include "if_em.h"
 #include "../porting/rtemscompat1.h"

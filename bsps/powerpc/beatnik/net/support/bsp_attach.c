@@ -55,6 +55,7 @@
 
 #include <rtems.h>
 #include <rtems/rtems_bsdnet.h>
+#include <bsp/bsp_bsdnet_attach.h>
 
 #include <bsp.h>
 #include <bsp/irq.h>

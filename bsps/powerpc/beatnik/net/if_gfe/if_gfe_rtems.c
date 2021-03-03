@@ -1,5 +1,5 @@
 /* Author: T. Straumann <strauman@slac.stanford.edu>; see ../../LICENSE */
-#include "rtemscompat_defs.h"
+#include <if_gfe/rtemscompat_defs.h>
 #include "../porting/rtemscompat.h"
 #include "gtethreg.h"
 

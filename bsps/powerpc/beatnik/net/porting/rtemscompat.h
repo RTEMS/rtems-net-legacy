@@ -40,6 +40,7 @@ static inline void  the_real_free(void *p)
 #include <machine/rtems-bsd-kernel-space.h>
 #include <rtems/rtems_bsdnet.h>
 #include <rtems/rtems_bsdnet_internal.h>
+#include <if_em/rtemscompat_defs.h>
 #ifdef __i386__
 #include <libcpu/cpu.h>
 #elif defined(__PPC__)
