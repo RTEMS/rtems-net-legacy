@@ -41,6 +41,6 @@ def build(bld):
     bld.program(target='telnetd01.exe',
                 features='c cprogram',
                 cfags=['-O2', '-g'],
-                includes='. .. ../include ../../',
+                includes='. .. ../include ../../ ../../include',
                 use=['networking'],
                 source='init.c')
