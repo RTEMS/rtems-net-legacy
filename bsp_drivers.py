@@ -54,13 +54,13 @@ def bsp_files(bld):
     for bl in bsp_list:
         bsp = bl.split('-')[-1]
         arch = bl.split('-')[0]
+        include_dirs[bsp] = []
+        source_files[bsp] = []
         if bsp not in special_case_dirs:
             source_dir = os.walk(os.path.join('./bsps', arch, bsp))
         else:
             source_dir = os.walk(special_case_dirs[bsp])
         for root, dirs, files in source_dir:
-            include_dirs[bsp] = []
-            source_files[bsp] = []
             for name in files:
                 if name[-2:] == '.c':
                     source_files[bsp].append(os.path.join(root, name))
@@ -69,4 +69,5 @@ def bsp_files(bld):
                         include_dirs[bsp].append(root)
             if bsp in special_case_sources:
                 source_files[bsp].extend(special_case_sources[bsp])
+        include_dirs[bsp].append(os.path.join('./bsps', arch, bsp, 'net'))
     return (include_dirs, source_files)
