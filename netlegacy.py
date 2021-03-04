@@ -31,7 +31,8 @@ import os
 
 source_files = []
 include_files = {}
-exclude_dirs = ['pppd', 'nfsclient', 'testsuites', 'librpc/include', 'bsps']
+exclude_dirs = ['pppd', 'nfsclient', 'testsuites', 'librpc/include', 'bsps',
+                'telnetd']
 exclude_headers = ['rtems-bsd-user-space.h', 'rtems-bsd-kernel-space.h']
 
 for root, dirs, files in os.walk("."):
@@ -51,6 +52,8 @@ def build(bld):
     bsp = bld.env.RTEMS_ARCH_BSP.split('-')[-1]
     pppd_source = [os.path.join('./pppd', s)
                    for s in os.listdir('./pppd') if s[-2:] == '.c']
+    telnetd_source = [os.path.join('./telnetd', s)
+                      for s in os.listdir('telnetd') if s[-2:] == '.c']
 
     bsp_dirs, bsp_sources = bsp_drivers.bsp_files(bld)
 
@@ -98,12 +101,24 @@ def build(bld):
               use='networking',
               source=pppd_source)
 
+    bld.stlib(target='telnetd',
+              features='c',
+              includes=ip,
+              use='networking',
+              source=telnetd_source)
+
     bld.install_files(os.path.join('${PREFIX}', arch_lib_path),
-                      ["libnetworking.a"])
-    bld.install_files(os.path.join('${PREFIX}', arch_lib_path),
+                      ["libnetworking.a", 'libpppd.a', 'libtelnetd.a'])
+    bld.install_files(os.path.join('${PREFIX}', arch_lib_path,
+                                   'include', 'libchip'),
                       [os.path.join('./bsps/include/libchip/', f)
                       for f in os.listdir('./bsps/include/libchip/')])
     for i in include_files:
-        bld.install_files(os.path.join('${PREFIX}',
-                          arch_lib_path, i),
-                          include_files[i])
+        if 'include' in i.split('/'):
+            bld.install_files(os.path.join('${PREFIX}',
+                                           arch_lib_path, i),
+                              include_files[i])
+        else:
+            bld.install_files(os.path.join('${PREFIX}',
+                                           arch_lib_path, 'include', i),
+                              include_files[i])

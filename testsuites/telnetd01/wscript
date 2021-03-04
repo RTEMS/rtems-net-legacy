@@ -42,5 +42,5 @@ def build(bld):
                 features='c cprogram',
                 cfags=['-O2', '-g'],
                 includes='. .. ../include ../../ ../../include',
-                use=['networking'],
+                use=['telnetd', 'networking'],
                 source='init.c')
