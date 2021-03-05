@@ -40,7 +40,7 @@ def configure(conf):
 def build(bld):
     bld.program(target='loopback.exe',
                 features='c cprogram',
-                cfags=['-O2', '-g'],
+                cflags=['-O2', '-g'],
                 includes='. .. ../include ../../',
                 use=['networking'],
                 source='init.c')

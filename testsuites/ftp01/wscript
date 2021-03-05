@@ -46,7 +46,7 @@ def build(bld):
 
     bld.program(target='ftp01.exe',
                 features='c cprogram',
-                cfags=['-O2', '-g'],
+                cflags=['-O2', '-g'],
                 includes='. .. ../include ../../',
                 use=['ftpfs', 'ftpd', 'networking'],
                 source='init.c')

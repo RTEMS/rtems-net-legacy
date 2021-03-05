@@ -40,7 +40,7 @@ def configure(conf):
 def build(bld):
     bld(target='pppd.exe',
         features='c cprogram',
-        cfags=['-O2', '-g'],
+        cflags=['-O2', '-g'],
         includes='. .. ../../include ../include ../../',
         use=['pppd', 'networking'],
         libpath=['.', '../../build'],
