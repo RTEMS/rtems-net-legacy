@@ -62,9 +62,10 @@ def bsp_files(bld):
             source_dir = os.walk(special_case_dirs[bsp])
         for root, dirs, files in source_dir:
             for name in files:
-                if name[-2:] == '.c':
+                ext = os.path.splitext(name)[1]
+                if ext == '.c':
                     source_files[bsp].append(os.path.join(root, name))
-                if name[-2:] == '.h':
+                if ext == '.h':
                     if root not in include_dirs[bsp]:
                         include_dirs[bsp].append(root)
             if bsp in special_case_sources:

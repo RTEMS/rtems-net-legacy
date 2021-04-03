@@ -40,9 +40,10 @@ for root, dirs, files in os.walk("."):
     dirs.append('./bsps/shared/net')
     include_files[root[2:]] = []
     for name in files:
-        if name[-2:] == '.c':
+        ext = os.path.splitext(name)[1]
+        if ext == '.c':
             source_files.append(os.path.join(root, name))
-        if name[-2:] == '.h' and name not in exclude_headers:
+        if ext == '.h' and name not in exclude_headers:
             include_files[root[2:]].append(os.path.join(root, name))
 
 
