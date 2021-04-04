@@ -16,27 +16,25 @@
 #include <rtems.h>
 
 /* Loopback Network Configuration */
-#if defined(RTEMS_NETWORKING)
-  #include <rtems/rtems_bsdnet.h>
-  #include <sys/socket.h>
-  #include <netinet/in.h>
+#include <rtems/rtems_bsdnet.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 
-  struct rtems_bsdnet_config rtems_bsdnet_config = {
-      NULL,                   /* Network interface */
-      NULL,                   /* Use fixed network configuration */
-      0,                      /* Default network task priority */
-      0,                      /* Default mbuf capacity */
-      0,                      /* Default mbuf cluster capacity */
-      "testSystem",           /* Host name */
-      "nowhere.com",          /* Domain name */
-      "127.0.0.1",            /* Gateway */
-      "127.0.0.1",            /* Log host */
-      {"127.0.0.1" },         /* Name server(s) */
-      {"127.0.0.1" },         /* NTP server(s) */
-      1,                      /* sb_efficiency */
-      0,                      /* udp_tx_buf_size */
-      0,                      /* udp_rx_buf_size */
-      0,                      /* tcp_tx_buf_size */
-      0                       /* tcp_rx_buf_size */
-  };
-#endif
+struct rtems_bsdnet_config rtems_bsdnet_config = {
+    NULL,                   /* Network interface */
+    NULL,                   /* Use fixed network configuration */
+    0,                      /* Default network task priority */
+    0,                      /* Default mbuf capacity */
+    0,                      /* Default mbuf cluster capacity */
+    "testSystem",           /* Host name */
+    "nowhere.com",          /* Domain name */
+    "127.0.0.1",            /* Gateway */
+    "127.0.0.1",            /* Log host */
+    {"127.0.0.1" },         /* Name server(s) */
+    {"127.0.0.1" },         /* NTP server(s) */
+    1,                      /* sb_efficiency */
+    0,                      /* udp_tx_buf_size */
+    0,                      /* udp_rx_buf_size */
+    0,                      /* tcp_tx_buf_size */
+    0                       /* tcp_rx_buf_size */
+};

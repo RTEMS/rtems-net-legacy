@@ -24,7 +24,7 @@
 
 #include <mpc55xx/regs.h>
 
-#if defined(RTEMS_NETWORKING) && defined(MPC55XX_HAS_SIU)
+#if defined(MPC55XX_HAS_SIU)
 
 #include <machine/rtems-bsd-kernel-space.h>
 
@@ -2121,4 +2121,4 @@ int smsc9218i_attach_detach(
   return 0;
 }
 
-#endif /* defined(RTEMS_NETWORKING) && defined(MPC55XX_HAS_SIU) */
+#endif /* defined(MPC55XX_HAS_SIU) */
