@@ -33,7 +33,7 @@ import sys
 top = '.'
 
 rtems_version = "6"
-subdirs = ['nfsclient', 'testsuites']
+subdirs = ['testsuites']
 
 try:
     import rtems_waf.rtems as rtems
