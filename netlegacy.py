@@ -37,7 +37,7 @@ exclude_headers = ['rtems-bsd-user-space.h', 'rtems-bsd-kernel-space.h']
 
 for root, dirs, files in os.walk("."):
     [dirs.remove(d) for d in list(dirs) if d in exclude_dirs]
-    dirs.append('./bsps/shared/net')
+    dirs.append(os.path.join('bsps', 'shared', 'net'))
     include_files[root[2:]] = []
     for name in files:
         ext = os.path.splitext(name)[1]
@@ -59,10 +59,9 @@ def build(bld):
     include_path = []
     ip = ''
     bsp = bld.env.RTEMS_ARCH_BSP.split('-')[-1]
-    pppd_source = [os.path.join('./pppd', s)
-                   for s in os.listdir('./pppd') if s[-2:] == '.c']
-    telnetd_source = [os.path.join('./telnetd', s)
-                      for s in os.listdir('telnetd') if s[-2:] == '.c']
+    pppd_source = [os.path.join('pppd', s)
+                   for s in os.listdir('pppd')
+                   if os.path.splitext(s)[1] == '.c']
     nfs_source = []
     for root, dirs, files in os.walk('nfsclient'):
         for name in files:
@@ -74,12 +73,12 @@ def build(bld):
     bsp_dirs, bsp_sources = bsp_drivers.bsp_files(bld)
 
     include_path.extend(['.',
-                         './include',
+                         'include',
                          os.path.relpath(bld.env.PREFIX),
-                         './testsuites/include',
+                         os.path.join('testsuites', 'include'),
                          os.path.relpath(os.path.join(bld.env.PREFIX,
                                                       'include')),
-                         './bsps/include'])
+                         os.path.join('bsps', 'include')])
     arch_lib_path = rtems.arch_bsp_lib_path(bld.env.RTEMS_VERSION,
                                             bld.env.RTEMS_ARCH_BSP)
     lib_path = os.path.join(bld.env.PREFIX, arch_lib_path)
@@ -132,17 +131,17 @@ def build(bld):
               use=['rtemsbsp', 'networking'],
               source=nfs_source)
 
-    bld.install_files(os.path.join('${PREFIX}', arch_lib_path),
-                      ["libnetworking.a", 'libpppd.a', 'libtelnetd.a', 'libnfs.a'])
-    bld.install_files(os.path.join('${PREFIX}', arch_lib_path,
+    bld.install_files(os.path.join(bld.env.PREFIX, arch_lib_path),
+                      ["libnetworking.a", 'libpppd.a', 'libnfs.a'])
+    bld.install_files(os.path.join(bld.env.PREFIX, arch_lib_path,
                                    'include', 'libchip'),
                       install_file_list('bsps', 'include', 'libchip'))
     for i in include_files:
-        if 'include' in i.split('/'):
-            bld.install_files(os.path.join('${PREFIX}',
+        if 'include' in os.path.split(i):
+            bld.install_files(os.path.join(bld.env.PREFIX,
                                            arch_lib_path, i),
                               include_files[i])
         else:
-            bld.install_files(os.path.join('${PREFIX}',
+            bld.install_files(os.path.join(bld.env.PREFIX,
                                            arch_lib_path, 'include', i),
                               include_files[i])
