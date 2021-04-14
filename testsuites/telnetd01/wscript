@@ -38,6 +38,11 @@ def configure(conf):
 
 
 def build(bld):
+    arch_lib_path = rtems.arch_bsp_lib_path(bld.env.RTEMS_VERSION,
+                                            bld.env.RTEMS_ARCH_BSP)
+    lib_path = os.path.join(bld.env.PREFIX, arch_lib_path)
+    bld.read_stlib('telnetd', paths=[lib_path])
+
     bld.program(target='telnetd01.exe',
                 features='c cprogram',
                 cflags=['-O2', '-g'],

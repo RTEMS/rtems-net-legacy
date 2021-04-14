@@ -31,8 +31,7 @@ import os
 
 source_files = []
 include_files = {}
-exclude_dirs = ['pppd', 'nfsclient', 'testsuites', 'librpc/include', 'bsps',
-                'telnetd']
+exclude_dirs = ['pppd', 'nfsclient', 'testsuites', os.path.join('librpc', 'include'), 'bsps']
 exclude_headers = ['rtems-bsd-user-space.h', 'rtems-bsd-kernel-space.h']
 
 for root, dirs, files in os.walk("."):
@@ -118,12 +117,6 @@ def build(bld):
               includes=ip,
               use='networking',
               source=pppd_source)
-
-    bld.stlib(target='telnetd',
-              features='c',
-              includes=ip,
-              use='networking',
-              source=telnetd_source)
 
     bld.stlib(target='nfs',
               features='c',
