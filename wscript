@@ -1,7 +1,8 @@
 #
 # RTEMS Project (https://www.rtems.org/)
 #
-# Copyright (c) 2021 Vijay Kumar Banerjee <vijay@rtems.org>.
+# Copyright (c) 2021 Regents of University of Colorado
+# Written by Vijay Kumar Banerjee <vijay@rtems.org>.
 # All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
