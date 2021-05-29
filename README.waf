@@ -2,7 +2,7 @@ RTEMS Legacy Networking stack
 -----------------------------
 
 rtems-net-legacy repository contains the legacy networking stack that was a part
-of the RTEMS 5 and resided under cpukit/libnetworking.
+of the RTEMS versions through 5 and resided under cpukit/libnetworking.
 
 
 rtems_waf submodule:
