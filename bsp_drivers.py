@@ -72,4 +72,5 @@ def bsp_files(bld):
             if bsp in special_case_sources:
                 source_files[bsp].extend(special_case_sources[bsp])
         include_dirs[bsp].append(os.path.join('bsps', arch, bsp, 'net'))
+        include_dirs[bsp].append(os.path.join('bsps', arch, bsp, 'include'))
     return (include_dirs, source_files)
