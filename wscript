@@ -51,6 +51,7 @@ def options(opt):
     rtems.options(opt)
     netlegacy.options(opt)
 
+
 def bsp_configure(conf, arch_bsp):
     env = conf.env.derive()
     ab = conf.env.RTEMS_ARCH_BSP

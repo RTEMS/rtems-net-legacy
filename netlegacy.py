@@ -32,7 +32,10 @@ import os
 
 source_files = []
 include_files = {}
-exclude_dirs = ['pppd', 'nfsclient', 'testsuites', os.path.join('librpc', 'include'), 'bsps']
+exclude_dirs = [
+    'pppd', 'nfsclient', 'testsuites',
+    os.path.join('librpc', 'include'), 'bsps'
+]
 exclude_headers = ['rtems-bsd-user-space.h', 'rtems-bsd-kernel-space.h']
 
 for root, dirs, files in os.walk("."):
@@ -57,11 +60,12 @@ def install_file_list(*paths):
     file_list = [os.path.join(path, f) for f in os.listdir(path)]
     return file_list
 
+
 def options(opt):
     pass
 
 
-def bsp_configure(conf, arch_bsp, mandatory = True):
+def bsp_configure(conf, arch_bsp, mandatory=True):
     pass
 
 
@@ -69,9 +73,10 @@ def build(bld):
     include_path = []
     ip = ''
     bsp = bld.env.RTEMS_ARCH_BSP.split('-')[-1]
-    pppd_source = [os.path.join('pppd', s)
-                   for s in os.listdir('pppd')
-                   if os.path.splitext(s)[1] == '.c']
+    pppd_source = [
+        os.path.join('pppd', s) for s in os.listdir('pppd')
+        if os.path.splitext(s)[1] == '.c'
+    ]
     nfs_source = []
     for root, dirs, files in os.walk('nfsclient'):
         for name in files:
@@ -82,21 +87,21 @@ def build(bld):
 
     bsp_dirs, bsp_sources = bsp_drivers.bsp_files(bld)
 
-    include_path.extend(['.',
-                         'include',
-                         os.path.relpath(bld.env.PREFIX),
-                         os.path.join('testsuites', 'include'),
-                         os.path.relpath(os.path.join(bld.env.PREFIX,
-                                                      'include')),
-                         os.path.join('bsps', 'include')])
+    include_path.extend([
+        '.', 'include',
+        os.path.relpath(bld.env.PREFIX),
+        os.path.join('testsuites', 'include'),
+        os.path.relpath(os.path.join(bld.env.PREFIX, 'include')),
+        os.path.join('bsps', 'include')
+    ])
     arch_lib_path = rtems.arch_bsp_lib_path(bld.env.RTEMS_VERSION,
                                             bld.env.RTEMS_ARCH_BSP)
     lib_path = os.path.join(bld.env.PREFIX, arch_lib_path)
-    include_path.append(os.path.relpath(os.path.join(bld.env.PREFIX,
-                                                     arch_lib_path)))
-    include_path.append(os.path.relpath(os.path.join(bld.env.PREFIX,
-                                                     arch_lib_path,
-                                                     'include')))
+    include_path.append(
+        os.path.relpath(os.path.join(bld.env.PREFIX, arch_lib_path)))
+    include_path.append(
+        os.path.relpath(os.path.join(bld.env.PREFIX, arch_lib_path,
+                                     'include')))
     include_path.append(find_node(bld, 'bsps', 'include', 'libchip'))
 
     bld.read_stlib('rtemsbsp', paths=[lib_path])
@@ -138,15 +143,14 @@ def build(bld):
 
     bld.install_files(os.path.join(bld.env.PREFIX, arch_lib_path),
                       ["libnetworking.a", 'libpppd.a', 'libnfs.a'])
-    bld.install_files(os.path.join(bld.env.PREFIX, arch_lib_path,
-                                   'include', 'libchip'),
-                      install_file_list('bsps', 'include', 'libchip'))
+    bld.install_files(
+        os.path.join(bld.env.PREFIX, arch_lib_path, 'include', 'libchip'),
+        install_file_list('bsps', 'include', 'libchip'))
     for i in include_files:
         if 'include' in os.path.split(i):
-            bld.install_files(os.path.join(bld.env.PREFIX,
-                                           arch_lib_path, i),
+            bld.install_files(os.path.join(bld.env.PREFIX, arch_lib_path, i),
                               include_files[i])
         else:
-            bld.install_files(os.path.join(bld.env.PREFIX,
-                                           arch_lib_path, 'include', i),
-                              include_files[i])
+            bld.install_files(
+                os.path.join(bld.env.PREFIX, arch_lib_path, 'include', i),
+                include_files[i])
