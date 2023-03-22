@@ -49,10 +49,19 @@ def init(ctx):
 
 def options(opt):
     rtems.options(opt)
+    netlegacy.options(opt)
+
+def bsp_configure(conf, arch_bsp):
+    env = conf.env.derive()
+    ab = conf.env.RTEMS_ARCH_BSP
+    conf.msg('Configure variant: ', ab)
+    conf.setenv(ab, env)
+    netlegacy.bsp_configure(conf, arch_bsp)
+    conf.setenv(ab)
 
 
 def configure(conf):
-    rtems.configure(conf)
+    rtems.configure(conf, bsp_configure)
 
 
 def recurse(ctx):

@@ -46,14 +46,24 @@ for root, dirs, files in os.walk("."):
         if ext == '.h' and name not in exclude_headers:
             include_files[root[2:]].append(os.path.join(root, name))
 
+
 def find_node(bld, *paths):
     path = os.path.join(*paths)
     return os.path.relpath(str(bld.path.find_node(path)))
+
 
 def install_file_list(*paths):
     path = os.path.join(*paths)
     file_list = [os.path.join(path, f) for f in os.listdir(path)]
     return file_list
+
+def options(opt):
+    pass
+
+
+def bsp_configure(conf, arch_bsp, mandatory = True):
+    pass
+
 
 def build(bld):
     include_path = []
@@ -107,6 +117,7 @@ def build(bld):
     bld(target='network_objects',
         features='c',
         includes=ip,
+        defines=['IN_HISTORICAL_NETS=1'],
         source=source_files)
 
     bld(target='networking',
