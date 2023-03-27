@@ -31,6 +31,7 @@ from rtems_waf import rtems
 
 import netlegacy
 import sys
+
 top = '.'
 
 rtems_version = "6"
@@ -71,6 +72,7 @@ def recurse(ctx):
 
 
 def build(bld):
-    netlegacy.build(bld)
     rtems.build(bld)
+    netlegacy.build(bld)
+    bld.add_group()
     recurse(bld)

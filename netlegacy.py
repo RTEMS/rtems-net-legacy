@@ -26,39 +26,13 @@
 #  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from rtems_waf import rtems
-import bsp_drivers
 import os
+import os.path
 
-source_files = []
-include_files = {}
-exclude_dirs = [
-    'pppd', 'nfsclient', 'testsuites',
-    os.path.join('librpc', 'include'), 'bsps'
-]
-exclude_headers = ['rtems-bsd-user-space.h', 'rtems-bsd-kernel-space.h']
+from rtems_waf import rtems
 
-for root, dirs, files in os.walk("."):
-    [dirs.remove(d) for d in list(dirs) if d in exclude_dirs]
-    dirs.append(os.path.join('bsps', 'shared', 'net'))
-    include_files[root[2:]] = []
-    for name in files:
-        ext = os.path.splitext(name)[1]
-        if ext == '.c':
-            source_files.append(os.path.join(root, name))
-        if ext == '.h' and name not in exclude_headers:
-            include_files[root[2:]].append(os.path.join(root, name))
-
-
-def find_node(bld, *paths):
-    path = os.path.join(*paths)
-    return os.path.relpath(str(bld.path.find_node(path)))
-
-
-def install_file_list(*paths):
-    path = os.path.join(*paths)
-    file_list = [os.path.join(path, f) for f in os.listdir(path)]
-    return file_list
+import bsp_drivers
+import netsources
 
 
 def options(opt):
@@ -66,91 +40,64 @@ def options(opt):
 
 
 def bsp_configure(conf, arch_bsp, mandatory=True):
-    pass
+    ab = rtems.arch(arch_bsp) + '/' + rtems.bsp(arch_bsp)
+    includes = [
+        '.',
+        'include',
+        'bsps/include',
+        'testsuites/include',
+    ]
+    if ab in bsp_drivers.include:
+        includes += bsp_drivers.include[ab]
+    conf.env.IFLAGS = [str(conf.path.find_node(i))
+                       for i in includes] + conf.env.IFLAGS
+    conf.env.OPTIMIZATION = ['-O2']
 
 
 def build(bld):
-    include_path = []
-    ip = ''
-    bsp = bld.env.RTEMS_ARCH_BSP.split('-')[-1]
-    pppd_source = [
-        os.path.join('pppd', s) for s in os.listdir('pppd')
-        if os.path.splitext(s)[1] == '.c'
-    ]
-    nfs_source = []
-    for root, dirs, files in os.walk('nfsclient'):
-        for name in files:
-            ext = os.path.splitext(name)[1]
-            if ext == '.c':
-                src_root = os.path.split(root)
-                nfs_source.append(os.path.join(src_root[0], src_root[1], name))
+    arch_bsp = bld.env.RTEMS_ARCH_BSP
+    ab = rtems.arch(arch_bsp) + '/' + rtems.bsp(arch_bsp)
 
-    bsp_dirs, bsp_sources = bsp_drivers.bsp_files(bld)
-
-    include_path.extend([
-        '.', 'include',
-        os.path.relpath(bld.env.PREFIX),
-        os.path.join('testsuites', 'include'),
-        os.path.relpath(os.path.join(bld.env.PREFIX, 'include')),
-        os.path.join('bsps', 'include')
-    ])
-    arch_lib_path = rtems.arch_bsp_lib_path(bld.env.RTEMS_VERSION,
-                                            bld.env.RTEMS_ARCH_BSP)
-    lib_path = os.path.join(bld.env.PREFIX, arch_lib_path)
-    include_path.append(
-        os.path.relpath(os.path.join(bld.env.PREFIX, arch_lib_path)))
-    include_path.append(
-        os.path.relpath(os.path.join(bld.env.PREFIX, arch_lib_path,
-                                     'include')))
-    include_path.append(find_node(bld, 'bsps', 'include', 'libchip'))
-
-    bld.read_stlib('rtemsbsp', paths=[lib_path])
-
-    if bsp in bsp_dirs:
-        include_path.extend(bsp_dirs[bsp])
-
-    for i in include_path:
-        ip = ip + i + ' '
-
-    if (bsp in bsp_sources):
-        bld(target='bsp_objs',
+    if ab in bsp_drivers.source:
+        bld(target='bspobjs',
             features='c',
-            cflags=['-O2', '-g'],
-            includes=ip,
-            source=bsp_sources[bsp])
+            cflags=bld.env.OPTIMIZATION + ['-g'],
+            includes=bld.env.IFLAGS,
+            source=bsp_drivers.source[ab])
 
-    bld(target='network_objects',
+    bld(target='netobjs',
         features='c',
-        includes=ip,
+        cflags=bld.env.OPTIMIZATION + ['-g'],
+        includes=bld.env.IFLAGS,
         defines=['IN_HISTORICAL_NETS=1'],
-        source=source_files)
+        source=netsources.source.network)
 
-    bld(target='networking',
-        features='c cstlib',
-        use=['bsp_objs', 'network_objects'])
+    bld(target='networking', features='c cstlib', use=['bspobjs', 'netobjs'])
 
     bld.stlib(target='pppd',
               features='c',
-              includes=ip,
-              use='networking',
-              source=pppd_source)
+              cflags=bld.env.OPTIMIZATION + ['-g'],
+              includes=bld.env.IFLAGS,
+              use=['networking'],
+              source=netsources.source.pppd)
 
     bld.stlib(target='nfs',
               features='c',
-              includes=ip,
-              use=['rtemsbsp', 'networking'],
-              source=nfs_source)
+              cflags=bld.env.OPTIMIZATION + ['-g'],
+              includes=bld.env.IFLAGS,
+              use=['networking'],
+              source=netsources.source.nfsclient)
+
+    arch_lib_path = rtems.arch_bsp_lib_path(bld.env.RTEMS_VERSION,
+                                            bld.env.RTEMS_ARCH_BSP)
+    arch_inc_path = rtems.arch_bsp_include_path(bld.env.RTEMS_VERSION,
+                                                bld.env.RTEMS_ARCH_BSP)
 
     bld.install_files(os.path.join(bld.env.PREFIX, arch_lib_path),
                       ["libnetworking.a", 'libpppd.a', 'libnfs.a'])
-    bld.install_files(
-        os.path.join(bld.env.PREFIX, arch_lib_path, 'include', 'libchip'),
-        install_file_list('bsps', 'include', 'libchip'))
-    for i in include_files:
-        if 'include' in os.path.split(i):
-            bld.install_files(os.path.join(bld.env.PREFIX, arch_lib_path, i),
-                              include_files[i])
-        else:
-            bld.install_files(
-                os.path.join(bld.env.PREFIX, arch_lib_path, 'include', i),
-                include_files[i])
+    for inc_dir in netsources.header:
+        for header in netsources.header[inc_dir]:
+            hname = os.path.basename(header)
+            bld.install_as(
+                os.path.join(bld.env.PREFIX, arch_inc_path, inc_dir, hname),
+                header)

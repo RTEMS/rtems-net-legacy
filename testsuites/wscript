@@ -28,9 +28,9 @@
 
 from rtems_waf import rtems
 
-subdirs = ['ftp01', 'loopback',
-           'networking01', 'pppd',
-           'syscall01', 'telnetd01']
+subdirs = [
+    'ftp01', 'loopback', 'networking01', 'pppd', 'syscall01', 'telnetd01'
+]
 
 
 def recurse(ctx):

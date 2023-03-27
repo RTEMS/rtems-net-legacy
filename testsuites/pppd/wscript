@@ -27,7 +27,6 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from rtems_waf import rtems
-import os
 
 
 def init(ctx):
@@ -39,10 +38,12 @@ def configure(conf):
 
 
 def build(bld):
+    source = ['init.c', 'pppdapp.c']
     bld(target='pppd.exe',
         features='c cprogram',
-        cflags=['-O2', '-g'],
-        includes='. .. ../../include ../include ../../',
-        use=['pppd', 'networking'],
-        libpath=['.', '../../build'],
-        source=['init.c', 'pppdapp.c'])
+        cflags=bld.env.OPTIMIZATION + ['-g'],
+        includes=bld.env.IFLAGS,
+        lib=['pppd', 'networking'],
+        libpath=['.'],
+        source=source,
+        install_path=False)

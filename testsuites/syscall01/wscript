@@ -27,7 +27,6 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from rtems_waf import rtems
-import os
 
 
 def init(ctx):
@@ -39,9 +38,11 @@ def configure(conf):
 
 
 def build(bld):
+    source = ['init.c']
     bld.program(target='syscall01.exe',
                 features='c cprogram',
-                cflags=['-O2', '-g'],
-                includes='. .. ../include ../../',
+                cflags=bld.env.OPTIMIZATION + ['-g'],
+                includes=bld.env.IFLAGS,
                 use=['networking'],
-                source='init.c')
+                source=source,
+                install_path=False)
