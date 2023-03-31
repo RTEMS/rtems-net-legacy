@@ -19,6 +19,7 @@
 #include <libchip/smc91111exp.h>
 #include <rtems/bspIo.h>
 #include <grlib/ambapp.h>
+#include <grlib/grlib.h>
 
 #define SMC91111_BASE_ADDR (void*)0x20000300
 #define SMC91111_BASE_IRQ  4
@@ -45,7 +46,7 @@ rtems_smc91111_driver_attach_leon3 (struct rtems_bsdnet_ifconfig *config,
   struct ambapp_apb_info apbpio;
   struct ambapp_apb_info apbmctrl;
 
-  if (ambapp_find_apbslv(&ambapp_plb, VENDOR_GAISLER, GAISLER_GPIO, &apbpio)
+  if (ambapp_find_apbslv(ambapp_plb(), VENDOR_GAISLER, GAISLER_GPIO, &apbpio)
       != 1) {
     printk("SMC9111_leon3: didn't find PIO\n");
     return 0;
@@ -54,12 +55,12 @@ rtems_smc91111_driver_attach_leon3 (struct rtems_bsdnet_ifconfig *config,
   /* In order to access the SMC controller the memory controller must have
    * I/O bus enabled. Find first memory controller.
    */
-  if (ambapp_find_apbslv(&ambapp_plb, VENDOR_ESA, ESA_MCTRL, &apbmctrl) != 1) {
-    if (ambapp_find_apbslv(&ambapp_plb, VENDOR_GAISLER, GAISLER_FTMCTRL,
+  if (ambapp_find_apbslv(ambapp_plb(), VENDOR_ESA, ESA_MCTRL, &apbmctrl) != 1) {
+    if (ambapp_find_apbslv(ambapp_plb(), VENDOR_GAISLER, GAISLER_FTMCTRL,
                            &apbmctrl) != 1) {
-      if (ambapp_find_apbslv(&ambapp_plb, VENDOR_GAISLER, GAISLER_FTSRCTRL,
+      if (ambapp_find_apbslv(ambapp_plb(), VENDOR_GAISLER, GAISLER_FTSRCTRL,
                              &apbmctrl) != 1) {
-        if (ambapp_find_apbslv(&ambapp_plb, VENDOR_GAISLER, GAISLER_FTSRCTRL8,
+        if (ambapp_find_apbslv(ambapp_plb(), VENDOR_GAISLER, GAISLER_FTSRCTRL8,
                                &apbmctrl) != 1) {
           printk("SMC9111_leon3: didn't find any memory controller\n");
           return 0;

@@ -13,6 +13,7 @@
 
 #include <bsp.h>
 #include <libchip/greth.h>
+#include <grlib/ambapp.h>
 /*#if (GRETH_DEBUG & GRETH_DEBUG_PRINT_REGISTERS)*/
 #include <stdio.h>
 /*#endif*/
@@ -36,7 +37,7 @@ int rtems_leon_greth_driver_attach(
   struct ambapp_apb_info *apb;
 
   /* Scan for MAC AHB slave interface */
-  adev = (void *)ambapp_for_each(&ambapp_plb, (OPTIONS_ALL|OPTIONS_APB_SLVS),
+  adev = (void *)ambapp_for_each(ambapp_plb(), (OPTIONS_ALL|OPTIONS_APB_SLVS),
                                  VENDOR_GAISLER, GAISLER_ETHMAC,
                                  ambapp_find_by_idx, NULL);
   if (adev) {

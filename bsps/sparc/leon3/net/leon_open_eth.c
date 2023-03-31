@@ -17,6 +17,7 @@
 
 #include <bsp.h>
 #include <libchip/open_eth.h>
+#include <leon.h>
 #if (OPEN_ETH_DEBUG & OPEN_ETH_DEBUG_PRINT_REGISTERS)
 #include <stdio.h>
 #endif
@@ -40,11 +41,11 @@ int rtems_leon_open_eth_driver_attach(
   struct ambapp_ahb_info *ahb;
 
   /* Scan for MAC AHB slave interface */
-  adev = (void *)ambapp_for_each(&ambapp_plb, (OPTIONS_ALL|OPTIONS_AHB_SLVS),
+  adev = (void *)ambapp_for_each(ambapp_plb(), (OPTIONS_ALL|OPTIONS_AHB_SLVS),
                                  VENDOR_OPENCORES, OPENCORES_ETHMAC,
                                  ambapp_find_by_idx, NULL);
   if (!adev) {
-    adev = (void *)ambapp_for_each(&ambapp_plb, (OPTIONS_ALL|OPTIONS_AHB_SLVS),
+    adev = (void *)ambapp_for_each(ambapp_plb(), (OPTIONS_ALL|OPTIONS_AHB_SLVS),
                                    VENDOR_GAISLER, GAISLER_ETHAHB,
                                    ambapp_find_by_idx, NULL);
   }
