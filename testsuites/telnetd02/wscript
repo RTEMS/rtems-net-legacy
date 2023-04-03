@@ -28,23 +28,23 @@
 
 from rtems_waf import rtems
 
-subdirs = [
-    'ftp01', 'loopback', 'networking01', 'pppd', 'syscall01', 'telnetd01', 'telnetd02'
-]
-
-
-def recurse(ctx):
-    for sd in subdirs:
-        ctx.recurse(sd)
-
 
 def init(ctx):
     pass
 
 
 def configure(conf):
-    recurse(conf)
+    pass
 
 
 def build(bld):
-    recurse(bld)
+    legacy_config = bld.path.parent.find_node('support/net-legacy-config.c')
+    source = ['init.c', legacy_config]
+    bld.program(target='telnetd02.exe',
+                features='c cprogram',
+                cflags=bld.env.OPTIMIZATION + ['-g'],
+                includes=bld.env.IFLAGS,
+                lib=['telnetd', 'networking'],
+                libpath=['.'],
+                source=source,
+                install_path=False)

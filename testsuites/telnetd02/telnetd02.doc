@@ -1,0 +1,12 @@
+This file describes the directives and concepts tested by this test set.
+
+test set name: telnetd02
+
+directives:
+
+  - rtems_telnetd_start()
+
+concepts:
+
++ Runs a telnet server with a suitable network configuration to
+  test the networking is running.

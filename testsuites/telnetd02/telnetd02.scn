@@ -1,0 +1,9 @@
+*** BEGIN OF TEST TELNETD 2 ***
+*** TEST VERSION: 6.0.0.d15640249372de3106a66304569a44f6f32cca23
+*** TEST STATE: EXPECTED_PASS
+*** TEST BUILD: RTEMS_POSIX_API
+*** TEST TOOLS: 12.2.1 20230224 (RTEMS 6, RSB 77dc54ce841a04598c64073c217aa9e66df31d8f, Newlib 17ac400)
+syslog: telnetd: started successfully on port 23
+
+RTEMS Shell on /dev/console. Use 'help' to list commands.
+SHLL [/] #
