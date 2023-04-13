@@ -51,11 +51,7 @@ def init(ctx):
 def options(opt):
     rtems.options(opt)
     netlegacy.options(opt)
-    copts = opt.option_groups['configure options']
-    copts.add_option('--net-test-config',
-                     default='config.inc',
-                     dest='net_config',
-                     help='Network test configuration (default: %default)')
+    opt.recurse('testsuites')
 
 
 def bsp_configure(conf, arch_bsp):
@@ -64,6 +60,7 @@ def bsp_configure(conf, arch_bsp):
     conf.msg('Configure variant: ', ab)
     conf.setenv(ab, env)
     netlegacy.bsp_configure(conf, arch_bsp)
+    conf.recurse('testsuites')
     conf.setenv(ab)
 
 

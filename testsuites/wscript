@@ -42,6 +42,14 @@ def init(ctx):
     pass
 
 
+def options(opt):
+    copts = opt.option_groups['configure options']
+    copts.add_option('--net-test-config',
+                     default='config.inc',
+                     dest='net_config',
+                     help='Network test configuration (default: %default)')
+
+
 def configure(conf):
     recurse(conf)
 

@@ -31,6 +31,7 @@ class source:
         # rtems
         'rtems/mkrootfs.c',
         'rtems/rtems_bootp.c',
+        'rtems/rtems-bsd-iface.c',
         'rtems/rtems_bsdnet_malloc_starvation.c',
         'rtems/rtems_dhcp.c',
         'rtems/rtems_dhcp_failsafe.c',
@@ -223,22 +224,12 @@ class source:
     ]
 
     nfsclient = [
-        'pppd/auth.c',
-        'pppd/ccp.c',
-        'pppd/chap.c',
-        'pppd/chap_ms.c',
-        'pppd/chat.c',
-        'pppd/demand.c',
-        'pppd/fsm.c',
-        'pppd/ipcp.c',
-        'pppd/lcp.c',
-        'pppd/magic.c',
-        'pppd/options.c',
-        'pppd/rtemsmain.c',
-        'pppd/rtemspppd.c',
-        'pppd/sys-rtems.c',
-        'pppd/upap.c',
-        'pppd/utils.c',
+        'nfsclient/proto/mount_prot_xdr.c',
+        'nfsclient/proto/nfs_prot_xdr.c',
+        'nfsclient/src/nfs.c',
+        'nfsclient/src/rpcio.c',
+        'nfsclient/src/sock_mbuf.c',
+        'nfsclient/src/xdr_mbuf.c',
     ]
 
     pppd = [
@@ -315,6 +306,9 @@ header = {
         'rtems/rtems_bsdnet_internal.h', 'rtems/rtems_dhcp_failsafe.h',
         'rtems/rtems_mii_ioctl.h', 'rtems/rtems_netdb.h',
         'rtems/rtems_netinet_in.h', 'rtems/rtems_syscall.h'
+    ],
+    'rtems/bsd': [
+        'include/rtems/bsd/iface.h',
     ],
     'rtems/bsdnet': ['rtems/bsdnet/_types.h', 'rtems/bsdnet/servers.h'],
     'sys': [
