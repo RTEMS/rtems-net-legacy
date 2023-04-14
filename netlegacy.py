@@ -29,10 +29,29 @@
 import os
 import os.path
 
+from rtems_waf import git
 from rtems_waf import rtems
+from rtems_waf import version
 
 import bsp_drivers
 import netsources
+
+
+def version_header(bld):
+    versions = {
+        'RTEMS_NET_LEGACY_VERSION':
+        '"' + bld.env.RTEMS_NET_LEGACY_VERSION + '"',
+        'RTEMS_NET_LEGACY_MAJOR': bld.env.RTEMS_NET_LEGACY_MAJOR,
+        'RTEMS_NET_LEGACY_REVISION':
+        '"' + bld.env.RTEMS_NET_LEGACY_REVISION + '"',
+    }
+    sed = 'sed '
+    for cfg in versions:
+        sed += "-e 's/@%s@/%s/' " % (cfg, versions[cfg])
+    bld(target='include/rtems/rtems-net-legacy.h',
+        source='include/rtems/rtems-net-legacy.h.in',
+        rule=sed + ' < ${SRC} > ${TGT}',
+        update_outputs=True)
 
 
 def net_config_header(bld):
@@ -88,7 +107,14 @@ def options(opt):
 
 
 def bsp_configure(conf, arch_bsp, mandatory=True):
-    ab = rtems.arch(arch_bsp) + '/' + rtems.bsp(arch_bsp)
+    conf.start_msg('Checking version')
+    version.load_rtems_version_header(conf, conf.env.RTEMS_VERSION, arch_bsp,
+                                      conf.env.IFLAGS)
+    conf.env.RTEMS_NET_LEGACY_VERSION = version.string(conf)
+    conf.env.RTEMS_NET_LEGACY_MAJOR = version.version(conf)
+    conf.env.RTEMS_NET_LEGACY_REVISION = version.revision(conf)
+    conf.end_msg(conf.env.RTEMS_NET_LEGACY_VERSION)
+    ab = rtems.arch_bsp_name(arch_bsp)
     includes = [
         '.',
         'include',
@@ -125,9 +151,9 @@ def bsp_configure(conf, arch_bsp, mandatory=True):
 
 
 def build(bld):
-    arch_bsp = bld.env.RTEMS_ARCH_BSP
-    ab = rtems.arch(arch_bsp) + '/' + rtems.bsp(arch_bsp)
+    ab = rtems.arch_bsp_name(bld.env.RTEMS_ARCH_BSP)
 
+    version_header(bld)
     net_config_header(bld)
 
     if ab in bsp_drivers.source:
@@ -173,3 +199,6 @@ def build(bld):
             bld.install_as(
                 os.path.join(bld.env.PREFIX, arch_inc_path, inc_dir, hname),
                 header)
+    bld.install_as(
+        os.path.join(bld.env.PREFIX, arch_inc_path, 'rtems',
+                     'rtems-net-legacy.h'), 'include/rtems/rtems-net-legacy.h')
