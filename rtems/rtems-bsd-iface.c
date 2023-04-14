@@ -114,7 +114,7 @@ int
 rtems_bsd_iface_link_state(const char *name, bool *state)
 {
 	struct rtems_bsd_iface iface;
-	struct ifmediareq ifmr;
+	struct ifmediareq ifmr = {0};
 	int s;
 	int rc;
 
@@ -133,10 +133,9 @@ rtems_bsd_iface_link_state(const char *name, bool *state)
 		return -1;
 	}
 
-	memset(&ifmr, 0, sizeof(ifmr));
-        strlcpy(ifmr.ifm_name, name, sizeof(ifmr.ifm_name));
+	strlcpy(ifmr.ifm_name, name, sizeof(ifmr.ifm_name));
 
-        rc = ioctl(s, SIOCGIFMEDIA, (caddr_t)&ifmr);
+	rc = ioctl(s, SIOCGIFMEDIA, (caddr_t)&ifmr);
 	close(s);
 
 	if (rc < 0) {
