@@ -30,8 +30,9 @@ class source:
     network = [
         # rtems
         'rtems/mkrootfs.c',
-        'rtems/rtems_bootp.c',
         'rtems/rtems-bsd-iface.c',
+        'rtems/rtems-kernel-program.c',
+        'rtems/rtems_bootp.c',
         'rtems/rtems_bsdnet_malloc_starvation.c',
         'rtems/rtems_dhcp.c',
         'rtems/rtems_dhcp_failsafe.c',
@@ -74,6 +75,7 @@ class source:
         'net/if.c',
         'net/if_ethersubr.c',
         'net/if_loop.c',
+        'net/if_nametoindex.c',
         'net/if_ppp.c',
         'net/ppp_tty.c',
         'net/radix.c',
@@ -166,6 +168,8 @@ class source:
         'lib/syslog.c',
         # libc
         'libc/base64.c',
+        'libc/gai_strerror.c',
+        'libc/getaddrinfo.c',
         'libc/gethostbydns.c',
         'libc/gethostbyht.c',
         'libc/gethostbynis.c',
@@ -214,6 +218,7 @@ class source:
         'libc/res_stubs.c',
         'libc/res_update.c',
         'libc/send.c',
+        'libc/vars.c',
         # libtest
         'libtest/testbeginend.c',
         'libtest/testbusy.c',

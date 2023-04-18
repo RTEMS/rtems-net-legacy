@@ -1,8 +1,7 @@
 #
 # RTEMS Project (https://www.rtems.org/)
 #
-# Copyright (c) 2021 Regents of University of Colorado
-# Written by Vijay Kumar Banerjee <vijay@rtems.org>.
+# Copyright (c) 2023 Chris Johns <chris@contemporary.software>
 # All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -28,31 +27,23 @@
 
 from rtems_waf import rtems
 
-subdirs = [
-    'ftp01', 'loopback', 'networking01', 'pppd', 'resolve', 'syscall01', 'telnetd01', 'telnetd02'
-]
-
-
-def recurse(ctx):
-    for sd in subdirs:
-        ctx.recurse(sd)
-
 
 def init(ctx):
     pass
 
 
-def options(opt):
-    copts = opt.option_groups['configure options']
-    copts.add_option('--net-test-config',
-                     default='config.inc',
-                     dest='net_config',
-                     help='Network test configuration (default: %default)')
-
-
 def configure(conf):
-    recurse(conf)
+    pass
 
 
 def build(bld):
-    recurse(bld)
+    legacy_config = bld.path.parent.find_node('support/net-legacy-config.c')
+    source = ['init.c', 'getaddrinfo_test.c', legacy_config]
+    bld.program(target='resolve.exe',
+                features='c cprogram',
+                cflags=bld.env.OPTIMIZATION + ['-g'],
+                includes=bld.env.IFLAGS,
+                lib=['networking'],
+                libpath=['.'],
+                source=source,
+                install_path=False)

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1983, 1987, 1989
  *    The Regents of the University of California.  All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -131,6 +131,7 @@ struct __res_state {
 		struct in_addr	addr;
 		u_int32_t	mask;
 	} sort_list[MAXRESOLVSORT];
+	int	res_h_errno;		/*%< last one set for this context */
 	char	pad[72];		/* on an i386 this means 512b total */
 };
 

@@ -1,0 +1,166 @@
+*** BEGIN OF TEST RESOLVE ***
+*** TEST VERSION: 6.0.0.7e119562ae48d170604d3c82dcf2425a0a1ae3cd
+*** TEST STATE: EXPECTED_PASS
+*** TEST BUILD: RTEMS_POSIX_API
+*** TEST TOOLS: 12.2.1 20230224 (RTEMS 6, RSB 77dc54ce841a04598c64073c217aa9e66df31d8f, Newlib 17ac400)
+dec21140 : found device 'dc1', bus 0x00, dev 0x0e, func 0x00
+dec2114x : unit 1 base address 0xc1042100.
+dec2114x : driver attached
+dec2114x : driver tasks created
+dec2114x : 00:01:af:03:6d:d0   name 'dc1', io 11100, mem c1042100, int 10
+dec2114x: Installing IRQ 10
+getaddrinfo test start
+resolving localhost: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.127.0.0.1.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.127.0.0.1.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.127.0.0.1.0.0.0.0.0.0.0.0
+correct
+resolving anoncvs.cirr.com: not found
+resolving anoncvs.netbsd.se: not found
+resolving antioche.antioche.eu.org: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.132.227.74.11.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.132.227.74.11.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.132.227.74.11.0.0.0.0.0.0.0.0
+correct
+resolving centaurus.4web.cz: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.146.112.61.106.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.146.112.61.106.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.146.112.61.106.0.0.0.0.0.0.0.0
+correct
+resolving chur.math.ntnu.no: not found
+resolving console.netbsd.org: not found
+resolving cvs.netbsd.org: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.199.233.217.197.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.199.233.217.197.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.199.233.217.197.0.0.0.0.0.0.0.0
+correct
+resolving cvsup.netbsd.se: not found
+resolving ftp.chg.ru: not found
+resolving ftp.estpak.ee: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.62.65.42.236.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.62.65.42.236.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.62.65.42.236.0.0.0.0.0.0.0.0
+correct
+resolving ftp.fsn.hu: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.195.228.252.133.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.195.228.252.133.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.195.228.252.133.0.0.0.0.0.0.0.0
+correct
+resolving ftp.funet.fi: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.193.166.3.2.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.193.166.3.2.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.193.166.3.2.0.0.0.0.0.0.0.0
+correct
+resolving ftp.netbsd.org: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.199.233.217.201.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.199.233.217.201.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.199.233.217.201.0.0.0.0.0.0.0.0
+correct
+resolving ftp.nluug.nl: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.145.220.21.40.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.145.220.21.40.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.145.220.21.40.0.0.0.0.0.0.0.0
+correct
+resolving ftp.plig.org: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.188.226.162.120.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.188.226.162.120.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.188.226.162.120.0.0.0.0.0.0.0.0
+correct
+resolving ftp.uni-erlangen.de: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.131.188.12.211.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.131.188.12.211.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.131.188.12.211.0.0.0.0.0.0.0.0
+correct
+resolving ftp.xgate.co.kr: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.203.254.197.172.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.203.254.197.172.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.203.254.197.172.0.0.0.0.0.0.0.0
+correct
+resolving gd.tuwien.ac.at: not found
+resolving gort.ludd.luth.se: not found
+resolving irc.warped.net: not found
+resolving knug.youn.co.kr: not found
+resolving mail.jp.netbsd.org: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.210.148.108.146.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.210.148.108.146.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.210.148.108.146.0.0.0.0.0.0.0.0
+correct
+resolving mail.netbsd.org: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.199.233.217.200.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.199.233.217.200.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.199.233.217.200.0.0.0.0.0.0.0.0
+correct
+resolving melanoma.cs.rmit.edu.au: not found
+resolving mirror.aarnet.edu.au: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.202.158.214.106.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.202.158.214.106.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.202.158.214.106.0.0.0.0.0.0.0.0
+correct
+resolving moon.vub.ac.be: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.134.184.49.5.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.134.184.49.5.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.134.184.49.5.0.0.0.0.0.0.0.0
+correct
+resolving net.bsd.cz: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.94.124.105.4.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.94.124.105.4.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.94.124.105.4.0.0.0.0.0.0.0.0
+correct
+resolving netbsd.3miasto.net: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.104.247.81.52.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.104.247.81.52.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.104.247.81.52.0.0.0.0.0.0.0.0
+correct
+resolving netbsd.4ka.mipt.ru: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.93.175.29.188.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.93.175.29.188.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.93.175.29.188.0.0.0.0.0.0.0.0
+correct
+resolving netbsd.csie.nctu.edu.tw: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.140.113.17.207.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.140.113.17.207.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.140.113.17.207.0.0.0.0.0.0.0.0
+correct
+resolving netbsd.enderunix.org: not found
+resolving netbsd.ftp.fu-berlin.de: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.130.133.3.143.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.130.133.3.143.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.130.133.3.143.0.0.0.0.0.0.0.0
+correct
+resolving netbsd.pair.com: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.216.92.73.137.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.216.92.73.137.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.216.92.73.137.0.0.0.0.0.0.0.0
+correct
+resolving netbsdiso.interoute.net.uk: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.212.23.56.19.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.212.23.56.19.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.212.23.56.19.0.0.0.0.0.0.0.0
+correct
+resolving netbsdwww.cs.rmit.edu.au: not found
+resolving netbsdwww.interoute.net.uk: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.212.23.56.18.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.212.23.56.18.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.212.23.56.18.0.0.0.0.0.0.0.0
+correct
+resolving ns.netbsd.org: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.199.233.217.200.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.199.233.217.200.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.199.233.217.200.0.0.0.0.0.0.0.0
+correct
+resolving skeleton.phys.spbu.ru: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.185.148.210.80.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.185.148.210.80.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.185.148.210.80.0.0.0.0.0.0.0.0
+correct
+resolving www.en.netbsd.de: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.195.22.142.107.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.195.22.142.107.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.195.22.142.107.0.0.0.0.0.0.0.0
+correct
+resolving www.netbsd.cl: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.172.67.129.38.0.0.0.0.0.0.0.0:3162112 2 2 17 16 (null) 16.2.0.0.104.21.1.106.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.172.67.129.38.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.104.21.1.106.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.172.67.129.38.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.104.21.1.106.0.0.0.0.0.0.0.0
+correct
+resolving www.netbsd.nl: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.91.195.241.232.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.91.195.241.232.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.91.195.241.232.0.0.0.0.0.0.0.0
+correct
+resolving www.netbsd.org: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.151.101.65.6.0.0.0.0.0.0.0.0:3162112 2 2 17 16 (null) 16.2.0.0.151.101.1.6.0.0.0.0.0.0.0.0:3162112 2 2 17 16 (null) 16.2.0.0.151.101.193.6.0.0.0.0.0.0.0.0:3162112 2 2 17 16 (null) 16.2.0.0.151.101.129.6.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.151.101.65.6.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.151.101.1.6.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.151.101.193.6.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.151.101.129.6.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.151.101.65.6.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.1
+51.101.1.6.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.151.101.193.6.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.151.101.129.6.0.0.0.0.0.0.0.0
+correct
+resolving www.netbsd.ro: found
+testing correctness with the following data:
+3162112 2 2 17 16 (null) 16.2.0.0.172.67.142.193.0.0.0.0.0.0.0.0:3162112 2 2 17 16 (null) 16.2.0.0.104.21.95.36.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.172.67.142.193.0.0.0.0.0.0.0.0:3162112 2 1 6 16 (null) 16.2.0.0.104.21.95.36.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.172.67.142.193.0.0.0.0.0.0.0.0:3162112 2 5 132 16 (null) 16.2.0.0.104.21.95.36.0.0.0.0.0.0.0.0
+correct
+getaddrinfo test finish
+
+
+
+*** END OF TEST RESOLVE ***
+
+
+
+
+
+*** BEGIN OF TEST RESOLVE ***
+*** TEST VERSION: 6.0.0.d15640249372de3106a66304569a44f6f32cca23
+*** TEST STATE: EXPECTED_PASS
+*** TEST BUILD: RTEMS_POSIX_API
+*** TEST TOOLS: 12.2.1 20230224 (RTEMS 6, RSB 77dc54ce841a04598c64073c217aa9e66df31d8f, Newlib 17ac400)
+syslog: telnetd: started successfully on port 23
