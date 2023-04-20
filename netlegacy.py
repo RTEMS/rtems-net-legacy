@@ -104,6 +104,10 @@ def options(opt):
                      default='-O2',
                      dest='optimization',
                      help='Optimaization level (default: %default)')
+    copts.add_option('--enable-warnings',
+                     action='store_true',
+                     dest='warnings',
+                     help='Enable warnings for all sources (default: %default)')
 
 
 def bsp_configure(conf, arch_bsp, mandatory=True):
@@ -129,6 +133,11 @@ def bsp_configure(conf, arch_bsp, mandatory=True):
                        ] + [str(conf.path.find_node(i))
                             for i in includes] + conf.env.IFLAGS
     conf.env.OPTIMIZATION = [conf.options.optimization]
+    if conf.options.warnings:
+        warnings = '-Wall'
+    else:
+        warnings = '-w'
+    conf.env.WARNINGS = [warnings]
     #
     # BSPs must define:
     #  - RTEMS_BSP_NETWORK_DRIVER_NAME
@@ -156,16 +165,18 @@ def build(bld):
     version_header(bld)
     net_config_header(bld)
 
+    cflags = bld.env.OPTIMIZATION + bld.env.WARNINGS + ['-g']
+
     if ab in bsp_drivers.source:
         bld(target='bspobjs',
             features='c',
-            cflags=bld.env.OPTIMIZATION + ['-g'],
+            cflags=cflags,
             includes=bld.env.IFLAGS,
             source=bsp_drivers.source[ab])
 
     bld(target='netobjs',
         features='c',
-        cflags=bld.env.OPTIMIZATION + ['-g'],
+        cflags=cflags,
         includes=bld.env.IFLAGS,
         defines=['IN_HISTORICAL_NETS=1'],
         source=netsources.source.network)
@@ -174,14 +185,14 @@ def build(bld):
 
     bld.stlib(target='pppd',
               features='c',
-              cflags=bld.env.OPTIMIZATION + ['-g'],
+              cflags=cflags,
               includes=bld.env.IFLAGS,
               use=['networking'],
               source=netsources.source.pppd)
 
     bld.stlib(target='nfs',
               features='c',
-              cflags=bld.env.OPTIMIZATION + ['-g'],
+              cflags=cflags,
               includes=bld.env.IFLAGS,
               use=['networking'],
               source=netsources.source.nfsclient)
