@@ -165,6 +165,8 @@ def build(bld):
     version_header(bld)
     net_config_header(bld)
 
+    bld.add_group()
+
     cflags = bld.env.OPTIMIZATION + bld.env.WARNINGS + ['-g']
 
     if ab in bsp_drivers.source:

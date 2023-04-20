@@ -77,5 +77,4 @@ def recurse(ctx):
 def build(bld):
     rtems.build(bld)
     netlegacy.build(bld)
-    bld.add_group()
     recurse(bld)
