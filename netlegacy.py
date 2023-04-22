@@ -216,3 +216,5 @@ def build(bld):
     bld.install_as(
         os.path.join(bld.env.PREFIX, arch_inc_path, 'rtems',
                      'rtems-net-legacy.h'), 'include/rtems/rtems-net-legacy.h')
+
+    bld.add_group()
