@@ -111,6 +111,10 @@ static rtems_task Init(rtems_task_argument argument)
 #define CONFIGURE_SHELL_COMMANDS_ALL
 #define CONFIGURE_SHELL_COMMANDS_ALL_NETWORKING
 
+extern rtems_shell_cmd_t rtems_shell_SYSCTL_Command;
+#define CONFIGURE_SHELL_USER_COMMANDS \
+  &rtems_shell_SYSCTL_Command
+
 #include <rtems/shellconfig.h>
 
 #include <rtems/confdefs.h>

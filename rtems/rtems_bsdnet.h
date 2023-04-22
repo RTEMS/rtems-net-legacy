@@ -48,6 +48,7 @@ void rtems_bsdnet_show_ip_stats (void);
 void rtems_bsdnet_show_icmp_stats (void);
 void rtems_bsdnet_show_udp_stats (void);
 void rtems_bsdnet_show_tcp_stats (void);
+int rtems_shell_main_sysctl(int argc, char *argv[]);
 
 /*
  * Network configuration

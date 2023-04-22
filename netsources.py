@@ -46,6 +46,7 @@ class source:
         'rtems/rtems_showipstat.c',
         'rtems/rtems_showmbuf.c',
         'rtems/rtems_showroute.c',
+        'rtems/rtems_showsysctl.c',
         'rtems/rtems_showtcpstat.c',
         'rtems/rtems_showudpstat.c',
         'rtems/rtems_socketpair.c',

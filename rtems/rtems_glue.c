@@ -14,6 +14,7 @@
 #include <rtems.h>
 #include <rtems/libio.h>
 #include <rtems/error.h>
+#include <sys/linker_set.h>
 #include <rtems/thread.h>
 #include <rtems/rtems_bsdnet.h>
 #include <sys/types.h>
@@ -55,6 +56,11 @@ static const cpu_set_t *networkDaemonCpuset = 0;
 static size_t          networkDaemonCpusetSize = 0;
 #endif
 static void networkDaemon (void *task_argument);
+
+/*
+ * SYSCTL data
+ */
+RTEMS_BSD_DEFINE_SET(sysctl_set, struct sysctl_oid *);
 
 /*
  * Network timing
@@ -1261,4 +1267,3 @@ m_clalloc(int ncl, int nowait)
 	}
 	return 1;
 }
-

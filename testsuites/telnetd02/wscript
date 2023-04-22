@@ -47,4 +47,5 @@ def build(bld):
                 lib=['telnetd', 'networking'],
                 libpath=['.'],
                 source=source,
+                use=['networking'],
                 install_path=False)

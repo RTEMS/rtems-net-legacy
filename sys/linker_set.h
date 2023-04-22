@@ -1,4 +1,6 @@
 /*-
+ * SPDX-License-Identifier: BSD-2-Clause-FreeBSD
+ *
  * Copyright (c) 1999 John D. Polstra
  * Copyright (c) 1999,2001 Peter Wemm <peter@FreeBSD.org>
  * All rights reserved.
@@ -24,27 +26,18 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/linker_set.h,v 1.13 2002/09/23 06:11:29 peter Exp $
+ * $FreeBSD$
  */
 
 #ifndef _SYS_LINKER_SET_H_
 #define _SYS_LINKER_SET_H_
 
-/* FIXME: These macros should not be here
- * BSD has them macros in sys/cdefs.h
- * older rtems had them in rtems/bsd/sys/cdefs.h
- * newlib has some of them in sys/cdefs.h
- */
-
-#if defined(__rtems__)
-#ifndef	__used
-#define	__used		__attribute__((__used__))
+#ifndef _SYS_CDEFS_H_
+#error this file needs sys/cdefs.h as a prerequisite
 #endif
-#ifndef __CONCAT
-#define	__CONCAT1(x,y)	x ## y
-#define	__CONCAT(x,y)	__CONCAT1(x,y)
-#endif
-#endif
+#ifdef __rtems__
+#include <sys/_types.h>
+#endif /* __rtems__ */
 
 /*
  * The following macros are used to declare global sets of objects, which
@@ -52,40 +45,120 @@
  * For ELF, this is done by constructing a separate segment for each set.
  */
 
+#if defined(__powerpc64__)
+/*
+ * Move the symbol pointer from ".text" to ".data" segment, to make
+ * the GCC compiler happy:
+ */
+#define	__MAKE_SET_CONST
+#else
+#define	__MAKE_SET_CONST const
+#endif
+
 /*
  * Private macros, not to be used outside this header file.
  */
-#ifdef __GNUC__
+#ifdef __GNUCLIKE___SECTION
+#ifndef __rtems__
+#define __MAKE_SET_QV(set, sym, qv)			\
+	__GLOBL(__CONCAT(__start_set_,set));		\
+	__GLOBL(__CONCAT(__stop_set_,set));		\
+	static void const * qv				\
+	__set_##set##_sym_##sym __section("set_" #set)	\
+	__used = &(sym)
+#define __MAKE_SET(set, sym)	__MAKE_SET_QV(set, sym, __MAKE_SET_CONST)
+#else /* __rtems__ */
+#define RTEMS_BSD_DEFINE_SET(set, type)					\
+	type const __CONCAT(_bsd__start_set_,set)[0]		\
+	__section(".rtemsroset.bsd." __STRING(set) ".begin") __used;	\
+	type const __CONCAT(_bsd__stop_set_,set)[0]		\
+	__section(".rtemsroset.bsd." __STRING(set) ".end") __used
+
+#define RTEMS_BSD_DECLARE_SET(set, type)				\
+	extern type const __CONCAT(_bsd__start_set_,set)[0];		\
+	extern type const __CONCAT(_bsd__stop_set_,set)[0]
+
+#define RTEMS_BSD_DEFINE_SET_ITEM(set, sym, type)			\
+	static type const __set_##set##_sym_##sym			\
+       __section(".rtemsroset.bsd." __STRING(set) ".content.1") __used
+
+#define RTEMS_BSD_DEFINE_SET_ITEM_ORDERED(set, sym, order, type)     \
+	static type const __set_##set##_sym_##sym     \
+       __section(".rtemsroset.bsd." __STRING(set) ".content.0."  RTEMS_XSTRING( order )) __used
+
 #define __MAKE_SET(set, sym)						\
-	static void const * const __set_##set##_sym_##sym 		\
-	__attribute((section("set_" #set))) __used = &sym
-#else /* !__GNUC__ */
-#ifndef lint
-#error "This file needs to be compiled by GCC or lint"
-#endif /* lint */
-#define __MAKE_SET(set, sym)	extern void const * const (__set_##set##_sym_##sym)
-#endif /* __GNUC__ */
+	RTEMS_BSD_DEFINE_SET_ITEM(set, sym, const void *) = &sym
+
+#define RTEMS_BSD_DEFINE_RWSET(set, type)				\
+	type __CONCAT(_bsd__start_set_,set)[0]				\
+	__section(".rtemsrwset.bsd." __STRING(set) ".begin") __used;	\
+	type __CONCAT(_bsd__stop_set_,set)[0]				\
+	__section(".rtemsrwset.bsd." __STRING(set) ".end") __used
+
+#define RTEMS_BSD_DECLARE_RWSET(set, type)				\
+	extern type __CONCAT(_bsd__start_set_,set)[0];			\
+	extern type __CONCAT(_bsd__stop_set_,set)[0]
+
+#define RTEMS_BSD_DEFINE_RWSET_ITEM(set, sym, type)			\
+	static type __set_##set##_sym_##sym 				\
+	__section(".rtemsrwset.bsd." __STRING(set) ".content") __used
+
+#define __MAKE_RWSET(set, sym)						\
+	RTEMS_BSD_DEFINE_RWSET_ITEM(set, sym, const void *) = &sym
+#endif /* __rtems__ */
+#else /* !__GNUCLIKE___SECTION */
+#error this file needs to be ported to your compiler
+#endif /* __GNUCLIKE___SECTION */
 
 /*
  * Public macros.
  */
 #define TEXT_SET(set, sym)	__MAKE_SET(set, sym)
 #define DATA_SET(set, sym)	__MAKE_SET(set, sym)
+#ifndef __rtems__
+#define DATA_WSET(set, sym)	__MAKE_SET_QV(set, sym, )
+#else /* __rtems__ */
+#define DATA_WSET(set, sym)	__MAKE_RWSET(set, sym)
+#endif /* __rtems__ */
 #define BSS_SET(set, sym)	__MAKE_SET(set, sym)
 #define ABS_SET(set, sym)	__MAKE_SET(set, sym)
 #define SET_ENTRY(set, sym)	__MAKE_SET(set, sym)
 
 /*
- * Initialize before referring to a give linker set
+ * Initialize before referring to a given linker set.
  */
-#define SET_DECLARE(set, ptype)						\
-	extern ptype *__CONCAT(__start_set_,set)[];			\
-	extern ptype *__CONCAT(__stop_set_,set)[]
+#ifndef __rtems__
+#define SET_DECLARE(set, ptype)					\
+	extern ptype __weak_symbol *__CONCAT(__start_set_,set);	\
+	extern ptype __weak_symbol *__CONCAT(__stop_set_,set)
 
 #define SET_BEGIN(set)							\
-	(__CONCAT(__start_set_,set))
+	(&__CONCAT(__start_set_,set))
 #define SET_LIMIT(set)							\
-	(__CONCAT(__stop_set_,set))
+	(&__CONCAT(__stop_set_,set))
+#else /* __rtems__ */
+#define SET_DECLARE(set, ptype)						\
+	RTEMS_BSD_DECLARE_SET(set, ptype *)
+
+#define RWSET_DECLARE(set, ptype)					\
+	RTEMS_BSD_DECLARE_RWSET(set, ptype *)
+
+static __inline __uintptr_t
+_linker_set_obfuscate(const void *marker)
+{
+
+	/* Obfuscate the variable, so that the compiler cannot optimize */
+	__asm__("" : "+r" (marker));
+	return ((__uintptr_t)marker);
+}
+
+#define SET_BEGIN(set)							\
+	((__typeof(&__CONCAT(_bsd__start_set_,set)[0]))			\
+	     _linker_set_obfuscate(__CONCAT(_bsd__start_set_,set)))
+#define SET_LIMIT(set)							\
+	((__typeof(&__CONCAT(_bsd__stop_set_,set)[0]))			\
+	     _linker_set_obfuscate(__CONCAT(_bsd__stop_set_,set)))
+#endif /* __rtems__ */
 
 /*
  * Iterate over all the elements of a set.
