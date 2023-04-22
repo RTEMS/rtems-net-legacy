@@ -113,9 +113,6 @@ static rtems_task Init(rtems_task_argument argument)
 
   rtems_test_assert(rtems_net_legacy_config(&rtems_bsdnet_config));
 
-  rtems_bsdnet_config.domainname = "gemini.edu";
-  rtems_bsdnet_config.name_server[0] = "10.1.5.8";
-
   rv = rtems_bsdnet_initialize_network();
   rtems_test_assert(rv == 0);
 

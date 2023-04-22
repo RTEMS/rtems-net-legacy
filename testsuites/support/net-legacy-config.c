@@ -25,6 +25,9 @@ static char* boot_prot = NET_CFG_BOOT_PROT;
 static char* ip = NET_CFG_SELF_IP;
 static char* netmask = NET_CFG_NETMASK;
 static char* gateway = NET_CFG_GATEWAY_IP;
+static char* domainname = NET_CFG_DOMAINNAME;
+static char* dns_ip = NET_CFG_DNS_IP;
+static char* ntp = NET_CFG_NTP_IP;
 static struct rtems_bsdnet_ifconfig ifcfg = {
   RTEMS_BSP_NETWORK_DRIVER_NAME,
   RTEMS_BSP_NETWORK_DRIVER_ATTACH
@@ -38,6 +41,9 @@ bool rtems_net_legacy_config(struct rtems_bsdnet_config* bsd) {
   ifcfg.ip_address = ip;
   ifcfg.ip_netmask = netmask;
   bsd->gateway = gateway;
+  bsd->domainname = domainname;
+  bsd->name_server[0] = dns_ip;
+  bsd->ntp_server[0] = ntp;
   if (strcmp(boot_prot, "static") == 0) {
     bsd->bootp = NULL;
   } else if (strcmp(boot_prot, "bootp") == 0) {

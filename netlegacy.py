@@ -60,7 +60,8 @@ def net_config_header(bld):
                   (bld.env.NET_CONFIG))
     net_tags = [
         'NET_CFG_IFACE', 'NET_CFG_BOOT_PROT', 'NET_CFG_SELF_IP',
-        'NET_CFG_NETMASK', 'NET_CFG_MAC_ADDR', 'NET_CFG_GATEWAY_IP'
+        'NET_CFG_NETMASK', 'NET_CFG_MAC_ADDR', 'NET_CFG_GATEWAY_IP',
+        'NET_CFG_DOMAINNAME', 'NET_CFG_DNS_IP', 'NET_CFG_NTP_IP'
     ]
     try:
         net_cfg_lines = open(bld.env.NET_CONFIG).readlines()
