@@ -48,8 +48,8 @@ def version_header(bld):
     sed = 'sed '
     for cfg in versions:
         sed += "-e 's/@%s@/%s/' " % (cfg, versions[cfg])
-    bld(target='include/rtems/rtems-net-legacy.h',
-        source='include/rtems/rtems-net-legacy.h.in',
+    bld(target='include/machine/rtems-net-legacy.h',
+        source='include/machine/rtems-net-legacy.h.in',
         rule=sed + ' < ${SRC} > ${TGT}',
         update_outputs=True)
 
@@ -214,7 +214,7 @@ def build(bld):
                 os.path.join(bld.env.PREFIX, arch_inc_path, inc_dir, hname),
                 header)
     bld.install_as(
-        os.path.join(bld.env.PREFIX, arch_inc_path, 'rtems',
-                     'rtems-net-legacy.h'), 'include/rtems/rtems-net-legacy.h')
+        os.path.join(bld.env.PREFIX, arch_inc_path, 'machine',
+                     'rtems-net-legacy.h'), 'include/machine/rtems-net-legacy.h')
 
     bld.add_group()
