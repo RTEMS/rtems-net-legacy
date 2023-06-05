@@ -37,13 +37,13 @@ def configure(conf):
 
 
 def build(bld):
-    legacy_config = bld.path.parent.find_node('support/net-legacy-config.c')
-    source = ['init.c', 'getaddrinfo_test.c', legacy_config]
+    source = ['init.c', 'getaddrinfo_test.c']
+    cflags = bld.env.OPTIMIZATION + bld.env.WARNINGS + ['-g']
     bld.program(target='resolve.exe',
                 features='c cprogram',
-                cflags=bld.env.OPTIMIZATION + ['-g'],
+                cflags=cflags,
                 includes=bld.env.IFLAGS,
-                lib=['networking'],
+                use=['testsupport', 'networking'],
                 libpath=['.'],
                 source=source,
                 install_path=False)

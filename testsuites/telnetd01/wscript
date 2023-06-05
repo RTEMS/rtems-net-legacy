@@ -39,11 +39,13 @@ def configure(conf):
 
 def build(bld):
     source = ['init.c']
+    cflags = bld.env.OPTIMIZATION + bld.env.WARNINGS + ['-g']
     bld.program(target='telnetd01.exe',
                 features='c cprogram',
-                cflags=bld.env.OPTIMIZATION + ['-g'],
+                cflags=cflags,
                 includes=bld.env.IFLAGS,
                 lib=['telnetd', 'networking'],
                 libpath=['.'],
+                use=['testsupport'],
                 source=source,
                 install_path=False)

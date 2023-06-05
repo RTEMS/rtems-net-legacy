@@ -39,11 +39,13 @@ def configure(conf):
 
 def build(bld):
     source = ['init.c', 'pppdapp.c']
+    cflags = bld.env.OPTIMIZATION + bld.env.WARNINGS + ['-g']
     bld(target='pppd.exe',
         features='c cprogram',
-        cflags=bld.env.OPTIMIZATION + ['-g'],
+        cflags=cflags,
         includes=bld.env.IFLAGS,
         lib=['pppd', 'networking'],
+        use=['testsupport'],
         libpath=['.'],
         source=source,
         install_path=False)

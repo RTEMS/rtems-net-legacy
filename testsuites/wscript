@@ -26,11 +26,55 @@
 #  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import os
+
 from rtems_waf import rtems
 
 subdirs = [
-    'ftp01', 'loopback', 'networking01', 'pppd', 'resolve', 'syscall01', 'telnetd01', 'telnetd02'
+    'ftp01', 'loopback', 'networking01', 'pppd', 'resolve', 'syscall01',
+    'telnetd01', 'telnetd02'
 ]
+
+
+def net_config_header(bld):
+    if not os.path.exists(bld.env.NET_CONFIG):
+        bld.fatal('network configuraiton \'%s\' not found' %
+                  (bld.env.NET_CONFIG))
+    net_tags = [
+        'NET_CFG_IFACE', 'NET_CFG_BOOT_PROT', 'NET_CFG_SELF_IP',
+        'NET_CFG_NETMASK', 'NET_CFG_MAC_ADDR', 'NET_CFG_GATEWAY_IP',
+        'NET_CFG_DOMAINNAME', 'NET_CFG_DNS_IP', 'NET_CFG_NTP_IP'
+    ]
+    try:
+        net_cfg_lines = open(bld.env.NET_CONFIG).readlines()
+    except:
+        bld.fatal('network configuraiton \'%s\' read failed' %
+                  (bld.env.NET_CONFIG))
+    lc = 0
+    sed = 'sed '
+    net_defaults = {}
+    for l in net_cfg_lines:
+        lc += 1
+        if not l.strip().startswith('NET_CFG_'):
+            bld.fatal('network configuration \'%s\' ' \
+                      'invalid config: %d: %s' % (bld.env.NET_CONFIG, lc, l))
+        ls = l.split('=')
+        if len(ls) != 2:
+            bld.fatal('network configuration \'%s\' ' \
+                      'parse error: %d: %s' % (bld.env.NET_CONFIG, lc, l))
+        lhs = ls[0].strip()
+        rhs = ls[1].strip()
+        if lhs in net_tags:
+            net_defaults[lhs] = rhs
+        else:
+            bld.fatal('network configuration \'%s\' ' \
+                      'invalid config: %d: %s' % (bld.env.NET_CONFIG, lc, l))
+    for cfg in net_defaults:
+        sed += "-e 's/@%s@/%s/' " % (cfg, net_defaults[cfg])
+    bld(target=bld.env.NETWORK_CONFIG,
+        source=bld.path.find_node('include/network-config.h.in'),
+        rule=sed + ' < ${SRC} > ${TGT}',
+        shell=True)
 
 
 def recurse(ctx):
@@ -55,4 +99,8 @@ def configure(conf):
 
 
 def build(bld):
+    net_config_header(bld)
+    bld.add_group()
+    bld.recurse('support')
+    bld.add_group()
     recurse(bld)

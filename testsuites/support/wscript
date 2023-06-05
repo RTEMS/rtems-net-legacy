@@ -1,8 +1,7 @@
 #
 # RTEMS Project (https://www.rtems.org/)
 #
-# Copyright (c) 2021 Regents of University of Colorado
-# Written by Vijay Kumar Banerjee <vijay@rtems.org>.
+# Copyright (c) 2023 Chris Johns <chris@contemporary.software>
 # All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -38,12 +37,11 @@ def configure(conf):
 
 
 def build(bld):
-    source = ['init.c']
+    source = ['net-legacy-config.c']
     cflags = bld.env.OPTIMIZATION + bld.env.WARNINGS + ['-g']
-    bld.program(target='loopback.exe',
-                features='c cprogram',
-                cflags=cflags,
-                includes=bld.env.IFLAGS,
-                use=['testsuppoprt', 'networking'],
-                source=source,
-                install_path=False)
+    bld.stlib(target='testsupport',
+              features='c',
+              cflags=cflags,
+              includes=bld.env.IFLAGS,
+              source=source,
+              install_path=False)

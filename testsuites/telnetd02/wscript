@@ -38,14 +38,14 @@ def configure(conf):
 
 
 def build(bld):
-    legacy_config = bld.path.parent.find_node('support/net-legacy-config.c')
-    source = ['init.c', legacy_config]
+    source = ['init.c']
+    cflags = bld.env.OPTIMIZATION + bld.env.WARNINGS + ['-g']
     bld.program(target='telnetd02.exe',
                 features='c cprogram',
-                cflags=bld.env.OPTIMIZATION + ['-g'],
+                cflags=cflags,
                 includes=bld.env.IFLAGS,
                 lib=['telnetd', 'networking'],
                 libpath=['.'],
                 source=source,
-                use=['networking'],
+                use=['testsupport', 'networking'],
                 install_path=False)

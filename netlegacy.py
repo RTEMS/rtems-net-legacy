@@ -51,48 +51,7 @@ def version_header(bld):
     bld(target='include/machine/rtems-net-legacy.h',
         source='include/machine/rtems-net-legacy.h.in',
         rule=sed + ' < ${SRC} > ${TGT}',
-        update_outputs=True)
-
-
-def net_config_header(bld):
-    if not os.path.exists(bld.env.NET_CONFIG):
-        bld.fatal('network configuraiton \'%s\' not found' %
-                  (bld.env.NET_CONFIG))
-    net_tags = [
-        'NET_CFG_IFACE', 'NET_CFG_BOOT_PROT', 'NET_CFG_SELF_IP',
-        'NET_CFG_NETMASK', 'NET_CFG_MAC_ADDR', 'NET_CFG_GATEWAY_IP',
-        'NET_CFG_DOMAINNAME', 'NET_CFG_DNS_IP', 'NET_CFG_NTP_IP'
-    ]
-    try:
-        net_cfg_lines = open(bld.env.NET_CONFIG).readlines()
-    except:
-        bld.fatal('network configuraiton \'%s\' read failed' %
-                  (bld.env.NET_CONFIG))
-    lc = 0
-    sed = 'sed '
-    net_defaults = {}
-    for l in net_cfg_lines:
-        lc += 1
-        if not l.strip().startswith('NET_CFG_'):
-            bld.fatal('network configuration \'%s\' ' \
-                      'invalid config: %d: %s' % (bld.env.NET_CONFIG, lc, l))
-        ls = l.split('=')
-        if len(ls) != 2:
-            bld.fatal('network configuration \'%s\' ' \
-                      'parse error: %d: %s' % (bld.env.NET_CONFIG, lc, l))
-        lhs = ls[0].strip()
-        rhs = ls[1].strip()
-        if lhs in net_tags:
-            net_defaults[lhs] = rhs
-        else:
-            bld.fatal('network configuration \'%s\' ' \
-                      'invalid config: %d: %s' % (bld.env.NET_CONFIG, lc, l))
-    for cfg in net_defaults:
-        sed += "-e 's/@%s@/%s/' " % (cfg, net_defaults[cfg])
-    bld(target=bld.env.NETWORK_CONFIG,
-        source='testsuites/include/network-config.h.in',
-        rule=sed + ' < ${SRC} > ${TGT}',
-        update_outputs=True)
+        shell=True)
 
 
 def options(opt):
@@ -105,10 +64,11 @@ def options(opt):
                      default='-O2',
                      dest='optimization',
                      help='Optimaization level (default: %default)')
-    copts.add_option('--enable-warnings',
-                     action='store_true',
-                     dest='warnings',
-                     help='Enable warnings for all sources (default: %default)')
+    copts.add_option(
+        '--enable-warnings',
+        action='store_true',
+        dest='warnings',
+        help='Enable warnings for all sources (default: %default)')
 
 
 def bsp_configure(conf, arch_bsp, mandatory=True):
@@ -164,7 +124,6 @@ def build(bld):
     ab = rtems.arch_bsp_name(bld.env.RTEMS_ARCH_BSP)
 
     version_header(bld)
-    net_config_header(bld)
 
     bld.add_group()
 
@@ -215,6 +174,7 @@ def build(bld):
                 header)
     bld.install_as(
         os.path.join(bld.env.PREFIX, arch_inc_path, 'machine',
-                     'rtems-net-legacy.h'), 'include/machine/rtems-net-legacy.h')
+                     'rtems-net-legacy.h'),
+        'include/machine/rtems-net-legacy.h')
 
     bld.add_group()

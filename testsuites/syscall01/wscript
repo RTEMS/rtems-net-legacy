@@ -39,10 +39,11 @@ def configure(conf):
 
 def build(bld):
     source = ['init.c']
+    cflags = bld.env.OPTIMIZATION + bld.env.WARNINGS + ['-g']
     bld.program(target='syscall01.exe',
                 features='c cprogram',
-                cflags=bld.env.OPTIMIZATION + ['-g'],
+                cflags=cflags,
                 includes=bld.env.IFLAGS,
-                use=['networking'],
+                use=['tetssupport', 'networking'],
                 source=source,
                 install_path=False)
