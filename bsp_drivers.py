@@ -79,6 +79,7 @@ include = {
         'bsps/powerpc/beatnik/net',
         'bsps/powerpc/beatnik/net/if_em',
         'bsps/powerpc/beatnik/net/if_gfe',
+        'bsps/powerpc/beatnik/net/if_mve',
         'bsps/powerpc/beatnik/net/porting',
     ],
     'powerpc/mpc8260ads': [
@@ -174,6 +175,7 @@ source = {
         'bsps/powerpc/beatnik/net/if_em/if_em_rtems.c',
         'bsps/powerpc/beatnik/net/if_gfe/if_gfe.c',
         'bsps/powerpc/beatnik/net/if_gfe/if_gfe_rtems.c',
+        'bsps/powerpc/beatnik/net/if_mve/mv643xx_eth.c',
         'bsps/powerpc/beatnik/net/porting/if_xxx_rtems.c',
         'bsps/powerpc/beatnik/net/support/bsp_attach.c',
         'bsps/powerpc/beatnik/net/support/early_link_status.c',
