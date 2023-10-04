@@ -8,6 +8,7 @@
 #include "config.h"
 #endif
 
+#include <rtems/test-printer.h>
 #include <tmacros.h>
 
 const char rtems_test_name[] = "LOOPBACK";

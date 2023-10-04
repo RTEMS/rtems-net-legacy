@@ -19,6 +19,7 @@
 #endif
 
 #include <rtems/test-info.h>
+#include <rtems/test-printer.h>
 #include <rtems/bspIo.h>
 #include <rtems/version.h>
 

@@ -21,8 +21,10 @@
 #include <rtems/rtems_bsdnet.h>
 #include <rtems/rtemspppd.h>
 #include <rtems/shell.h>
-#include "netconfig.h"
+#include <rtems/test-printer.h>
 #include <tmacros.h>
+
+#include "netconfig.h"
 
 const char rtems_test_name[] = "PPPD";
 
