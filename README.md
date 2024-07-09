@@ -1,9 +1,50 @@
-RTEMS Legacy Networking Stack
------------------------------
+RTEMS Legacy Networking stack
+=============================
+
+`rtems-net-legacy repository` contains the legacy networking stack that was a part
+of the RTEMS versions through 5 and resided under cpukit/libnetworking.
 
 This is a standalone repository containing the rtems legacy networking stack and
-will be only maintained for bug fixes. Please find the build instructions in the
-README.waf and refer to docs.rtems.org for documentation.
+will be only maintained for bug fixes.  You can find additional documentation at 
+https://docs.rtems.org/
+
+
+rtems_waf submodule
+-------------------
+This repository uses rtems_waf as a git submodule. To update the submodule we
+need to run the following git commands:
+
+
+  ```shell
+  git submodule init
+  git submodule update
+  ```
+
+
+Building
+--------
+
+To build and install:
+
+  ```shell
+  $ ./waf configure --prefix=$HOME/development/rtems/6
+  $ ./waf build install
+  ```
+
+To get help and see waf options:
+
+  ```shell
+  ./waf --help
+  ```
+
+Waf
+---
+
+The Waf project can be found here:
+
+  https://waf.io/
+
+
 
 LICENSE
 -------
@@ -17,20 +58,22 @@ This is a snapshot of my attempt to fit the FreeBSD networking code into
 RTEMS.  Things seem to be working!
 
 Things that need to be done:
-	1) More documentation!
-	2) Figure out what's still not working :-)
-	3) Rationalize the include files.  Right now I have a special
-	   hack in the Makefile to ensure that I pick up the FreeBSD versions
-	   of the include files that are duplicated between RTEMS
-	   and FreeBSD.
-	   The network device driver source should move to the BSP source tree.
-	4) Have a look at all the FIXME comments.
-	5) Go through and make sure that all the source files are
+  1. More documentation!
+  2. Figure out what's still not working :-)
+  3. Rationalize the include files.  Right now I have a special
+     hack in the Makefile to ensure that I pick up the FreeBSD versions
+     of the include files that are duplicated between RTEMS
+     and FreeBSD.
+
+     The network device driver source should move to the BSP source tree.
+  4. Have a look at all the FIXME comments.
+  5. Go through and make sure that all the source files are
 	   free of undesired copyright restrictions.
 
 Initial Changes
-===============
+---------------
 
+```
 19-AUG-1998 snapshot
 	- Pulled BOOTP initialization out of rtems_glue.  Applications which
 	  don't used BOOTP are now about 5k smaller.
@@ -81,3 +124,4 @@ Initial Changes
 	- Added TCP timing program to snapshot.
 
 02-AUG-1998 snapshot.
+```
