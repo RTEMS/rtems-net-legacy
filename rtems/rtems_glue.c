@@ -606,12 +606,10 @@ rtems_bsdnet_newproc (char *name, int stacksize, void(*entry)(void *), void *arg
 #endif
 {
 	struct newtask *t;
-	char nm[4];
 	rtems_id tid;
 	rtems_status_code sc;
 
-	strncpy (nm, name, 4);
-	sc = rtems_task_create (rtems_build_name(nm[0], nm[1], nm[2], nm[3]),
+	sc = rtems_task_create (rtems_build_name('_', 'B', 'S', 'D'),
 		networkDaemonPriority,
 		stacksize,
 		RTEMS_PREEMPT|RTEMS_NO_TIMESLICE|RTEMS_NO_ASR|RTEMS_INTERRUPT_LEVEL(0),
