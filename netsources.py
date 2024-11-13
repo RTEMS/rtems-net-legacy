@@ -311,7 +311,8 @@ header = {
         'rtems/mkrootfs.h', 'rtems/rtems_bsdnet.h',
         'rtems/rtems_bsdnet_internal.h', 'rtems/rtems_dhcp_failsafe.h',
         'rtems/rtems_mii_ioctl.h', 'rtems/rtems_netdb.h',
-        'rtems/rtems_netinet_in.h', 'rtems/rtems_syscall.h'
+        'rtems/rtems_netinet_in.h', 'rtems/rtems_syscall.h',
+        'rtems/rtemsdialer.h'
     ],
     'rtems/bsd': [
         'include/rtems/bsd/iface.h',
