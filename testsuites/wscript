@@ -91,7 +91,7 @@ def options(opt):
     copts.add_option('--net-test-config',
                      default='config.inc',
                      dest='net_config',
-                     help='Network test configuration (default: %default)')
+                     help='Network test configuration (default: %(default)s)')
 
 
 def configure(conf):
