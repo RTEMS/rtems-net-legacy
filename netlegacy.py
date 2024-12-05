@@ -59,16 +59,16 @@ def options(opt):
     copts.add_option('--net-test-config',
                      default='config.inc',
                      dest='net_config',
-                     help='Network test configuration (default: %default)')
+                     help='Network test configuration (default: %(default)s)')
     copts.add_option('--optimization',
                      default='-O2',
                      dest='optimization',
-                     help='Optimaization level (default: %default)')
+                     help='Optimization level (default: %(default)s)')
     copts.add_option(
         '--enable-warnings',
         action='store_true',
         dest='warnings',
-        help='Enable warnings for all sources (default: %default)')
+        help='Enable warnings for all sources (default: %(default)s)')
 
 
 def bsp_configure(conf, arch_bsp, mandatory=True):
