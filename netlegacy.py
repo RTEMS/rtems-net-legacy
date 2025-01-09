@@ -38,12 +38,15 @@ import netsources
 
 
 def version_header(bld):
+    if isinstance(bld.env.RTEMS_NET_LEGACY_REVISION, int):
+        revision = bld.env.RTEMS_NET_LEGACY_REVISION
+    else:
+        revision = '"' + bld.env.RTEMS_NET_LEGACY_REVISION + '"'
     versions = {
         'RTEMS_NET_LEGACY_VERSION':
         '"' + bld.env.RTEMS_NET_LEGACY_VERSION + '"',
         'RTEMS_NET_LEGACY_MAJOR': bld.env.RTEMS_NET_LEGACY_MAJOR,
-        'RTEMS_NET_LEGACY_REVISION':
-        '"' + bld.env.RTEMS_NET_LEGACY_REVISION + '"',
+        'RTEMS_NET_LEGACY_REVISION': revision,
     }
     sed = 'sed '
     for cfg in versions:
