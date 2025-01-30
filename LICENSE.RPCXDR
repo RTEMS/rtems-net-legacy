@@ -2,7 +2,7 @@ The RTEMS RPC/XDR support is a port of the freely distributed
 Sun Microsystems implementation.  The following copyright and
 licensing information applies to this code.
 
-This code is in the c/src/librpc directory.
+This code is in the librpc directory.
 
 =============================================================================
 
