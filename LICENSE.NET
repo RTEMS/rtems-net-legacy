@@ -1,7 +1,7 @@
 The RTEMS TCP/IP stack is a port of the FreeBSD TCP/IP stack.  The following
 copyright and licensing information applies to this code.
 
-This code is found under the c/src/libnetworking directory but does not
+This code is found in this directory but does not
 constitute the entire contents of that subdirectory.
 
 =============================================================================
