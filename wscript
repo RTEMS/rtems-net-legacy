@@ -34,7 +34,7 @@ import sys
 
 top = '.'
 
-rtems_version = "6"
+rtems_version = "7"
 subdirs = ['testsuites']
 
 try:
