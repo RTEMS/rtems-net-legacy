@@ -65,7 +65,7 @@ int rtems_leon_open_eth_driver_attach(
     leon_open_eth_configuration.txd_count = TDA_COUNT;
     leon_open_eth_configuration.rxd_count = RDA_COUNT;
     /* enable 100 MHz operation only if cpu frequency >= 50 MHz */
-    if (LEON3_Timer_Regs->scaler_reload >= 49)
+    if (LEON3_Timer_Regs->sreload >= 49)
       leon_open_eth_configuration.en100MHz = 1;
     if (rtems_open_eth_driver_attach( config, &leon_open_eth_configuration )) {
       LEON_Clear_interrupt(eth_irq);
