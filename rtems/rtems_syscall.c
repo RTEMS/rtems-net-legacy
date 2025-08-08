@@ -743,7 +743,7 @@ so_ioctl (rtems_libio_t *iop, struct socket *so, uint32_t   command, void *buffe
 
 	switch (command) {
 	case FIONBIO:
-		nonblock = rtems_libio_fcntl_flags (O_NONBLOCK);
+		nonblock = rtems_libio_from_fcntl_flags (O_NONBLOCK);
 
 		if (*(int *)buffer) {
 			rtems_libio_iop_flags_set (iop, nonblock);
