@@ -31,8 +31,7 @@ import os
 from rtems_waf import rtems
 
 subdirs = [
-    'ftp01', 'loopback', 'networking01', 'pppd', 'resolve', 'syscall01',
-    'telnetd01', 'telnetd02'
+    'ftp01', 'loopback', 'networking01', 'pppd', 'resolve', 'syscall01'
 ]
 
 

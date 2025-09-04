@@ -19,7 +19,6 @@
 #include <rtems.h>
 #include <rtems/dhcp.h>
 #include <rtems/rtems_bsdnet.h>
-#include <rtems/telnetd.h>
 
 #include <tmacros.h>
 #include <net-legacy-config.h>
