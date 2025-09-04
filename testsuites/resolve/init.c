@@ -26,6 +26,7 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/unistd.h>
 #include <netdb.h>
 #include <resolv.h>
 
