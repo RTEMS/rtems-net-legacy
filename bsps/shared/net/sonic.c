@@ -54,7 +54,6 @@
 #include <netinet/in.h>
 #include <netinet/if_ether.h>
 
-extern rtems_isr_entry set_vector( rtems_isr_entry, rtems_vector_number, int );
 
 #if (SONIC_DEBUG & SONIC_DEBUG_DUMP_MBUFS)
 #include <rtems/dumpbuf.h>
@@ -1102,6 +1101,7 @@ SONIC_STATIC void sonic_initialize_hardware(struct sonic_softc *sc)
   struct mbuf *m;
   void *p;
   CamDescriptorPointer_t cdp;
+  rtems_isr_entry old_isr_entry;
 
   /*
    *  The Revision B SONIC has a horrible bug known as the "Zero
@@ -1400,8 +1400,11 @@ SONIC_STATIC void sonic_initialize_hardware(struct sonic_softc *sc)
 */
 
   /* Ignore returned old handler */
-  (void) set_vector(sonic_interrupt_handler, sc->vector, 1);
-
+  rtems_interrupt_catch(sonic_interrupt_handler,
+                        sc->vector,
+                        &old_isr_entry);
+  rtems_interrupt_clear(sc->vector);
+  rtems_interrupt_vector_enable(sc->vector);
   /*
    * Remainder of hardware initialization is
    * done by the receive and transmit daemons.
