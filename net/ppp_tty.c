@@ -124,7 +124,7 @@ int     pppread(struct rtems_termios_tty *tty, rtems_libio_rw_args_t *rw_args);
 int     pppwrite(struct rtems_termios_tty *tty, rtems_libio_rw_args_t *rw_args);
 int     ppptioctl(struct rtems_termios_tty *tty, rtems_libio_ioctl_args_t *args);
 int     pppinput(int c, struct rtems_termios_tty *tty);
-int     pppstart(struct rtems_termios_tty *tp);
+int     pppstart(struct rtems_termios_tty *tp, int len);
 u_short pppfcs(u_short fcs, u_char *cp, int len);
 void    pppallocmbuf(struct ppp_softc *sc, struct mbuf **mp);
 
@@ -565,7 +565,7 @@ pppasyncctlp(
  * Called at spltty or higher.
  */
 int
-pppstart(struct rtems_termios_tty *tp)
+pppstart(struct rtems_termios_tty *tp, int len)
 {
   u_char             *sendBegin;
   u_long              ioffset = (u_long       )0;
