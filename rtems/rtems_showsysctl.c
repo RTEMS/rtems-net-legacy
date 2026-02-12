@@ -50,6 +50,7 @@ static const char rcsid[] =
 #include <getopt.h>
 #include <rtems/shell.h>
 #include <setjmp.h>
+#include <rtems/rtems_syscall.h>
 #define CHAR_BIT 8
 #endif /* __rtems__ */
 #include <sys/param.h>
@@ -190,8 +191,8 @@ static rtems_shell_sysctl_globals  _globals;
 
 #define err(e, s, ...) \
  do { printf("error: %d " #s "\n", e,  ## __VA_ARGS__); exit(e); } while (0)
-#define warn(s, ...) printf("warning: " #s "\n",  ## __VA_ARGS__); return
-#define warnx(s, ...) printf("warning: " #s "\n",  ## __VA_ARGS__); return
+#define warn(s, ...) printf("warning: " #s "\n",  ## __VA_ARGS__)
+#define warnx(s, ...) printf("warning: " #s "\n",  ## __VA_ARGS__)
 #define EX_NOINPUT 1
 
 int
