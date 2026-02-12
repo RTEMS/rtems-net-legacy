@@ -11,6 +11,7 @@
 #endif
 
 #include <stdio.h>
+#include <string.h>
 
 #include <bsp.h>
 #include <rtems.h>
