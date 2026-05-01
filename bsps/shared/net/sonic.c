@@ -392,12 +392,16 @@ SONIC_STATIC void sonic_stats (struct sonic_softc *sc)
  *                                                                *
  ******************************************************************
  */
-
-SONIC_STATIC rtems_isr sonic_interrupt_handler (rtems_vector_number v)
+#if CPU_SIMPLE_VECTORED_INTERRUPTS == TRUE
+SONIC_STATIC rtems_isr sonic_interrupt_handler (rtems_vector_number arg)
+#else
+SONIC_STATIC rtems_isr sonic_interrupt_handler (void* arg)
+#endif
 {
   struct sonic_softc *sc = sonic_softc;
   uint32_t   isr, imr;
   void *rp;
+  rtems_vector_number v = (rtems_vector_number)arg;
 
 #if (NSONIC > 1)
   /*
