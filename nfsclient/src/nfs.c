@@ -2839,6 +2839,53 @@ sattr					arg;
 					 SATTR_SIZE);
 }
 
+static int nfs_file_ioctl(
+	rtems_libio_t   *iop,
+	ioctl_command_t command,
+	void            *buffer
+)
+{
+#if DEBUG & DEBUG_SYSCALLS
+    fprintf(stderr,
+            "ioctl cmd=%d, iop=%p, buffer=%p\n",
+            command,
+            iop,
+            buffer);
+#endif
+	switch (command) {
+	case NFSGETRETRYPARAMS:
+	case NFSGETSTATS:
+	case NFSSETRETRYPARAMS:
+		break;
+	default:
+		return rtems_filesystem_default_ioctl(iop, command, buffer);
+	}
+
+	int* pi = buffer;
+	if (!pi)
+		return -EFAULT;
+
+	Nfs node = iop->pathinfo.mt_entry->fs_info;
+	if (!node)
+		return -EBADF;
+
+	RpcUdpServer server = node->server;
+
+	switch (command) {
+    case NFSGETSTATS:
+        rpcUdpGetStats(server, pi, pi+1, pi+2, pi+3, pi+4);
+        return 5; /* number of values put into the buffer */
+    case NFSGETRETRYPARAMS:
+        rpcUdpGetRetryParams(pi, pi+1, pi+2, pi+3);
+        return 4; /* number of values put into the buffer */
+    case NFSSETRETRYPARAMS:
+        rpcUdpSetRetryParams(pi[0], pi[1], pi[2], pi[3]);
+        return 0;
+	default:
+		return -EINVAL;
+	}
+}
+
 /* the file handlers table */
 static const
 struct _rtems_filesystem_file_handlers_r nfs_file_file_handlers = {
@@ -2846,7 +2893,7 @@ struct _rtems_filesystem_file_handlers_r nfs_file_file_handlers = {
 	.close_h     = nfs_file_close,
 	.read_h      = nfs_file_read,
 	.write_h     = nfs_file_write,
-	.ioctl_h     = rtems_filesystem_default_ioctl,
+	.ioctl_h     = nfs_file_ioctl,
 	.lseek_h     = rtems_filesystem_default_lseek_file,
 	.fstat_h     = nfs_fstat,
 	.ftruncate_h = nfs_file_ftruncate,
@@ -2867,7 +2914,7 @@ struct _rtems_filesystem_file_handlers_r nfs_dir_file_handlers = {
 	.close_h     = nfs_dir_close,
 	.read_h      = nfs_dir_read,
 	.write_h     = rtems_filesystem_default_write,
-	.ioctl_h     = rtems_filesystem_default_ioctl,
+	.ioctl_h     = nfs_file_ioctl,
 	.lseek_h     = nfs_dir_lseek,
 	.fstat_h     = nfs_fstat,
 	.ftruncate_h = rtems_filesystem_default_ftruncate_directory,
@@ -2888,7 +2935,7 @@ struct _rtems_filesystem_file_handlers_r nfs_link_file_handlers = {
 	.close_h     = rtems_filesystem_default_close,
 	.read_h      = rtems_filesystem_default_read,
 	.write_h     = rtems_filesystem_default_write,
-	.ioctl_h     = rtems_filesystem_default_ioctl,
+	.ioctl_h     = nfs_file_ioctl,
 	.lseek_h     = rtems_filesystem_default_lseek,
 	.fstat_h     = nfs_fstat,
 	.ftruncate_h = rtems_filesystem_default_ftruncate,

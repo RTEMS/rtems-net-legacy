@@ -233,5 +233,27 @@ rpcUdpXactPoolPut(RpcUdpXact xact);
 void
 rpcUdpSetRetryParams(int minMS, int maxMS, int aMS, int avg_const);
 
+/**
+ * @brief Returns the current retry parameters for the retry period equation
+ * @param minMs Lower bound of retry period. May be NULL
+ * @param maxMs Upper bound of retry period. May be NULL
+ * @param aMas Ratio between roundtrip time and retry period. May be NULL
+ * @param avg_const Size of the averaging window. May be NULL
+ */
+void
+rpcUdpGetRetryParams(int* minMs, int* maxMs, int* aMs, int* avg_const);
+
+/**
+ * @brief Returns the current RPC stats for the specified RPC server
+ * @param totReq Total requests. May be NULL
+ * @param retries Total number of retries. May be NULL
+ * @param timeouts Total number of timeouts. May be NULL
+ * @param errors Total number of errors. May be NULL
+ * @param currentPeriod Current retry period in ms. May be NULL
+ */
+void
+rpcUdpGetStats(RpcUdpServer server, int* totReq, int* retries, int* timeouts, int* errors, int* currentPeriod);
+
+
 /** @} */
 #endif

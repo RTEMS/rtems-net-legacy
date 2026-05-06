@@ -89,6 +89,17 @@ extern "C" {
 #include "rpcio.h"
  */
 
+/* ioctl types
+ * For the NFSGETxxx ioctl types, ioctl returns the number of parameters read
+ * into the supplied array.
+ */
+typedef enum nfs_ioctl {
+    NFSGETSTATS         = 0,    /* int[5] 0=reqcnt, 1=retrycnt, 2=timeocnt,
+                                 *  3=errorcnt, 4=retryperiodms */
+    NFSGETRETRYPARAMS,          /* int[4] 0=minMs, 1=maxMs, 2=aMs, 3=avgWindow */
+    NFSSETRETRYPARAMS,          /* int[4] 0=minMs, 1=maxMs, 2=aMs, 3=avgWindow */
+} nfs_ioctl_t;
+
 /** Priority of daemon; may be setup prior to calling rpcUdpInit();
  * otherwise the network task priority from the rtems_bsdnet_config
  * is used...

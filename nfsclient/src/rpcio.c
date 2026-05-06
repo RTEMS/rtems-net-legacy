@@ -1622,6 +1622,34 @@ rpcUdpSetRetryParams(int minMS, int maxMS, int A, int avg_window) {
 		rpc_period_avg = 1;
 }
 
+void
+rpcUdpGetRetryParams(int* minMs, int* maxMs, int* aMs, int* avg_const)
+{
+    if (minMs)
+        *minMs = rpc_period_min;
+    if (maxMs)
+        *maxMs = rpc_period_max;
+    if (aMs)
+        *aMs = rpc_period_a;
+    if (avg_const)
+        *avg_const = rpc_period_avg;
+}
+
+void
+rpcUdpGetStats(RpcUdpServer s, int* totReq, int* retries, int* timeouts, int* errors, int* currentPeriod)
+{
+    if (errors)
+        *errors = s->errors;
+    if (totReq)
+        *totReq = s->requests;
+    if (retries)
+        *retries = s->retrans;
+    if (timeouts)
+        *timeouts = s->timeouts;
+    if (currentPeriod)
+        *currentPeriod = s->retry_period;
+}
+
 #ifdef MBUF_RX
 
 /* WORKAROUND: include sys/mbuf.h (or other bsdnet headers) only
