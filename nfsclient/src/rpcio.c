@@ -330,6 +330,22 @@ static RpcUdpXact xactHashTbl[XACT_HASHS]={0};
 static u_long     xidUpper   [XACT_HASHS]={0};
 static unsigned   xidHashSeed            = 0 ;
 
+/* Tunable parameters for the RPC retry period calculation
+ * Settable by the user using rpcUdpSetRetryParams
+ * min/max period have MS as units, A is just an integral multiplier
+ */
+#define DEFAULT_RPC_PERIOD_MIN 25
+int32_t rpc_period_min = -1;
+#define DEFAULT_RPC_PERIOD_MAX (RPCIOD_RETX_CAP_S * 1000)
+int32_t rpc_period_max = -1;
+#define DEFAULT_RPC_PERIOD_A 8
+int32_t rpc_period_a = DEFAULT_RPC_PERIOD_A;
+
+#define RPC_PERIOD_AVG_POWER 12
+#define RPC_PERIOD_AVG_MAX (1<<RPC_PERIOD_AVG_POWER)
+#define DEFAULT_RPC_PERIOD_AVG 1024
+int32_t rpc_period_avg = DEFAULT_RPC_PERIOD_AVG;
+
 /* forward declarations */
 static RpcUdpXact
 sockRcv(void);
@@ -374,6 +390,15 @@ static rtems_interval	ticksPerSec;		/* cached system clock rate (WHO IS ASSUMED 
 											 */
 
 rtems_task_priority		rpciodPriority = 0;
+
+static int clamp_int(int val, int min, int max) {
+	return val < min ? min : (val > max ? max : val);
+}
+
+static int ms_to_ticks(int64_t ms) {
+	return (int)((ticksPerSec * ms * 1000ll) / (1000000ll));
+}
+
 #ifdef RTEMS_SMP
 const cpu_set_t			*rpciodCpuset = 0;
 size_t				rpciodCpusetSize = 0;
@@ -1146,9 +1171,14 @@ size_t            size;
 rtems_id          q          =  0;
 ListNodeRec       listHead   = {0, 0};
 unsigned long     epoch      = RPCIOD_EPOCH_SECS * ticksPerSec;
-unsigned long			max_period = RPCIOD_RETX_CAP_S * ticksPerSec;
 rtems_status_code	status;
 
+
+    /* Init min/max period if it hasn't been already; we can't do this at compile time because we don't know the value of ticksPerSec yet... */
+    if (rpc_period_min < 0)
+        rpc_period_min = ms_to_ticks(DEFAULT_RPC_PERIOD_MIN);
+    if (rpc_period_max < 0)
+        rpc_period_max = ms_to_ticks(DEFAULT_RPC_PERIOD_MAX);
 
         then = rtems_clock_get_ticks_since_boot();
 
@@ -1242,13 +1272,9 @@ rtems_status_code	status;
 					if ( 0==trip )
 						trip = 1;
 
-					/* retry_new = 0.75*retry_old + 0.25 * 8 * roundrip */
-					rtry   = (3*rtry + (trip << 3)) >> 2;
-
-					if ( rtry > max_period )
-						rtry = max_period;
-
-					srv->retry_period = rtry;
+					/* retry_new = (trip * rpc_period_a - rtry) * avg_const */
+					rtry += ((trip * rpc_period_a - rtry) * rpc_period_avg) >> RPC_PERIOD_AVG_POWER;
+					srv->retry_period = clamp_int(rtry, rpc_period_min, rpc_period_max);
 				}
 
 				/* wakeup requestor */
@@ -1356,7 +1382,7 @@ rtems_status_code	status;
 							/* this is a real retry; we backup
 							 * the server's retry interval
 							 */
-							if ( srv->retry_period < max_period ) {
+							if ( srv->retry_period < rpc_period_max ) {
 
 								/* If multiple transactions for this server
 								 * fail (e.g. because it died) this will
@@ -1576,6 +1602,24 @@ RpcUdpXactPool pool;
 								&xact,
 								sizeof(xact)))
 		rpcUdpXactDestroy(xact);
+}
+
+void
+rpcUdpSetRetryParams(int minMS, int maxMS, int A, int avg_window) {
+	rpc_period_min = minMS <= 0 ? DEFAULT_RPC_PERIOD_MIN : minMS;
+	rpc_period_max = maxMS <= 0 ? DEFAULT_RPC_PERIOD_MAX : maxMS;
+	rpc_period_a = A <= 0 ? DEFAULT_RPC_PERIOD_A : A;
+
+	rpc_period_max = ms_to_ticks(rpc_period_max);
+	rpc_period_min = ms_to_ticks(rpc_period_min);
+
+	if (avg_window <= 0)
+		rpc_period_avg = DEFAULT_RPC_PERIOD_AVG;
+	else
+		rpc_period_avg = (1<<RPC_PERIOD_AVG_POWER) / (ticksPerSec * avg_window);
+
+	if (rpc_period_avg <= 0)
+		rpc_period_avg = 1;
 }
 
 #ifdef MBUF_RX

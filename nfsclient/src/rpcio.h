@@ -222,5 +222,16 @@ rpcUdpXactPoolGet(RpcUdpXactPool pool, XactPoolGetMode mode);
 void
 rpcUdpXactPoolPut(RpcUdpXact xact);
 
+/**
+ * @brief Configure retry period equation.
+ * @param minMS Min bound of the retry period, in milliseconds.
+ * @param maxMS Max bound of the retry period, in milliseconds.
+ * @param A An integral value representing the ratio between roundtrip time and retry period.
+ * @param avg_window The size of the moving window, in ms, for the average. a setting of 256 means we only
+ * take the last 256ms into account when computing the retry period
+ */
+void
+rpcUdpSetRetryParams(int minMS, int maxMS, int aMS, int avg_const);
+
 /** @} */
 #endif
